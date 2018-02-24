@@ -1,5 +1,5 @@
 Dependencies for Project 'wireless_oia', Target 'Target 1': (DO NOT MODIFY !)
-F (..\..\user\main.c)(0x5A7E8E65)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\kernel\FreeRTOS\Source\include -I ..\..\kernel\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I ..\..\device\include-ID:\03-project\60-wireless_plc\code\wireless_oia\pro\mdk\RTE-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include-D__UVISION_VERSION="521" -D_RTE_ -DGD32F10X_HD -DUSE_STDPERIPH_DRIVER-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (..\..\user\main.c)(0x5A912E97)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\kernel\FreeRTOS\Source\include -I ..\..\kernel\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I ..\..\device\include-ID:\03-project\60-wireless_plc\code\wireless_oia\pro\mdk\RTE-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include-D__UVISION_VERSION="521" -D_RTE_ -DGD32F10X_HD -DUSE_STDPERIPH_DRIVER-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include\gd32f10x.h)(0x59560F50)
 I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include\core_cm3.h)(0x57D7BCDA)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)
@@ -44,7 +44,7 @@ I (..\..\kernel\FreeRTOS\Source\include\list.h)(0x4E78D4C7)
 I (..\..\kernel\FreeRTOS\Source\include\queue.h)(0x4E78D4C7)
 I (..\..\kernel\FreeRTOS\Source\include\croutine.h)(0x4E78D4C7)
 I (..\..\kernel\FreeRTOS\Source\include\semphr.h)(0x56207541)
-I (..\..\device\include\tm1650.h)(0x5A727570)
+I (..\..\device\include\tm1650.h)(0x5A912A3A)
 F (..\..\kernel\FreeRTOS\Source\croutine.c)(0x4E78D4C7)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\kernel\FreeRTOS\Source\include -I ..\..\kernel\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I ..\..\device\include-ID:\03-project\60-wireless_plc\code\wireless_oia\pro\mdk\RTE-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include-D__UVISION_VERSION="521" -D_RTE_ -DGD32F10X_HD -DUSE_STDPERIPH_DRIVER-o .\objects\croutine.o --omf_browse .\objects\croutine.crf --depend .\objects\croutine.d)
 I (..\..\kernel\FreeRTOS\Source\include\FreeRTOS.h)(0x5620887A)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x574E3E26)
@@ -133,8 +133,76 @@ I (..\..\kernel\FreeRTOS\Source\portable\RVDS\ARM_CM3\portmacro.h)(0x4E78D4C7)
 I (..\..\kernel\FreeRTOS\Source\include\mpu_wrappers.h)(0x4E78D4C7)
 I (..\..\kernel\FreeRTOS\Source\include\task.h)(0x4E78D4C7)
 I (..\..\kernel\FreeRTOS\Source\include\list.h)(0x4E78D4C7)
-F (..\..\device\tm1650.c)(0x5A7E6621)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\kernel\FreeRTOS\Source\include -I ..\..\kernel\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I ..\..\device\include-ID:\03-project\60-wireless_plc\code\wireless_oia\pro\mdk\RTE-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include-D__UVISION_VERSION="521" -D_RTE_ -DGD32F10X_HD -DUSE_STDPERIPH_DRIVER-o .\objects\tm1650.o --omf_browse .\objects\tm1650.crf --depend .\objects\tm1650.d)
-I (..\..\device\include\tm1650.h)(0x5A727570)
+F (..\..\device\tm1650.c)(0x5A912AAB)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\kernel\FreeRTOS\Source\include -I ..\..\kernel\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I ..\..\device\include-ID:\03-project\60-wireless_plc\code\wireless_oia\pro\mdk\RTE-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include-D__UVISION_VERSION="521" -D_RTE_ -DGD32F10X_HD -DUSE_STDPERIPH_DRIVER-o .\objects\tm1650.o --omf_browse .\objects\tm1650.crf --depend .\objects\tm1650.d)
+I (..\..\device\include\tm1650.h)(0x5A912A3A)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include\gd32f10x.h)(0x59560F50)
+I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include\core_cm3.h)(0x57D7BCDA)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)
+I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include\cmsis_compiler.h)(0x57D7BCDA)
+I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include\cmsis_armcc.h)(0x57EB0E6C)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include\system_gd32f10x.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include\gd32f10x_libopt.h)(0x595B0FDA)
+I (D:\03-project\60-wireless_plc\code\wireless_oia\pro\mdk\RTE\RTE_Components.h)(0x5A7D6A41)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_adc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_bkp.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_can.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_crc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_dac.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_dbg.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_dma.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_enet.h)(0x595C9662)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x574E3E26)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_exmc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_exti.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_fmc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_fwdgt.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_gpio.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_i2c.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_misc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_pmu.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_rcu.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_rtc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_sdio.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_spi.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_timer.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_usart.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_wwdgt.h)(0x59560F40)
+F (..\..\device\sign_led.c)(0x5A911AEA)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\kernel\FreeRTOS\Source\include -I ..\..\kernel\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I ..\..\device\include-ID:\03-project\60-wireless_plc\code\wireless_oia\pro\mdk\RTE-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include-D__UVISION_VERSION="521" -D_RTE_ -DGD32F10X_HD -DUSE_STDPERIPH_DRIVER-o .\objects\sign_led.o --omf_browse .\objects\sign_led.crf --depend .\objects\sign_led.d)
+I (..\..\device\include\sign_led.h)(0x5A912456)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include\gd32f10x.h)(0x59560F50)
+I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include\core_cm3.h)(0x57D7BCDA)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)
+I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include\cmsis_compiler.h)(0x57D7BCDA)
+I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include\cmsis_armcc.h)(0x57EB0E6C)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include\system_gd32f10x.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include\gd32f10x_libopt.h)(0x595B0FDA)
+I (D:\03-project\60-wireless_plc\code\wireless_oia\pro\mdk\RTE\RTE_Components.h)(0x5A7D6A41)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_adc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_bkp.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_can.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_crc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_dac.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_dbg.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_dma.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_enet.h)(0x595C9662)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x574E3E26)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_exmc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_exti.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_fmc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_fwdgt.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_gpio.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_i2c.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_misc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_pmu.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_rcu.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_rtc.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_sdio.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_spi.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_timer.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_usart.h)(0x59560F40)
+I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc\gd32f10x_wwdgt.h)(0x59560F40)
+F (..\..\device\wireless.c)(0x5A913414)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\kernel\FreeRTOS\Source\include -I ..\..\kernel\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I ..\..\device\include-ID:\03-project\60-wireless_plc\code\wireless_oia\pro\mdk\RTE-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc-IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include-D__UVISION_VERSION="521" -D_RTE_ -DGD32F10X_HD -DUSE_STDPERIPH_DRIVER-o .\objects\wireless.o --omf_browse .\objects\wireless.crf --depend .\objects\wireless.d)
+I (..\..\device\include\wireless.h)(0x5A913338)
 I (C:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DFP\2.0.0\Device\Include\gd32f10x.h)(0x59560F50)
 I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include\core_cm3.h)(0x57D7BCDA)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)

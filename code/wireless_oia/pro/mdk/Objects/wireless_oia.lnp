@@ -8,6 +8,8 @@
 ".\objects\port.o"
 ".\objects\heap_2.o"
 ".\objects\tm1650.o"
+".\objects\sign_led.o"
+".\objects\wireless.o"
 ".\objects\gd32f10x_adc.o"
 ".\objects\gd32f10x_bkp.o"
 ".\objects\gd32f10x_can.o"
