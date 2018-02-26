@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\kernel\FreeRTOS\Source\include;..\..\kernel\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\..\device\include</IncludePath>
+              <IncludePath>..\..\kernel\FreeRTOS\Source\include;..\..\kernel\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\..\device\include;..\..\frame\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -383,6 +383,16 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\user\main.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>frame</GroupName>
+          <Files>
+            <File>
+              <FileName>s_delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\frame\s_delay.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -443,6 +453,11 @@
               <FileName>wireless.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\device\wireless.c</FilePath>
+            </File>
+            <File>
+              <FileName>sign_configure.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\sign_configure.c</FilePath>
             </File>
           </Files>
         </Group>

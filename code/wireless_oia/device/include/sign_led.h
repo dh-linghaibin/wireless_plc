@@ -23,6 +23,10 @@ typedef enum _led_name {
 	L_AO2,
 } led_name;
 
+void sign_led(void);
+void
+sign_write(led_name name,uint16_t val);
+
 #ifdef __cplusplus
 }
 #endif

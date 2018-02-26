@@ -7,21 +7,12 @@
 
 #include "wireless.h"
 
-#define  ARRAYSIZE         10
-
-uint8_t spi0_send_array[ARRAYSIZE] = {0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA};
-uint8_t spi2_send_array[ARRAYSIZE] = {0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7, 0xB8, 0xB9, 0xBA};
-uint8_t spi0_receive_array[ARRAYSIZE]; 
-uint8_t spi2_receive_array[ARRAYSIZE];
+#define  ARRAYSIZE	10
+uint8_t spi1_send_array[ARRAYSIZE] = {0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA};
+uint8_t spi1_receive_array[ARRAYSIZE]; 
 ErrStatus memory_compare(uint8_t* src, uint8_t* dst, uint8_t length);
 
 uint32_t send_n = 0, receive_n = 0;
-
-void rcu_config(void);
-void gpio_config(void);
-void dma_config(void);
-void spi_config(void);
-
 /*!
     \brief      configure different peripheral clocks
     \param[in]  none
@@ -30,13 +21,11 @@ void spi_config(void);
 */
 static void rcu_config(void)
 {
-    rcu_periph_clock_enable(RCU_GPIOA);
-    rcu_periph_clock_enable(RCU_GPIOC);
+    rcu_periph_clock_enable(RCU_GPIOB);
     rcu_periph_clock_enable(RCU_AF);
     rcu_periph_clock_enable(RCU_DMA0);
     rcu_periph_clock_enable(RCU_DMA1);
-    rcu_periph_clock_enable(RCU_SPI0);
-    rcu_periph_clock_enable(RCU_SPI2);
+    rcu_periph_clock_enable(RCU_SPI1);
 }
 
 /*!
@@ -48,13 +37,8 @@ static void rcu_config(void)
 static void gpio_config(void)
 {
     /* SPI0 GPIO config:SCK/PA5, MISO/PA6, MOSI/PA7 */
-    gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_5 | GPIO_PIN_7);
-    gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_6);
-    
-    /* SPI2 GPIO config:SCK/PC10, MISO/PC11, MOSI/PC12 */
-    gpio_pin_remap_config(GPIO_SPI0_REMAP, ENABLE);
-    gpio_init(GPIOC, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10 | GPIO_PIN_12);
-    gpio_init(GPIOC, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_11);
+    gpio_init(GPIOB, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_14 | GPIO_PIN_13);
+    gpio_init(GPIOB, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_15);
 }
 
 /*!
@@ -66,38 +50,11 @@ static void gpio_config(void)
 static void dma_config(void)
 {
     dma_parameter_struct dma_init_struct;
-    
-    /* SPI0 transmit dma config:DMA0-DMA_CH2 */
-    dma_deinit(DMA0, DMA_CH2);
-    dma_init_struct.periph_addr  = (uint32_t)&SPI_DATA(SPI0);
-    dma_init_struct.memory_addr  = (uint32_t)spi0_send_array;
-    dma_init_struct.direction    = DMA_MEMORY_TO_PERIPHERAL;
-    dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;
-    dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;
-    dma_init_struct.priority     = DMA_PRIORITY_LOW;
-    dma_init_struct.number       = ARRAYSIZE;
-    dma_init_struct.periph_inc   = DMA_PERIPH_INCREASE_DISABLE;
-    dma_init_struct.memory_inc   = DMA_MEMORY_INCREASE_ENABLE;
-    dma_init(DMA0, DMA_CH2, dma_init_struct);
-    /* configure DMA mode */
-    dma_circulation_disable(DMA0, DMA_CH2);
-    dma_memory_to_memory_disable(DMA0, DMA_CH2);
-
-    /* SPI0 receive dma config:DMA0-DMA_CH1 */
-    dma_deinit(DMA0, DMA_CH1);
-    dma_init_struct.periph_addr  = (uint32_t)&SPI_DATA(SPI0);
-    dma_init_struct.memory_addr  = (uint32_t)spi0_receive_array;
-    dma_init_struct.direction    = DMA_PERIPHERAL_TO_MEMORY;
-    dma_init_struct.priority     = DMA_PRIORITY_HIGH;
-    dma_init(DMA0, DMA_CH1, dma_init_struct);
-    /* configure DMA mode */
-    dma_circulation_disable(DMA0, DMA_CH1);
-    dma_memory_to_memory_disable(DMA0, DMA_CH1);
 
     /* SPI2 transmit dma config:DMA1,DMA_CH1 */
     dma_deinit(DMA1, DMA_CH1);
-    dma_init_struct.periph_addr  = (uint32_t)&SPI_DATA(SPI2);
-    dma_init_struct.memory_addr  = (uint32_t)spi2_send_array;
+    dma_init_struct.periph_addr  = (uint32_t)&SPI_DATA(SPI1);
+    dma_init_struct.memory_addr  = (uint32_t)spi1_send_array;
     dma_init_struct.direction    = DMA_MEMORY_TO_PERIPHERAL;
     dma_init_struct.priority     = DMA_PRIORITY_MEDIUM;
     dma_init(DMA1, DMA_CH1, dma_init_struct);
@@ -107,8 +64,8 @@ static void dma_config(void)
 
     /* SPI2 receive dma config:DMA1,DMA_CH0 */
     dma_deinit(DMA1, DMA_CH0);
-    dma_init_struct.periph_addr  = (uint32_t)&SPI_DATA(SPI2);
-    dma_init_struct.memory_addr  = (uint32_t)spi2_receive_array;
+    dma_init_struct.periph_addr  = (uint32_t)&SPI_DATA(SPI1);
+    dma_init_struct.memory_addr  = (uint32_t)spi1_receive_array;
     dma_init_struct.direction    = DMA_PERIPHERAL_TO_MEMORY;
     dma_init_struct.priority     = DMA_PRIORITY_ULTRA_HIGH;
     dma_init(DMA1, DMA_CH0, dma_init_struct);
@@ -135,15 +92,9 @@ static void spi_config(void)
     spi_init_struct.nss                  = SPI_NSS_SOFT;
     spi_init_struct.prescale             = SPI_PSC_8;
     spi_init_struct.endian               = SPI_ENDIAN_MSB;
-    spi_init(SPI0, &spi_init_struct);
+    spi_init(SPI1, &spi_init_struct);
 
-    /* SPI1 parameter config */
-    spi_init_struct.device_mode = SPI_SLAVE;
-    spi_init_struct.nss         = SPI_NSS_SOFT;
-    spi_init(SPI2, &spi_init_struct);
-    
-    spi_nss_internal_high(SPI0);
-    spi_nss_internal_low(SPI2);
+    spi_nss_internal_high(SPI1);
 }
 
 /*!
@@ -164,9 +115,9 @@ static ErrStatus memory_compare(uint8_t* src, uint8_t* dst, uint8_t length)
 }
 
 
-int test(void)
+void
+wireless_init(void)
 {
-
     /* peripheral clock enable */
     rcu_config();
     /* GPIO configure */
@@ -175,41 +126,21 @@ int test(void)
     dma_config();
     /* SPI configure */
     spi_config();
-
     /* SPI enable */
-    spi_enable(SPI2);
-    spi_enable(SPI0);
-
+    spi_enable(SPI1);
     /* DMA channel enable */
-    dma_channel_enable(DMA0, DMA_CH1);
-    dma_channel_enable(DMA0, DMA_CH2);
     dma_channel_enable(DMA1, DMA_CH0);
     dma_channel_enable(DMA1, DMA_CH1);
-
     /* SPI DMA enable */
-    spi_dma_enable(SPI2, SPI_DMA_TRANSMIT);
-    spi_dma_enable(SPI2, SPI_DMA_RECEIVE);
-    spi_dma_enable(SPI0, SPI_DMA_TRANSMIT);
-    spi_dma_enable(SPI0, SPI_DMA_RECEIVE);
-
+    spi_dma_enable(SPI1, SPI_DMA_TRANSMIT);
+    spi_dma_enable(SPI1, SPI_DMA_RECEIVE);
     /* wait dma transmit complete */
-    while(!dma_flag_get(DMA0, DMA_CH2, DMA_FLAG_FTF));
     while(!dma_flag_get(DMA1, DMA_CH1, DMA_FLAG_FTF));
-    while(!dma_flag_get(DMA0, DMA_CH1, DMA_FLAG_FTF));
     while(!dma_flag_get(DMA1, DMA_CH0, DMA_FLAG_FTF));
-
     /* compare receive data with send data */
-    if(memory_compare(spi2_receive_array, spi0_send_array, ARRAYSIZE)){
+    if(memory_compare(spi1_receive_array, spi1_send_array, ARRAYSIZE)){
         
     }else{
        
     }
-    
-    if(memory_compare(spi0_receive_array, spi2_send_array, ARRAYSIZE)){
-        
-    }else{
-        
-    }
-
-    while(1);
 }

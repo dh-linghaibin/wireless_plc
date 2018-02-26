@@ -1,5 +1,6 @@
 --cpu Cortex-M3
 ".\objects\main.o"
+".\objects\s_delay.o"
 ".\objects\croutine.o"
 ".\objects\list.o"
 ".\objects\queue.o"
@@ -10,6 +11,7 @@
 ".\objects\tm1650.o"
 ".\objects\sign_led.o"
 ".\objects\wireless.o"
+".\objects\sign_configure.o"
 ".\objects\gd32f10x_adc.o"
 ".\objects\gd32f10x_bkp.o"
 ".\objects\gd32f10x_can.o"

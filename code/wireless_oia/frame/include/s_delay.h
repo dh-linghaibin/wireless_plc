@@ -5,22 +5,21 @@
  *
  */
 
-#ifndef _WIRE_LESS_H_
-#define _WIRE_LESS_H_
+#ifndef _S_DELAY_H_
+#define _S_DELAY_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "gd32f10x.h"
+#include <stdio.h>
 
-void
-wireless_init(void);
+void sdelay_us(uint32_t dly);
+void sdelay_ms(uint32_t dly);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-
-
