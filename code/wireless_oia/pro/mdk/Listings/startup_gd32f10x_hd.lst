@@ -563,12 +563,12 @@ ARM Macro Assembler    Page 9
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
 ork --depend=.\objects\startup_gd32f10x_hd.d -o.\objects\startup_gd32f10x_hd.o 
 -ID:\03-project\60-wireless_plc\code\wireless_oia\pro\mdk\RTE -IC:\Keil_v5\ARM\
-PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include -IC:\Keil_v5\ARM\PACK\GigaDevice\GD32
-F10x_DFP\2.0.0\Device\Firmware\Peripherals\inc -IC:\Keil_v5\ARM\PACK\GigaDevice
-\GD32F10x_DFP\2.0.0\Device\Include --predefine="__UVISION_VERSION SETA 521" --p
-redefine="_RTE_ SETA 1" --predefine="GD32F10X_HD SETA 1" --predefine="USE_STDPE
-RIPH_DRIVER SETA 1" --list=.\listings\startup_gd32f10x_hd.lst RTE\Device\GD32F1
-03RC\startup_gd32f10x_hd.s
+PACK\ARM\CMSIS\5.3.0\CMSIS\Include -IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F10x_DF
+P\2.0.0\Device\Firmware\Peripherals\inc -IC:\Keil_v5\ARM\PACK\GigaDevice\GD32F1
+0x_DFP\2.0.0\Device\Include --predefine="__UVISION_VERSION SETA 521" --predefin
+e="_RTE_ SETA 1" --predefine="GD32F10X_HD SETA 1" --predefine="USE_STDPERIPH_DR
+IVER SETA 1" --list=.\listings\startup_gd32f10x_hd.lst RTE\Device\GD32F103RC\st
+artup_gd32f10x_hd.s
 
 
 
