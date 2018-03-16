@@ -6,6 +6,7 @@
  */
 
 #include "w25qxx.h"
+#include "delay.h"
 #include "spi.h"
 
 u16 W25QXX_TYPE=W25Q128;   //默认是W25Q128
@@ -16,29 +17,30 @@ u16 W25QXX_TYPE=W25Q128;   //默认是W25Q128
 //容量为16M字节,共有128个Block,4096个Sector 
                                         
 //初始化SPI FLASH的IO口
-void W25QXX_Init(void)
-{ 
-  GPIO_InitTypeDef  GPIO_InitStructure;
- 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);//使能GPIOB时钟
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOG, ENABLE);//使能GPIOG时钟
+void W25QXX_Init(void) {
+    GPIO_InitTypeDef  GPIO_InitStructure;
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);//使能GPIOB时钟
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOG, ENABLE);//使能GPIOB时钟
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//输出
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
+    GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化
 
-     //GPIOB14
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;//PB14
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//输出
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
-  GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
+    GPIO_Init(GPIOG, &GPIO_InitStructure);//初始化
+    
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化
+    
+    GPIO_SetBits(GPIOG,GPIO_Pin_15);
+    GPIO_SetBits(GPIOG,GPIO_Pin_7);
 
-   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;//PG7
-  GPIO_Init(GPIOG, &GPIO_InitStructure);//初始化
- 
-   GPIO_SetBits(GPIOG,GPIO_Pin_7);//PG7输出1,防止NRF干扰SPI FLASH的通信 
-   W25QXX_CS=1;         //SPI FLASH不选中
-   SPI1_Init();                  //初始化SPI
-   SPI1_SetSpeed(SPI_BaudRatePrescaler_2);      //设置为42M时钟,高速模式 
-   W25QXX_TYPE=W25QXX_ReadID();   //读取FLASH ID.
+    W25QXX_CS=1;//SPI FLASH不选中
+    SPI1_Init();//初始化SPI
+    SPI1_SetSpeed(SPI_BaudRatePrescaler_2);//设置为42M时钟,高速模式 
+    W25QXX_TYPE=W25QXX_ReadID();   //读取FLASH ID
 }  
 
 //读取W25QXX的状态寄存器
@@ -259,7 +261,7 @@ void W25QXX_PowerDown(void)
      W25QXX_CS=0;                            //使能器件   
     SPI1_ReadWriteByte(W25X_PowerDown);        //发送掉电命令  
    W25QXX_CS=1;                            //取消片选              
- //   delay_us(3);                               //等待TPD  
+   delay_us(3);                               //等待TPD  
 }   
 //唤醒
 void W25QXX_WAKEUP(void)   
@@ -267,7 +269,6 @@ void W25QXX_WAKEUP(void)
      W25QXX_CS=0;                            //使能器件   
     SPI1_ReadWriteByte(W25X_ReleasePowerDown);   //  send W25X_PowerDown command 0xAB    
    W25QXX_CS=1;                            //取消片选              
-  //  delay_us(3);                               //等待TRES1
+    delay_us(3);                               //等待TRES1
 }   
 
- 

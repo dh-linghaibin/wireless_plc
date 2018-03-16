@@ -11,11 +11,11 @@
 //使用NOR/SRAM的 Bank1.sector3,地址位HADDR[27,26]=10 
 //对IS61LV25616/IS62WV25616,地址线范围为A0~A17 
 //对IS61LV51216/IS62WV51216,地址线范围为A0~A18
-#define Bank1_SRAM3_ADDR    ((u32)(0x68000000))	
-  						   
+#define Bank1_SRAM3_ADDR    ((u32)(0x68000000))    
+                             
 //初始化外部SRAM
 void FSMC_SRAM_Init(void)
-{	
+{    
     GPIO_InitTypeDef  GPIO_InitStructure;
     FSMC_NORSRAMInitTypeDef  FSMC_NORSRAMInitStructure;
     FSMC_NORSRAMTimingInitTypeDef  readWriteTiming; 
@@ -37,7 +37,7 @@ void FSMC_SRAM_Init(void)
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
     GPIO_Init(GPIOE, &GPIO_InitStructure);//初始化  
 
-    GPIO_InitStructure.GPIO_Pin = (0X3F<<0)|(0XF<<12); 	//PF0~5,12~15
+    GPIO_InitStructure.GPIO_Pin = (0X3F<<0)|(0XF<<12);     //PF0~5,12~15
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;//复用输出
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
@@ -97,13 +97,13 @@ void FSMC_SRAM_Init(void)
     GPIO_PinAFConfig(GPIOG,GPIO_PinSource10,GPIO_AF_FSMC);
 
 
-    readWriteTiming.FSMC_AddressSetupTime = 0x00;	 //地址建立时间（ADDSET）为1个HCLK 1/36M=27ns
-    readWriteTiming.FSMC_AddressHoldTime = 0x00;	 //地址保持时间（ADDHLD）模式A未用到	
-    readWriteTiming.FSMC_DataSetupTime = 0x08;		 ////数据保持时间（DATAST）为9个HCLK 6*9=54ns	 	 
+    readWriteTiming.FSMC_AddressSetupTime = 0x00;     //地址建立时间（ADDSET）为1个HCLK 1/36M=27ns
+    readWriteTiming.FSMC_AddressHoldTime = 0x00;     //地址保持时间（ADDHLD）模式A未用到    
+    readWriteTiming.FSMC_DataSetupTime = 0x08;         ////数据保持时间（DATAST）为9个HCLK 6*9=54ns          
     readWriteTiming.FSMC_BusTurnAroundDuration = 0x00;
     readWriteTiming.FSMC_CLKDivision = 0x00;
     readWriteTiming.FSMC_DataLatency = 0x00;
-    readWriteTiming.FSMC_AccessMode = FSMC_AccessMode_A;	 //模式A 
+    readWriteTiming.FSMC_AccessMode = FSMC_AccessMode_A;     //模式A 
 
 
 
@@ -116,7 +116,7 @@ void FSMC_SRAM_Init(void)
     FSMC_NORSRAMInitStructure.FSMC_AsynchronousWait=FSMC_AsynchronousWait_Disable;
     FSMC_NORSRAMInitStructure.FSMC_WrapMode = FSMC_WrapMode_Disable;   
     FSMC_NORSRAMInitStructure.FSMC_WaitSignalActive = FSMC_WaitSignalActive_BeforeWaitState;  
-    FSMC_NORSRAMInitStructure.FSMC_WriteOperation = FSMC_WriteOperation_Enable;	//存储器写使能 
+    FSMC_NORSRAMInitStructure.FSMC_WriteOperation = FSMC_WriteOperation_Enable;    //存储器写使能 
     FSMC_NORSRAMInitStructure.FSMC_WaitSignal = FSMC_WaitSignal_Disable;  
     FSMC_NORSRAMInitStructure.FSMC_ExtendedMode = FSMC_ExtendedMode_Disable; // 读写使用相同的时序
     FSMC_NORSRAMInitStructure.FSMC_WriteBurst = FSMC_WriteBurst_Disable;  
@@ -125,31 +125,31 @@ void FSMC_SRAM_Init(void)
 
     FSMC_NORSRAMInit(&FSMC_NORSRAMInitStructure);  //初始化FSMC配置
 
-    FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM3, ENABLE);  // 使能BANK1区域3										  
+    FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM3, ENABLE);  // 使能BANK1区域3                                          
 }
-	  														  
+                                                                
 //在指定地址(WriteAddr+Bank1_SRAM3_ADDR)开始,连续写入n个字节.
 //pBuffer:字节指针
 //WriteAddr:要写入的地址
 //n:要写入的字节数
 void FSMC_SRAM_WriteBuffer(u8* pBuffer,u32 WriteAddr,u32 n)
 {
-	for(;n!=0;n--)  
-	{										    
-		*(vu8*)(Bank1_SRAM3_ADDR+WriteAddr)=*pBuffer;	  
-		WriteAddr++;
-		pBuffer++;
-	}   
-}																			    
+    for(;n!=0;n--)  
+    {                                            
+        *(vu8*)(Bank1_SRAM3_ADDR+WriteAddr)=*pBuffer;      
+        WriteAddr++;
+        pBuffer++;
+    }   
+}                                                                                
 //在指定地址((WriteAddr+Bank1_SRAM3_ADDR))开始,连续读出n个字节.
 //pBuffer:字节指针
 //ReadAddr:要读出的起始地址
 //n:要写入的字节数
 void FSMC_SRAM_ReadBuffer(u8* pBuffer,u32 ReadAddr,u32 n)
 {
-	for(;n!=0;n--)  
-	{											    
-		*pBuffer++=*(vu8*)(Bank1_SRAM3_ADDR+ReadAddr);    
-		ReadAddr++;
-	}  
+    for(;n!=0;n--)  
+    {                                                
+        *pBuffer++=*(vu8*)(Bank1_SRAM3_ADDR+ReadAddr);    
+        ReadAddr++;
+    }  
 } 

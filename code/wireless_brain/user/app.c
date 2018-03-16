@@ -11,89 +11,73 @@
 #include "sram.h"
 #include "spi.h"
 #include "tft.h"
-
+#include "xpt2046.h"
+#include "w25qxx.h"
+#include "ff.h"
+#include "malloc.h"
 #include "stdio.h"
+//LWIP
+#include "lwip/netif.h"
+#include "lwip_comm.h"
+#include "lwipopts.h"
 
-  
-u32 testsram[250000] __attribute__((at(0X68000000)));//测试用数组
-//外部内存测试(最大支持1M字节内存测试)        
-void fsmc_sram_test(u16 x,u16 y)
-{  
-    u32 i=0;        
-    u8 temp=0;       
-    u8 sval=0;    //在地址0读到的数据                         
-    //每隔4K字节,写入一个数据,总共写入256个数据,刚好是1M字节
-    for(i=0;i<1024*1024;i+=4096)
-    {
-        FSMC_SRAM_WriteBuffer(&temp,i,1);
-        temp++;
-    }
-    //依次读出之前写入的数据,进行校验          
-    for(i=0;i<1024*1024;i+=4096) 
-    {
-        FSMC_SRAM_ReadBuffer(&temp,i,1);
-        if(i==0)sval=temp;
-        else if(temp<=sval)break;//后面读出的数据一定要比第一次读到的数据大. 
-        printf("%d ",temp);
-    }                     
-}    
-
-//THUMB指令不支持汇编内联
-//采用如下方法实现执行汇编指令WFI  
-__asm void WFI_SET(void)
-{
-	WFI;		  
-}
-//关闭所有中断(但是不包括fault和NMI中断)
-__asm void INTX_DISABLE(void)
-{
-	CPSID   I
-	BX      LR	  
-}
-//开启所有中断
-__asm void INTX_ENABLE(void)
-{
-	CPSIE   I
-	BX      LR  
-}
-//设置栈顶地址
-//addr:栈顶地址
-__asm void MSR_MSP(u32 addr) 
-{
-	MSR MSP, r0 			//set Main Stack value
-	BX r14
-}
+const char logo[] = "\
+/*\n\
+ * This file is part of the \n\
+ *\n\
+ * Copyright (c) 2017-2018 linghaibin\n\
+ *\n\
+ */\n\
+ Welcome to use device!\n";
 
 int main(void) {
     delay_init(168);
+    FSMC_SRAM_Init();//初始化外部SRAM
+    my_mem_init(SRAMIN);		//初始化内部内存池
+	my_mem_init(SRAMEX);		//初始化外部内存池
+	my_mem_init(SRAMCCM);	//初始化CCM内存池
     uart_init(115200);
-    printf("hahahha \n");
-    GPIO_InitTypeDef  GPIO_InitStructure;
-
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);//使能GPIOF时钟
-
-    //GPIOF9,F10初始化设置
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//普通输出模式
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
-    GPIO_Init(GPIOD, &GPIO_InitStructure);//初始化
-
-    GPIO_SetBits(GPIOD,GPIO_Pin_3);//GPIOF9,F10设置高，灯灭
-    //GPIO_ResetBits(GPIOD,GPIO_Pin_3);
+    printf("%s",logo);
     SPI3_Init();
+    xpt2046_init();
     LCD_Init();
-    
-    u32 ts=0;
-    FSMC_SRAM_Init();            //初始化外部SRAM     
-    for(ts=0;ts<250000;ts++)testsram[ts]=ts;//预存测试数据     
-    fsmc_sram_test(60,170);
-    
-    while(1) {
-        
+    W25QXX_Init();
+    if(W25QXX_ReadID()!=W25Q128) {
+        printf("W25Q128 Check Failed! \n");
+    } else {
+        printf("W25Q128 Check ok! \n");
     }
-    return 0;
+    FATFS fs;
+    u8 res=f_mount(&fs,"1:",1);                 //挂载FLASH.    
+    if(res==0X0D)//FLASH磁盘,FAT文件系统错误,重新格式化FLASH
+    {
+        printf("Flash Disk Formatting...\n");    //格式化FLASH
+        res=f_mkfs("1:",1,4096);//格式化FLASH,1,盘符;1,不需要引导区,8个扇区为1个簇
+        if(res==0)
+        {
+            f_setlabel((const TCHAR *)"1:ALIENTEK");    //设置Flash磁盘的名字为：ALIENTEK
+            printf("Flash Disk Format Finish\n");    //格式化完成
+        } else { 
+            printf("Flash Disk Format Error \n");    //格式化失败
+        }
+        delay_ms(1000);
+    } else {
+        printf("Flash Disk ok \n");
+    }
+//    if(lwip_comm_init()!=0) {
+//        printf("lwIP Init failed!");
+//    } else {
+//        printf("lwIP Init ok!");
+//    }
+//    while((lwipdev.dhcpstatus!=2)&&(lwipdev.dhcpstatus!=0XFF))//等待DHCP获取成功/超时溢出
+//	{
+//		lwip_periodic_handle();
+//	}
+    while(1) {
+        delay_ms(300);
+        int x = xpt2046_get_x();
+       // printf("触摸 %d \n",x);
+    }
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
