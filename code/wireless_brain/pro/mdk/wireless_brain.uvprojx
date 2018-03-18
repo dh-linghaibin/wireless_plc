@@ -15,7 +15,7 @@
         <TargetCommonOption>
           <Device>STM32F407ZGTx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F4xx_DFP.2.12.0</PackID>
+          <PackID>Keil.STM32F4xx_DFP.2.10.0</PackID>
           <PackURL>http://www.keil.com/pack</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IRAM2(0x10000000,0x00010000) IROM(0x08000000,0x00100000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -186,7 +186,7 @@
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>0</useUlib>
+            <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
@@ -324,7 +324,7 @@
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
             <useXO>0</useXO>
-            <v6Lang>1</v6Lang>
+            <v6Lang>3</v6Lang>
             <v6LangP>1</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
@@ -332,10 +332,10 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls> --gnu</MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\device\include;..\..\user\include;..\..\arch\m4\inc;..\..\arch\m4\core;..\..\lib\include;..\..\arch\m4\eth\inc;..\..\software\fatfs\src;..\..\software\fatfs\exfuns;..\..\software\lwip;..\..\software\lwip\lwip-1.4.1\src\include;..\..\software\lwip\lwip-1.4.1\src\include\ipv4;..\..\software\lwip\lwip-1.4.1\src\include\lwip;..\..\software\lwip\lwip-1.4.1\src\include\netif;..\..\software\lwip\lwip_app\lwip_comm</IncludePath>
+              <IncludePath>..\..\device\include;..\..\user\include;..\..\arch\m4\inc;..\..\arch\m4\core;..\..\lib\include;..\..\arch\m4\eth\inc;..\..\software\fatfs\src;..\..\software\fatfs\exfuns;..\..\software\lwip;..\..\software\lwip\lwip-1.4.1\src\include;..\..\software\lwip\lwip-1.4.1\src\include\ipv4;..\..\software\lwip\lwip-1.4.1\src\include\lwip;..\..\software\lwip\lwip-1.4.1\src\include\netif;..\..\software\lwip\lwip_app\lwip_comm;..\..\software\freertos\include;..\..\software\freertos\portable\RVDS\ARM_CM4F;..\..\software\ugui;..\..\software\lvgl\lvgl-master\lv_core</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -383,6 +383,11 @@
               <FileName>app.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\user\app.c</FilePath>
+            </File>
+            <File>
+              <FileName>gui_demo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\user\gui_demo.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -473,6 +478,53 @@
         </Group>
         <Group>
           <GroupName>freertos</GroupName>
+          <Files>
+            <File>
+              <FileName>croutine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\freertos\croutine.c</FilePath>
+            </File>
+            <File>
+              <FileName>event_groups.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\freertos\event_groups.c</FilePath>
+            </File>
+            <File>
+              <FileName>list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\freertos\list.c</FilePath>
+            </File>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\freertos\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>tasks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\freertos\tasks.c</FilePath>
+            </File>
+            <File>
+              <FileName>timers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\freertos\timers.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>freertos_arch</GroupName>
+          <Files>
+            <File>
+              <FileName>heap_4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\freertos\portable\MemMang\heap_4.c</FilePath>
+            </File>
+            <File>
+              <FileName>port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\freertos\portable\RVDS\ARM_CM4F\port.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>arch</GroupName>
@@ -826,6 +878,411 @@
               <FileName>lwip_comm.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\software\lwip\lwip_app\lwip_comm\lwip_comm.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>lvgl_core</GroupName>
+          <Files>
+            <File>
+              <FileName>lv_group.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_core\lv_group.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_indev.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_core\lv_indev.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_obj.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_core\lv_obj.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_refr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_core\lv_refr.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_style.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_core\lv_style.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_vdb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_core\lv_vdb.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>lvgl_draw</GroupName>
+          <Files>
+            <File>
+              <FileName>lv_draw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_draw\lv_draw.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_draw_rbasic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_draw\lv_draw_rbasic.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_draw_vbasic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_draw\lv_draw_vbasic.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>lvgl_objx</GroupName>
+          <Files>
+            <File>
+              <FileName>lv_bar.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_bar.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_btn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_btn.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_btnm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_btnm.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_cb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_cb.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_chart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_chart.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_cont.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_cont.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_ddlist.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_ddlist.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_gauge.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_gauge.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_img.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_img.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_kb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_kb.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_label.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_label.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_led.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_line.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_line.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_list.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_lmeter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_lmeter.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_mbox.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_mbox.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_objx_templ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_objx_templ.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_page.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_page.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_roller.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_roller.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_slider.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_slider.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_sw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_sw.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_ta.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_ta.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_tabview.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_tabview.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_win.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_objx\lv_win.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>lvgl_misc</GroupName>
+          <Files>
+            <File>
+              <FileName>lv_anim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_anim.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_area.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_area.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_circ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_circ.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_color.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_color.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_font.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_fs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fs.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_ll.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_ll.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_math.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_math.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_mem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_mem.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_templ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_templ.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_trigo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_trigo.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_txt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_txt.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_ufs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_ufs.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>lvgl_misc_fonts</GroupName>
+          <Files>
+            <File>
+              <FileName>lv_font_dejavu_10.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_10.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_dejavu_10_cyrillic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_10_cyrillic.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_dejavu_10_latin_sup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_10_latin_sup.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_dejavu_20.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_20.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_dejavu_20_cyrillic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_20_cyrillic.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_dejavu_20_latin_sup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_20_latin_sup.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_dejavu_30.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_30.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_dejavu_30_cyrillic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_30_cyrillic.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_dejavu_30_latin_sup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_30_latin_sup.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_dejavu_40.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_40.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_dejavu_40_cyrillic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_40_cyrillic.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_dejavu_40_latin_sup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_dejavu_40_latin_sup.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_symbol_10.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_symbol_10.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_symbol_20.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_symbol_20.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_symbol_30.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_symbol_30.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_symbol_40.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_symbol_40.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>lvgl_thems</GroupName>
+          <Files>
+            <File>
+              <FileName>lv_theme.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_themes\lv_theme.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_theme_alien.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_themes\lv_theme_alien.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_theme_default.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_themes\lv_theme_default.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_theme_material.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_themes\lv_theme_material.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_theme_mono.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_themes\lv_theme_mono.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_theme_night.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_themes\lv_theme_night.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_theme_templ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_themes\lv_theme_templ.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_theme_zen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_themes\lv_theme_zen.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>lvgl_hal</GroupName>
+          <Files>
+            <File>
+              <FileName>lv_hal_disp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_hal\lv_hal_disp.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_hal_indev.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_hal\lv_hal_indev.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_hal_tick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_hal\lv_hal_tick.c</FilePath>
             </File>
           </Files>
         </Group>

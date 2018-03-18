@@ -6,6 +6,7 @@
  */
 
 #include "core_temp.h"
+#include "delay.h"
 
 //初始化ADC
 //这里我们仅以规则通道为例
@@ -14,7 +15,6 @@ void Adc_Temperate_Init(void)
 {
 	ADC_InitTypeDef ADC_InitStructure;
 	ADC_CommonInitTypeDef ADC_CommonInitStructure;
-	GPIO_InitTypeDef GPIO_InitStructure;
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1,ENABLE); //使能ADC1时钟
 		

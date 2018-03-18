@@ -16,7 +16,7 @@ extern "C" {
 #include "stm32f4x7_eth.h"
 
 #define LAN8720_PHY_ADDRESS  	0x00				//LAN8720 PHY芯片地址.
-#define LAN8720_RST 		   	PDout(3) 			//LAN8720复位引脚	 
+#define LAN8720_RST 		   	PAout(0) 			//LAN8720复位引脚	 
 
 extern __align(4)  ETH_DMADESCTypeDef *DMARxDscrTab;			//以太网DMA接收描述符数据结构体指针
 extern __align(4)  ETH_DMADESCTypeDef *DMATxDscrTab;			//以太网DMA发送描述符数据结构体指针 

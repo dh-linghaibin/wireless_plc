@@ -97,14 +97,13 @@ void SPI3_Init(void) {
     SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;        //选择了串行时钟的稳态:时钟悬空高
     SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;    //数据捕获于第二个时钟沿
     SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;        //NSS信号由硬件（NSS管脚）还是软件（使用SSI位）管理:内部NSS信号有SSI位控制
-    SPI_InitStructure.SPI_BaudRatePrescaler =SPI_BaudRatePrescaler_2;        //定义波特率预分频的值:波特率预分频值为16
+    SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;        //定义波特率预分频的值:波特率预分频值为16
     SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;    //指定数据传输从MSB位还是LSB位开始:数据传输从MSB位开始
     SPI_InitStructure.SPI_CRCPolynomial = 7;    //CRC值计算的多项式
     SPI_Init(SPI3, &SPI_InitStructure);  //根据SPI_InitStruct中指定的参数初始化外设SPIx寄存器
-
     SPI_Cmd(SPI3, ENABLE); //使能SPI外设
     
-    SPI3_SetSpeed(SPI_BaudRatePrescaler_16);
+    SPI3_SetSpeed(SPI_BaudRatePrescaler_2);
     //SPI1_ReadWriteByte(0xff);//启动传输
 }   
 //SPI1速度设置函数
@@ -141,3 +140,5 @@ u8 SPI_WriteByte(SPI_TypeDef* SPIx,u8 Byte)
     return SPI_I2S_ReceiveData(SPI3); //返回通过SPIx最近接收的数据   
 }
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+

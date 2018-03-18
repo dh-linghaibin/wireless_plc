@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 
+#include "sdkconfig.h"
 #include "stm32f4xx.h" 
 #define SYSTEM_SUPPORT_OS		0		//定义系统文件夹是否支持UCOS
 																	    

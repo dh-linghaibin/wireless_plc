@@ -6,8 +6,8 @@
  */
  
 #include "lan8720.h"
-#include "stm32f4x7_eth.h"
 #include "delay.h"
+#include "stm32f4x7_eth.h"
 #include "malloc.h" 
 
 __align(4) ETH_DMADESCTypeDef *DMARxDscrTab;	//以太网DMA接收描述符数据结构体指针
@@ -21,66 +21,67 @@ static void ETHERNET_NVICConfiguration(void);
 //    其他,失败
 u8 LAN8720_Init(void)
 {
-	u8 rval=0;
-	GPIO_InitTypeDef GPIO_InitStructure;
-  
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOG , ENABLE);//使能GPIO时钟 RMII接口
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);   //使能SYSCFG时钟
-  
-	SYSCFG_ETH_MediaInterfaceConfig(SYSCFG_ETH_MediaInterface_RMII); //MAC和PHY之间使用RMII接口
+    u8 rval=0;
+    GPIO_InitTypeDef GPIO_InitStructure;
 
-	/*网络引脚设置 RMII接口 
-	  ETH_MDIO -------------------------> PA2
-	  ETH_MDC --------------------------> PC1
-	  ETH_RMII_REF_CLK------------------> PA1
-	  ETH_RMII_CRS_DV ------------------> PA7
-	  ETH_RMII_RXD0 --------------------> PC4
-	  ETH_RMII_RXD1 --------------------> PC5
-	  ETH_RMII_TX_EN -------------------> PG11
-	  ETH_RMII_TXD0 --------------------> PG13
-	  ETH_RMII_TXD1 --------------------> PG14
-	  ETH_RESET-------------------------> PD3*/
-					
-	  //配置PA1 PA2 PA7
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_7;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;  
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_ETH); //引脚复用到网络接口上
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_ETH);
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_ETH);
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOG , ENABLE);//使能GPIO时钟 RMII接口
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);   //使能SYSCFG时钟
 
-	//配置PC1,PC4 and PC5
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_4 | GPIO_Pin_5;
-	GPIO_Init(GPIOC, &GPIO_InitStructure);
-	GPIO_PinAFConfig(GPIOC, GPIO_PinSource1, GPIO_AF_ETH); //引脚复用到网络接口上
-	GPIO_PinAFConfig(GPIOC, GPIO_PinSource4, GPIO_AF_ETH);
-	GPIO_PinAFConfig(GPIOC, GPIO_PinSource5, GPIO_AF_ETH);
+    SYSCFG_ETH_MediaInterfaceConfig(SYSCFG_ETH_MediaInterface_RMII); //MAC和PHY之间使用RMII接口
+
+    /*网络引脚设置 RMII接口 
+      ETH_MDIO -------------------------> PA2
+      ETH_MDC --------------------------> PC1
+      ETH_RMII_REF_CLK------------------> PA1
+      ETH_RMII_CRS_DV ------------------> PA7
+      ETH_RMII_RXD0 --------------------> PC4
+      ETH_RMII_RXD1 --------------------> PC5
+      ETH_RMII_TX_EN -------------------> PG11
+      ETH_RMII_TXD0 --------------------> PG13
+      ETH_RMII_TXD1 --------------------> PG14
+      ETH_RESET-------------------------> PD3*/
+                    
+      //配置PA1 PA2 PA7
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_7;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;  
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_ETH); //引脚复用到网络接口上
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_ETH);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_ETH);
+
+    //配置PC1,PC4 and PC5
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_4 | GPIO_Pin_5;
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+    GPIO_PinAFConfig(GPIOC, GPIO_PinSource1, GPIO_AF_ETH); //引脚复用到网络接口上
+    GPIO_PinAFConfig(GPIOC, GPIO_PinSource4, GPIO_AF_ETH);
+    GPIO_PinAFConfig(GPIOC, GPIO_PinSource5, GPIO_AF_ETH);
                                 
-	//配置PG11, PG14 and PG13 
-	GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_14;
-	GPIO_Init(GPIOG, &GPIO_InitStructure);
-	GPIO_PinAFConfig(GPIOG, GPIO_PinSource11, GPIO_AF_ETH);
-	GPIO_PinAFConfig(GPIOG, GPIO_PinSource13, GPIO_AF_ETH);
-	GPIO_PinAFConfig(GPIOG, GPIO_PinSource14, GPIO_AF_ETH);
-	
-	//配置PD3为推完输出
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;	//推完输出
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;  
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
-	
-	LAN8720_RST=0;					//硬件复位LAN8720
-	delay_ms(50);	
-	LAN8720_RST=1;				 	//复位结束 
-	ETHERNET_NVICConfiguration();
-	rval=ETH_MACDMA_Config();
-	return !rval;					//ETH的规则为:0,失败;1,成功;所以要取反一下 
+    //配置PG11, PG14 and PG13 
+    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_14;
+    GPIO_Init(GPIOG, &GPIO_InitStructure);
+    GPIO_PinAFConfig(GPIOG, GPIO_PinSource11, GPIO_AF_ETH);
+    GPIO_PinAFConfig(GPIOG, GPIO_PinSource13, GPIO_AF_ETH);
+    GPIO_PinAFConfig(GPIOG, GPIO_PinSource14, GPIO_AF_ETH);
+
+    //配置PD3为推完输出
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;	//推完输出
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;  
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    LAN8720_RST=0;					//硬件复位LAN8720
+    //delay_ms(50);	
+    delay_ms(50);
+    LAN8720_RST=1;				 	//复位结束 
+    ETHERNET_NVICConfiguration();
+    rval=ETH_MACDMA_Config();
+    return !rval;					//ETH的规则为:0,失败;1,成功;所以要取反一下 
 }
 
 //以太网中断分组配置
