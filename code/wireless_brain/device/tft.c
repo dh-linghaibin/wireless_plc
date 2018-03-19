@@ -12,7 +12,8 @@
 //    lcddev.wramcmd=0X2C;
 //    lcddev.setxcmd=0X2A;
 //    lcddev.setycmd=0X2B;     
-
+#define SPILCD_RST_SET  GPIO_SetBits(GPIOA,GPIO_Pin_8)//PC4 
+#define SPILCD_RST_RESET  GPIO_ResetBits(GPIOA,GPIO_Pin_8)//PC4 
 //LCD_RS//dc  
 #define SPILCD_RS_SET  GPIO_SetBits(GPIOA,GPIO_Pin_9)//PC4 
 #define SPILCD_RS_RESET  GPIO_ResetBits(GPIOA,GPIO_Pin_9)//PC4 
@@ -168,24 +169,27 @@ void LCD_Clear(u16 Color)
 
 void monitor_flush(int32_t sx, int32_t sy, int32_t ex, int32_t ey, const u16 *color_p)
 {
+    SPI3_SetSpeed(SPI_BaudRatePrescaler_2);
     SPILCD_CS_RESET;
     u16 i,j;
     u16 xlen=0;
     xlen=ex-sx+1; 
-     SPI3_SetSpeed(SPI_BaudRatePrescaler_2);
     for(i=sy;i<=ey;i++)
     {                                       
         LCD_SetCursor(sx,i);                      //设置光标位置 
         lcd_wr_data8iteRAM_Prepare();                 //开始写入GRAM      
         for(j=0;j<xlen;j++){lcd_wr_data8_DATA(*color_p);    //设置光标位置       
-        color_p ++;}
+        color_p ++;
+        }
+        //printf("%x  ",*color_p);
     }
     SPILCD_CS_SET;
+    lv_flush_ready();
 }
 
 void tft_fill(u16 sx,u16 sy,u16 ex,u16 ey,u16 color)
 {          
-    printf("%d %d %d %d \n",sx,sy);
+   // printf("%d %d %d %d \n",sx,sy);
     SPILCD_CS_RESET;
     u16 i,j;
     u16 xlen=0;
@@ -213,6 +217,13 @@ void tft_init(void) {
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;//上拉
     GPIO_Init(GPIOA, &GPIO_InitStructure);//初始化
     
+     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;//PB3~5复用功能输出
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//复用功能
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;//上拉
+    GPIO_Init(GPIOA, &GPIO_InitStructure);//初始化
+    
     //GPIOFB3,4,5初始化设置
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;//PB3~5复用功能输出   
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//复用功能
@@ -233,7 +244,13 @@ void tft_init(void) {
 
     GPIO_SetBits(GPIOD,GPIO_Pin_3);//GPIOF9,F10设置高，灯灭
     
-    SPI3_SetSpeed(SPI_BaudRatePrescaler_16);
+    SPI3_SetSpeed(SPI_BaudRatePrescaler_2);
+    
+    SPILCD_RST_RESET;
+    delay_ms(100);
+    SPILCD_RST_SET;
+    delay_ms(50);
+    
     SPILCD_CS_RESET;
 
     tft_wr_reg(0xCB);  

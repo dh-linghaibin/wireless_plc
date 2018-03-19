@@ -73,6 +73,9 @@ typedef enum {
 */
 void lv_vdb_init(void) {
     //vdb.buf = mymalloc(SRAMEX,sizeof(lv_color16_t)*LV_VDB_SIZE);
+    for(int i = 0;i < LV_VDB_SIZE;i++) {
+        vdb_buf[i].full = 0x55;
+    }
 }
    
 /**
@@ -84,7 +87,8 @@ lv_vdb_t * lv_vdb_get(void)
 #if LV_VDB_DOUBLE == 0
     /* Wait until VDB become ACTIVE from FLUSH by the
      * user call of 'lv_flush_ready()' in display drivers's flush function*/
-    //while(vdb_state != LV_VDB_STATE_ACTIVE);
+   // printf("adr  %x \n",&vdb);
+    while(vdb_state != LV_VDB_STATE_ACTIVE);
     return &vdb;
 #else
     /*If already there is an active do nothing*/

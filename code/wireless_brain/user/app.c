@@ -15,6 +15,7 @@
 #include "w25qxx.h"
 #include "ff.h"
 #include "malloc.h"
+#include "timer.h"
 #include "stdio.h"
 //lvgl
 #include "../lv_hal/lv_hal_disp.h"
@@ -25,9 +26,119 @@
 #include "lwip/netif.h"
 #include "lwip_comm.h"
 #include "lwipopts.h"
+//lua
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+#include "string.h"
 
 #include "gui_demo.h"
 
+
+static int Delay_ms(lua_State *L)  
+{  
+    delay_ms(luaL_checkinteger(L, -1));  
+    return 0;  
+}  
+static int print(lua_State *L)  
+{  
+    int n=lua_gettop(L);  
+    int i;  
+    for (i=1; i<=n; i++)  
+    {  
+        if (lua_isstring(L,i))  
+            printf("%s",lua_tostring(L,i));  
+        else if (lua_isnil(L,i))  
+            printf("%s","nil");  
+        else if (lua_isboolean(L,i))  
+            printf("%s",lua_toboolean(L,i) ? "true" : "false");  
+        else  
+            printf("%s:%p",luaL_typename(L,i),lua_topointer(L,i));  
+     }  
+     return 0;  
+}  
+static luaL_Reg LuaLib1_0[] =   
+{   
+    //c接口函数都可以放在这里在lua中声明  
+    {"Delay_ms", Delay_ms},  
+    {"print", print},  
+  
+    {NULL, NULL}   
+};  
+
+
+/* 测试的Lua代码字符串 */  
+const char lua_test[] = {   
+    "print(\"Hello,I am lua!\\n--this is newline printf\")\n"  
+    "function foo()\n"  
+    "  local i = 0\n"  
+    "  local sum = 1\n"  
+    "  while i <= 10 do\n"  
+    "    sum = sum * 2\n"  
+    "    i = i + 1\n"  
+    "  end\n"  
+    "return sum\n"  
+    "end\n"  
+    "print(\"sum =\", foo())\n"  
+    "print(\"and sum = 2^11 =\", 2 ^ 11)\n"  
+    "print(\"exp(200) =\", math.exp(200))\n"  
+};  
+
+void Lua_task(void)  
+{   
+    lua_State* L;  
+    L = luaL_newstate();  
+    luaL_openlibs(L);  
+  
+    luaL_newlibtable(L, LuaLib1_0);  
+    luaL_setfuncs(L, LuaLib1_0, 0);  
+    //这里定义全局变量把栈顶的table赋值给LuaLib1_0，这个方式使用模块是因为无法将c模块生成动态链接库.so或.dll给LUA_CPATH_DEFAULT加载  
+    lua_setglobal(L, "lhb");  
+    //dostring(L,"print('hello my name is a linghaibin haha ')","Test_lua");
+    luaL_dostring(L, lua_test); /* 运行Lua脚本 */  
+    lua_close(L);
+}  
+
+void lv_test_roller_1(void)
+{
+    /* Default object*/
+    lv_obj_t *roller1 = lv_roller_create(lv_scr_act(), NULL);
+    lv_obj_set_pos(roller1, 10, 10);
+
+
+    static lv_style_t bg;
+    lv_style_copy(&bg, &lv_style_pretty);
+    bg.body.main_color = LV_COLOR_GRAY;
+    bg.body.grad_color = LV_COLOR_WHITE;
+    bg.body.shadow.width = 5;
+    bg.text.line_space = 10;
+    bg.text.opa = LV_OPA_60;
+    bg.text.color = LV_COLOR_GRAY;
+
+    lv_obj_t *roller2 = lv_roller_create(lv_scr_act(), NULL);
+    lv_obj_set_size(roller2, 80, 120);
+    lv_roller_set_options(roller2, "0\n1\n2\n3\n4\n5\n6\n7\n8\n9");
+    lv_obj_align(roller2, roller1, LV_ALIGN_OUT_RIGHT_TOP, 20, 0);
+    lv_roller_set_anim_time(roller2, 500);
+    lv_roller_set_style(roller2, LV_ROLLER_STYLE_BG, &bg);
+    lv_roller_set_style(roller2, LV_ROLLER_STYLE_SEL, &lv_style_plain);
+    lv_roller_set_selected(roller2, 4, true);
+
+    lv_obj_t *roller3 = lv_roller_create(lv_scr_act(), roller2);
+    lv_obj_align(roller3, roller2, LV_ALIGN_OUT_RIGHT_TOP, 20, 0);
+    lv_roller_set_hor_fit(roller3, false);
+    lv_obj_set_width(roller3, LV_DPI);
+
+}
+
+void lcd_test(void) {
+    int c = 100;
+    for(int i = 0;i < 500;i++) {
+        tft_fill(0,0,100,300,c);
+        c+= 10;
+        xpt2046_loop();
+    }
+}
 
 const char logo[] = "\
 /*\n\
@@ -38,193 +149,15 @@ const char logo[] = "\
  */\n\
  Welcome to use device!\n";
 
-/*Called when a new value id set on the slider*/
-static lv_res_t slider_action(lv_obj_t * slider)
-{
-    printf("New slider value: %d\n", lv_slider_get_value(slider));
-
-    return LV_RES_OK;
-}
-
-lv_obj_t * slider1;
-lv_obj_t * gauge1;
-static lv_res_t btn_click_action(lv_obj_t * btn)
-{
-    uint8_t id = lv_obj_get_free_num(btn);
-
-    printf("Button %d is released\n", id);
-
-    /* The button is released.
-     * Make something here */
-
-    return LV_RES_OK; /*Return OK if the button is not deleted*/
-}
-
-/*Called when a button is released ot long pressed*/
-static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt)
-{
-    printf("Button: %s released\n", txt);
-
-    return LV_RES_OK; /*Return OK because the button matrix is not deleted*/
-}
-
-/*Create a button descriptor string array*/
-static const char * btnm_map[] = {"1", "2", "3", "4", "5", "\n",
-                           "6", "7", "8", "9", "0", "\n",
-                           "\202Action1", "Action2", ""};
-void lv_test_object_1(void)
-{
-    
-  
-                    
-    /*Create a style*/
-    static lv_style_t style;
-    lv_style_copy(&style, &lv_style_pretty_color);
-    style.body.main_color = LV_COLOR_HEX3(0x666);     /*Line color at the beginning*/
-    style.body.grad_color =  LV_COLOR_HEX3(0x666);    /*Line color at the end*/
-    style.body.padding.hor = 10;                      /*Scale line length*/
-    style.body.padding.inner = 8 ;                    /*Scale label padding*/
-    style.body.border.color = LV_COLOR_HEX3(0x333);   /*Needle middle circle color*/
-    style.line.width = 3;
-    style.text.color = LV_COLOR_HEX3(0x333);
-    style.line.color = LV_COLOR_RED;                  /*Line color after the critical value*/
-
-
-    /*Describe the color for the needles*/
-    static lv_color_t needle_colors[] = {LV_COLOR_BLUE, LV_COLOR_ORANGE, LV_COLOR_PURPLE};
-
-    /*Create a gauge*/
-    gauge1 = lv_gauge_create(lv_scr_act(), NULL);
-    lv_gauge_set_style(gauge1, &style);
-    lv_gauge_set_needle_count(gauge1, 3, needle_colors);
-    lv_obj_align(gauge1, NULL, LV_ALIGN_CENTER, 0, 20);
-
-    /*Set the values*/
-    lv_gauge_set_value(gauge1, 0, 10);
-    lv_gauge_set_value(gauge1, 1, 20);
-    lv_gauge_set_value(gauge1, 2, 30);
-    
-    
-    /*Create a default slider*/
-    slider1 = lv_slider_create(lv_scr_act(), NULL);
-    lv_obj_set_size(slider1, 160, 30);
-    lv_obj_align(slider1, NULL, LV_ALIGN_IN_TOP_RIGHT, -30, 30);
-    lv_slider_set_action(slider1, slider_action);
-    lv_bar_set_value(slider1, 70);
-
-
-    /*Create a label right to the slider*/
-    lv_obj_t * slider1_label = lv_label_create(lv_scr_act(), NULL);
-    lv_label_set_text(slider1_label, "Default");
-    lv_obj_align(slider1_label, slider1, LV_ALIGN_OUT_LEFT_MID, -20, 0);
-
-    /*Create a bar, an indicator and a knob style*/
-    static lv_style_t style_bg;
-    static lv_style_t style_indic;
-    static lv_style_t style_knob;
-
-    lv_style_copy(&style_bg, &lv_style_pretty);
-    style_bg.body.main_color =  LV_COLOR_BLACK;
-    style_bg.body.grad_color =  LV_COLOR_GRAY;
-    style_bg.body.radius = LV_RADIUS_CIRCLE;
-    style_bg.body.border.color = LV_COLOR_WHITE;
-
-    lv_style_copy(&style_indic, &lv_style_pretty);
-    style_indic.body.grad_color =  LV_COLOR_GREEN;
-    style_indic.body.main_color =  LV_COLOR_LIME;
-    style_indic.body.radius = LV_RADIUS_CIRCLE;
-    style_indic.body.shadow.width = 10;
-    style_indic.body.shadow.color = LV_COLOR_LIME;
-    style_indic.body.padding.hor = 3;
-    style_indic.body.padding.ver = 3;
-
-    lv_style_copy(&style_knob, &lv_style_pretty);
-    style_knob.body.radius = LV_RADIUS_CIRCLE;
-    style_knob.body.opa = LV_OPA_70;
-    style_knob.body.padding.ver = 10 ;
-
-    /*Create a second slider*/
-    lv_obj_t * slider2 = lv_slider_create(lv_scr_act(), slider1);
-    lv_slider_set_style(slider2, LV_SLIDER_STYLE_BG, &style_bg);
-    lv_slider_set_style(slider2, LV_SLIDER_STYLE_INDIC,&style_indic);
-    lv_slider_set_style(slider2, LV_SLIDER_STYLE_KNOB, &style_knob);
-    lv_obj_align(slider2, slider1, LV_ALIGN_OUT_BOTTOM_MID, 0, 30); /*Align below 'bar1'*/
-
-    /*Create a second label*/
-    lv_obj_t * slider2_label = lv_label_create(lv_scr_act(), slider1_label);
-    lv_label_set_text(slider2_label, "Modified");
-    lv_obj_align(slider2_label, slider2, LV_ALIGN_OUT_LEFT_MID, -30, 0);
-    
-    
-    
-    
-    
-    
-    /*Create a default button matrix*/
-    lv_obj_t * btnm1 = lv_btnm_create(lv_scr_act(), NULL);
-    lv_btnm_set_map(btnm1, btnm_map);
-    lv_btnm_set_action(btnm1, btnm_action);
-    lv_obj_set_size(btnm1, LV_HOR_RES, LV_VER_RES / 2);
-
-    /*Create a new style for the button matrix back ground*/
-    //static lv_style_t style_bg;
-    lv_style_copy(&style_bg, &lv_style_plain);
-    style_bg.body.main_color = LV_COLOR_SILVER;
-    style_bg.body.grad_color = LV_COLOR_SILVER;
-    style_bg.body.padding.hor = 0;
-    style_bg.body.padding.ver = 0;
-    style_bg.body.padding.inner = 0;
-
-    /*Create 2 button styles*/
-    static lv_style_t style_btn_rel;
-    static lv_style_t style_btn_pr;
-    lv_style_copy(&style_btn_rel, &lv_style_btn_rel);
-    style_btn_rel.body.main_color = LV_COLOR_MAKE(0x30, 0x30, 0x30);
-    style_btn_rel.body.grad_color = LV_COLOR_BLACK;
-    style_btn_rel.body.border.color = LV_COLOR_SILVER;
-    style_btn_rel.body.border.width = 1;
-    style_btn_rel.body.border.opa = LV_OPA_50;
-    style_btn_rel.body.radius = 0;
-
-    lv_style_copy(&style_btn_pr, &style_btn_rel);
-    style_btn_pr.body.main_color = LV_COLOR_MAKE(0x55, 0x96, 0xd8);
-    style_btn_pr.body.grad_color = LV_COLOR_MAKE(0x37, 0x62, 0x90);
-    style_btn_pr.text.color = LV_COLOR_MAKE(0xbb, 0xd5, 0xf1);
-    
-    lv_obj_align(btnm1, slider1, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-
-//    /*Create a second button matrix with the new styles*/
-//    lv_obj_t * btnm2 = lv_btnm_create(lv_scr_act(), btnm1);
-//    lv_btnm_set_style(btnm2, LV_BTNM_STYLE_BG, &style_bg);
-//    lv_btnm_set_style(btnm2, LV_BTNM_STYLE_BTN_REL, &style_btn_rel);
-//    lv_btnm_set_style(btnm2, LV_BTNM_STYLE_BTN_PR, &style_btn_pr);
-//    lv_obj_align(btnm2, btnm1, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-
-      /*Create a title label*/
-    lv_obj_t * label = lv_label_create(lv_scr_act(), NULL);
-    lv_label_set_text(label, "Default buttons");
-    lv_obj_align(label, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
-
-    /*Create a normal button*/
-    lv_obj_t * btn1 = lv_btn_create(lv_scr_act(), NULL);
-    lv_cont_set_fit(btn1, true, true); /*Enable resizing horizontally and vertically*/
-    lv_obj_align(btn1, label, LV_ALIGN_OUT_BOTTOM_MID, 0, 200);
-    lv_obj_set_free_num(btn1, 1);   /*Set a unique number for the button*/
-    lv_btn_set_action(btn1, LV_BTN_ACTION_CLICK, btn_click_action);
-
-    /*Add a label to the button*/
-    label = lv_label_create(btn1, NULL);
-    lv_label_set_text(label, "Normal");
-}
-
 int main(void) {
     delay_init(168);
     FSMC_SRAM_Init();//初始化外部SRAM
     my_mem_init(SRAMIN);		//初始化内部内存池
-	my_mem_init(SRAMEX);		//初始化外部内存池
-	my_mem_init(SRAMCCM);	//初始化CCM内存池
+    my_mem_init(SRAMEX);		//初始化外部内存池
+    my_mem_init(SRAMCCM);	//初始化CCM内存池
     uart_init(115200);
-    //printf("%s",logo);
+    printf("%s",logo);
+    Lua_task();
     SPI3_Init();
     xpt2046_init();
     tft_init();
@@ -252,27 +185,26 @@ int main(void) {
         printf("Flash Disk ok \n");
     }
     lv_vdb_init();
-     lv_init();
+    lv_init();
     lv_disp_drv_t disp_drv;                         /*Descriptor of a display driver*/
     lv_disp_drv_init(&disp_drv);                    /*Basic initialization*/
     /*Set up the functions to access to your display*/
     disp_drv.disp_flush = monitor_flush;            /*Used in buffered mode (LV_VDB_SIZE != 0  in lv_conf.h)*/
-
     //disp_drv.disp_fill = tft_fill;              /*Used in unbuffered mode (LV_VDB_SIZE == 0  in lv_conf.h)*/
     //disp_drv.disp_map = tft_fill;                /*Used in unbuffered mode (LV_VDB_SIZE == 0  in lv_conf.h)*/
-    
+
     lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);          /*Basic initialization*/
     indev_drv.type = LV_INDEV_TYPE_POINTER;
     indev_drv.read = mouse_read;         /*This function will be called periodically (by the library) to get the mouse position and state*/
     lv_indev_drv_register(&indev_drv);
 
-    
-     lv_disp_drv_register(&disp_drv);
+    lv_disp_drv_register(&disp_drv);
     /*Create a simple base object*/
-    //lv_test_object_1();
+    //  lv_test_object_1();
     demo_create();
-
+    //lv_test_roller_1();
+    TIM3_Int_Init(999,839); //100khz的频率,计数1000为10ms
 //    if(lwip_comm_init()!=0) {
 //        printf("lwIP Init failed!");
 //    } else {
@@ -282,24 +214,27 @@ int main(void) {
 //    {
 //        lwip_periodic_handle();
 //    }
+    //lcd_test();
     while(1) {
+       
+		//delay_ms(2);
          static uint16_t num2 = 0;
         static uint8_t num = 0;
         //delay_ms(1);
          lv_task_handler();
-         lv_tick_inc(1);
-//        if(num2 < 10) {
-//            num2++;
-//        } else {
-//            num2=0;
-//            if(num < 100) {
-//            num ++;
-//            } else {
-//                num = 0;
-//            }
-//            lv_bar_set_value(slider1, num);
-//            lv_gauge_set_value(gauge1, 2, num);
-//        }
+        
+        if(num2 < 100) {
+            num2++;
+        } else {
+            num2=0;
+            if(num < 200) {
+            num ++;
+            } else {
+                num = 0;
+            }
+             //lwip_periodic_handle();
+             lv_tick_inc(1);
+        }
         xpt2046_loop();
 //        int x = xpt2046_get_x();
 //        int y = xpt2046_get_y();

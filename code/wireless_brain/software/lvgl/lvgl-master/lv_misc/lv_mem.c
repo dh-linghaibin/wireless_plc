@@ -11,6 +11,7 @@
 #include "lv_mem.h"
 #include "lv_math.h"
 #include <string.h>
+#include "malloc.h"
 
 #if LV_MEM_CUSTOM != 0
 #include LV_MEM_CUSTOM_INCLUDE
@@ -56,6 +57,7 @@ static void ent_trunc(lv_mem_ent_t * e, uint32_t size);
  **********************/
 #if LV_MEM_CUSTOM == 0
 static LV_MEM_ATTR uint8_t work_mem[LV_MEM_SIZE];    /*Work memory for allocations*/
+//static LV_MEM_ATTR uint8_t *work_mem; 
 #endif
 
 static uint32_t zero_mem;       /*Give the address of this variable if 0 byte should be allocated*/ 

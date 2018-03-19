@@ -8,6 +8,7 @@
 #include "../lv_misc/lv_mem.h"
 #include "../lv_core/lv_obj.h"
 #include "../lvgl.h"
+#include "../lv_themes/lv_theme.h"
 
 /*********************
  *      DEFINES
@@ -49,6 +50,8 @@ LV_IMG_DECLARE(img_bubble_pattern);
  */
 void demo_create(void)
 {
+    lv_theme_t * th = lv_theme_zen_init(210, &lv_font_dejavu_20);     //Set a HUE value and a Font for the Night Theme
+    lv_theme_set_current(th);     
 #if DEMO_WALLPAPER
     lv_img_create_file("bg", img_bubble_pattern);
     lv_obj_t *wp = lv_img_create(lv_scr_act(), NULL);
@@ -165,51 +168,41 @@ static void write_create(lv_obj_t *parent)
 
 static void list_create(lv_obj_t *parent)
 {
-    lv_page_set_style(parent, LV_PAGE_STYLE_BG, &lv_style_transp_fit);
-    lv_page_set_style(parent, LV_PAGE_STYLE_SCRL, &lv_style_transp_fit);
+    /*Create a style*/
+    static lv_style_t style;
+    lv_style_copy(&style, &lv_style_pretty_color);
+    style.body.main_color = LV_COLOR_HEX3(0x666);     /*Line color at the beginning*/
+    style.body.grad_color =  LV_COLOR_HEX3(0x666);    /*Line color at the end*/
+    style.body.padding.hor = 10;                      /*Scale line length*/
+    style.body.padding.inner = 8 ;                    /*Scale label padding*/
+    style.body.border.color = LV_COLOR_HEX3(0x333);   /*Needle middle circle color*/
+    style.line.width = 3;
+    style.text.color = LV_COLOR_HEX3(0x333);
+    style.line.color = LV_COLOR_RED;                  /*Line color after the critical value*/
 
-    lv_page_set_scrl_fit(parent, false, false);
-    lv_page_set_scrl_height(parent, lv_obj_get_height(parent));
-    lv_page_set_sb_mode(parent, LV_SB_MODE_OFF);
 
-    /*Create styles for the buttons*/
-    static lv_style_t style_btn_rel;
-    static lv_style_t style_btn_pr;
-    lv_style_copy(&style_btn_rel, &lv_style_btn_rel);
-    style_btn_rel.body.main_color = LV_COLOR_HEX3(0x333);
-    style_btn_rel.body.grad_color = LV_COLOR_BLACK;
-    style_btn_rel.body.border.color = LV_COLOR_SILVER;
-    style_btn_rel.body.border.width = 1;
-    style_btn_rel.body.border.opa = LV_OPA_50;
-    style_btn_rel.body.radius = 0;
+    /*Describe the color for the needles*/
+    static lv_color_t needle_colors[] = {LV_COLOR_BLUE, LV_COLOR_ORANGE, LV_COLOR_PURPLE};
+    lv_obj_t * slider1;
+    lv_obj_t * gauge1;
+    /*Create a gauge*/
+    gauge1 = lv_gauge_create(parent, NULL);
+    lv_gauge_set_style(gauge1, &style);
+    lv_gauge_set_needle_count(gauge1, 3, needle_colors);
+    lv_obj_align(gauge1, NULL, LV_ALIGN_CENTER, 0, 20);
 
-    lv_style_copy(&style_btn_pr, &style_btn_rel);
-    style_btn_pr.body.main_color = LV_COLOR_MAKE(0x55, 0x96, 0xd8);
-    style_btn_pr.body.grad_color = LV_COLOR_MAKE(0x37, 0x62, 0x90);
-    style_btn_pr.text.color = LV_COLOR_MAKE(0xbb, 0xd5, 0xf1);
-
-    lv_obj_t *list = lv_list_create(parent, NULL);
-    lv_obj_set_height(list, 2 * lv_obj_get_height(parent) / 3);
-    lv_list_set_style(list, LV_LIST_STYLE_BG, &lv_style_transp_tight);
-    lv_list_set_style(list, LV_LIST_STYLE_SCRL, &lv_style_transp_tight);
-    lv_list_set_style(list, LV_LIST_STYLE_BTN_REL, &style_btn_rel);
-    lv_list_set_style(list, LV_LIST_STYLE_BTN_PR, &style_btn_pr);
-    lv_obj_align(list, NULL, LV_ALIGN_IN_TOP_MID, 0, LV_DPI / 4);
-
-    lv_list_add(list, SYMBOL_FILE, "New", list_btn_action);
-    lv_list_add(list, SYMBOL_DIRECTORY, "Open", list_btn_action);
-    lv_list_add(list, SYMBOL_TRASH, "Delete", list_btn_action);
-    lv_list_add(list, SYMBOL_EDIT, "Edit", list_btn_action);
-    lv_list_add(list, SYMBOL_SAVE, "Save", list_btn_action);
-    lv_list_add(list, SYMBOL_WIFI, "WiFi", list_btn_action);
-    lv_list_add(list, SYMBOL_GPS, "GPS", list_btn_action);
-
-    lv_obj_t *mbox= lv_mbox_create(parent, NULL);
-    lv_mbox_set_text(mbox, "Click a button to copy its text to the Text area ");
-    lv_obj_set_width(mbox, LV_HOR_RES - LV_DPI);
-    static const char * mbox_btns[] = {"Got it", ""};
-    lv_mbox_add_btns(mbox, mbox_btns, NULL);    /*The default action is close*/
-    lv_obj_align(mbox, parent, LV_ALIGN_IN_TOP_MID, 0, LV_DPI / 2);
+    /*Set the values*/
+    lv_gauge_set_value(gauge1, 0, 10);
+    lv_gauge_set_value(gauge1, 1, 20);
+    lv_gauge_set_value(gauge1, 2, 30);
+    
+    
+    /*Create a default slider*/
+    slider1 = lv_slider_create(parent, NULL);
+    lv_obj_set_size(slider1, 160, 30);
+    lv_obj_align(slider1, NULL, LV_ALIGN_IN_TOP_RIGHT, -30, 30);
+    lv_slider_set_action(slider1, slider_action);
+    lv_bar_set_value(slider1, 70);
 }
 
 static void chart_create(lv_obj_t *parent)

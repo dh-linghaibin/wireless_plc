@@ -310,7 +310,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -335,7 +335,7 @@
               <MiscControls> --gnu</MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\device\include;..\..\user\include;..\..\arch\m4\inc;..\..\arch\m4\core;..\..\lib\include;..\..\arch\m4\eth\inc;..\..\software\fatfs\src;..\..\software\fatfs\exfuns;..\..\software\lwip;..\..\software\lwip\lwip-1.4.1\src\include;..\..\software\lwip\lwip-1.4.1\src\include\ipv4;..\..\software\lwip\lwip-1.4.1\src\include\lwip;..\..\software\lwip\lwip-1.4.1\src\include\netif;..\..\software\lwip\lwip_app\lwip_comm;..\..\software\freertos\include;..\..\software\freertos\portable\RVDS\ARM_CM4F;..\..\software\ugui;..\..\software\lvgl\lvgl-master\lv_core</IncludePath>
+              <IncludePath>..\..\device\include;..\..\user\include;..\..\arch\m4\inc;..\..\arch\m4\core;..\..\lib\include;..\..\arch\m4\eth\inc;..\..\software\fatfs\src;..\..\software\fatfs\exfuns;..\..\software\lwip;..\..\software\lwip\lwip-1.4.1\src\include;..\..\software\lwip\lwip-1.4.1\src\include\ipv4;..\..\software\lwip\lwip-1.4.1\src\include\lwip;..\..\software\lwip\lwip-1.4.1\src\include\netif;..\..\software\lwip\lwip_app\lwip_comm;..\..\software\freertos\include;..\..\software\freertos\portable\RVDS\ARM_CM4F;..\..\software\ugui;..\..\software\lvgl\lvgl-master\lv_core;..\..\software\lua-5.3.4</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -388,6 +388,11 @@
               <FileName>gui_demo.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\user\gui_demo.c</FilePath>
+            </File>
+            <File>
+              <FileName>lua_api.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\user\lua_api.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -473,6 +478,16 @@
               <FileName>core_temp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\device\core_temp.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\button.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1283,6 +1298,176 @@
               <FileName>lv_hal_tick.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\software\lvgl\lvgl-master\lv_hal\lv_hal_tick.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>lua</GroupName>
+          <Files>
+            <File>
+              <FileName>lapi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lapi.c</FilePath>
+            </File>
+            <File>
+              <FileName>lauxlib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lauxlib.c</FilePath>
+            </File>
+            <File>
+              <FileName>lbaselib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lbaselib.c</FilePath>
+            </File>
+            <File>
+              <FileName>lbitlib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lbitlib.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lcode.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcorolib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lcorolib.c</FilePath>
+            </File>
+            <File>
+              <FileName>lctype.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lctype.c</FilePath>
+            </File>
+            <File>
+              <FileName>ldblib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\ldblib.c</FilePath>
+            </File>
+            <File>
+              <FileName>ldebug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\ldebug.c</FilePath>
+            </File>
+            <File>
+              <FileName>ldo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\ldo.c</FilePath>
+            </File>
+            <File>
+              <FileName>ldump.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\ldump.c</FilePath>
+            </File>
+            <File>
+              <FileName>lfunc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lfunc.c</FilePath>
+            </File>
+            <File>
+              <FileName>lgc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lgc.c</FilePath>
+            </File>
+            <File>
+              <FileName>linit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\linit.c</FilePath>
+            </File>
+            <File>
+              <FileName>liolib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\liolib.c</FilePath>
+            </File>
+            <File>
+              <FileName>llex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\llex.c</FilePath>
+            </File>
+            <File>
+              <FileName>lmathlib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lmathlib.c</FilePath>
+            </File>
+            <File>
+              <FileName>lmem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lmem.c</FilePath>
+            </File>
+            <File>
+              <FileName>loadlib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\loadlib.c</FilePath>
+            </File>
+            <File>
+              <FileName>lobject.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lobject.c</FilePath>
+            </File>
+            <File>
+              <FileName>lopcodes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lopcodes.c</FilePath>
+            </File>
+            <File>
+              <FileName>loslib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\loslib.c</FilePath>
+            </File>
+            <File>
+              <FileName>lparser.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lparser.c</FilePath>
+            </File>
+            <File>
+              <FileName>lstate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lstate.c</FilePath>
+            </File>
+            <File>
+              <FileName>lstring.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lstring.c</FilePath>
+            </File>
+            <File>
+              <FileName>lstrlib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lstrlib.c</FilePath>
+            </File>
+            <File>
+              <FileName>ltable.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\ltable.c</FilePath>
+            </File>
+            <File>
+              <FileName>ltablib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\ltablib.c</FilePath>
+            </File>
+            <File>
+              <FileName>ltm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\ltm.c</FilePath>
+            </File>
+            <File>
+              <FileName>lundump.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lundump.c</FilePath>
+            </File>
+            <File>
+              <FileName>lutf8lib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lutf8lib.c</FilePath>
+            </File>
+            <File>
+              <FileName>lvm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lvm.c</FilePath>
+            </File>
+            <File>
+              <FileName>lzio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\lzio.c</FilePath>
             </File>
           </Files>
         </Group>

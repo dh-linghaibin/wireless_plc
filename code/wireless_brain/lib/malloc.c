@@ -163,3 +163,10 @@ void *myrealloc(u8 memx,void *ptr,u32 size)
     }  
 }
 
+void *l_malloc(u32 size) {
+    return mymalloc(SRAMEX,size);
+}
+
+void l_free(void *ptr) {
+    return myfree(SRAMEX,ptr);
+}

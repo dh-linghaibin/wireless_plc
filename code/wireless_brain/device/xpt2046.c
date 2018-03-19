@@ -31,20 +31,20 @@ void xpt2046_init(void) {
     GPIO_Init(GPIOA, &GPIO_InitStructure);//初始化
     
     
-    NVIC_InitTypeDef   NVIC_InitStructure;
-    EXTI_InitTypeDef   EXTI_InitStructure;
-    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource10);
-    EXTI_InitStructure.EXTI_Line = EXTI_Line10;//LINE0
-    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;//中断事件
-    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling; //上升沿触发 
-    EXTI_InitStructure.EXTI_LineCmd = ENABLE;//使能LINE0
-    EXTI_Init(&EXTI_InitStructure);//配置
-    
-    NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;//外部中断0
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;//抢占优先级0
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//子优先级2
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
-    NVIC_Init(&NVIC_InitStructure);//配置
+//    NVIC_InitTypeDef   NVIC_InitStructure;
+//    EXTI_InitTypeDef   EXTI_InitStructure;
+//    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource10);
+//    EXTI_InitStructure.EXTI_Line = EXTI_Line10;//LINE0
+//    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;//中断事件
+//    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling; //上升沿触发 
+//    EXTI_InitStructure.EXTI_LineCmd = ENABLE;//使能LINE0
+//    EXTI_Init(&EXTI_InitStructure);//配置
+//    
+//    NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;//外部中断0
+//    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;//抢占优先级0
+//    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//子优先级2
+//    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
+//    NVIC_Init(&NVIC_InitStructure);//配置
     
 //    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 //    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;//复用功能输出   
@@ -77,8 +77,10 @@ void EXTI15_10_IRQHandler(void) {
     if(EXTI_GetITStatus(EXTI_Line10)!=RESET) {
         if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_10) == 0) {
             EXTI_ClearITPendingBit(EXTI_Line10);
+            printf("up\n");
         } else {
             EXTI_ClearITPendingBit(EXTI_Line10);
+            printf("down\n");
         }
         EXTI_ClearITPendingBit(EXTI_Line10);
     }
@@ -95,7 +97,7 @@ uint16_t xpt2046_get_x(void) {
     uint8_t adress;
     uint8_t dataX;
     uint16_t touch_x = 0;
-    XPT_CS_RESET;
+   // XPT_CS_RESET;
     adress = 0xD0;
     SPI3_ReadWriteByte(adress);
     adress = 0x00;
@@ -104,7 +106,7 @@ uint16_t xpt2046_get_x(void) {
     adress = 0x00;
     dataX = SPI3_ReadWriteByte(adress);
     LSB = dataX;
-    XPT_CS_SET;
+   // XPT_CS_SET;
     touch_x = ((MSB<<8)|(LSB))>>3;
     touch_x -= 300;
     touch_x =  touch_x/15;
@@ -116,7 +118,7 @@ uint16_t xpt2046_get_y(void) {
     uint16_t LSB, MSB;
     uint8_t adress;
     uint8_t dataY;
-    XPT_CS_RESET;
+  //  XPT_CS_RESET;
     adress = 0x90;
     SPI3_ReadWriteByte(adress);
     adress = 0x00;
@@ -125,7 +127,7 @@ uint16_t xpt2046_get_y(void) {
     adress = 0x00;
     dataY = SPI3_ReadWriteByte(adress);
     LSB = dataY;
-    XPT_CS_SET;
+   // XPT_CS_SET;
     touch_y = ((MSB<<8)|(LSB))>>3;
     touch_y -= 350;
     touch_y =  touch_y/11;
@@ -140,14 +142,17 @@ void xpt2046_loop(void) {
         test++;
     } else {
         test = 0;
-         SPI3_SetSpeed(SPI_BaudRatePrescaler_128);
-    poin.point.x = xpt2046_get_x();
-    poin.point.y = xpt2046_get_y();
-    if( poin.point.x < 4000) {
-        poin.state = LV_INDEV_STATE_PR;
-    } else {
-        poin.state = LV_INDEV_STATE_REL;
-    }
+        SPI3_SetSpeed(SPI_BaudRatePrescaler_128);
+        XPT_CS_RESET;
+        poin.point.x = xpt2046_get_x();
+        poin.point.y = xpt2046_get_y();
+        delay_ms(2);
+        XPT_CS_SET;
+        if( poin.point.x < 4000) {
+            poin.state = LV_INDEV_STATE_PR;
+        } else {
+            poin.state = LV_INDEV_STATE_REL;
+        }
     //printf("%d %d \n", poin.point.x, poin.point.y);
     }
    
