@@ -16,10 +16,29 @@
   * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
   *
-  * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+  * <h2><center>&copy; Portions COPYRIGHT 2011 STMicroelectronics</center></h2>
   ******************************************************************************
   */
-
+/**
+  ******************************************************************************
+  * <h2><center>&copy; Portions COPYRIGHT 2012 Embest Tech. Co., Ltd.</center></h2>
+  * @file    stm32f4x7_eth.c
+  * @author  CMP Team
+  * @version V1.0.0
+  * @date    28-December-2012
+  * @brief   This file is the low level driver for STM32F407xx/417xx Ethernet Controller.
+  *          This driver does not include low level functions for PTP time-stamp.     
+  ******************************************************************************
+  * @attention
+  *
+  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  * TIME. AS A RESULT, Embest SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT
+  * OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE CONTENT
+  * OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING INFORMATION
+  * CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  ******************************************************************************
+  */
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4x7_eth.h"
 #include "stm32f4xx_rcc.h"
@@ -57,43 +76,43 @@
   * @{
   */ 
 
-//#if defined   (__CC_ARM) /*!< ARM Compiler */
-//  __align(4) 
-//   ETH_DMADESCTypeDef  DMARxDscrTab[ETH_RXBUFNB];/* Ethernet Rx MA Descriptor */
-//  __align(4) 
-//   ETH_DMADESCTypeDef  DMATxDscrTab[ETH_TXBUFNB];/* Ethernet Tx DMA Descriptor */
-//  __align(4) 
-//   uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE]; /* Ethernet Receive Buffer */
-//  __align(4) 
-//   uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE]; /* Ethernet Transmit Buffer */
+#if defined   (__CC_ARM) /*!< ARM Compiler */
+  __align(4) 
+   ETH_DMADESCTypeDef  DMARxDscrTab[ETH_RXBUFNB];/* Ethernet Rx MA Descriptor */
+  __align(4) 
+   ETH_DMADESCTypeDef  DMATxDscrTab[ETH_TXBUFNB];/* Ethernet Tx DMA Descriptor */
+  __align(4) 
+   uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE]; /* Ethernet Receive Buffer */
+  __align(4) 
+   uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE]; /* Ethernet Transmit Buffer */
 
-//#elif defined ( __ICCARM__ ) /*!< IAR Compiler */
-//  #pragma data_alignment=4
-//   ETH_DMADESCTypeDef  DMARxDscrTab[ETH_RXBUFNB];/* Ethernet Rx MA Descriptor */
-//  #pragma data_alignment=4
-//   ETH_DMADESCTypeDef  DMATxDscrTab[ETH_TXBUFNB];/* Ethernet Tx DMA Descriptor */
-//  #pragma data_alignment=4
-//   uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE]; /* Ethernet Receive Buffer */
-//  #pragma data_alignment=4
-//   uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE]; /* Ethernet Transmit Buffer */
+#elif defined ( __ICCARM__ ) /*!< IAR Compiler */
+  #pragma data_alignment=4
+   ETH_DMADESCTypeDef  DMARxDscrTab[ETH_RXBUFNB];/* Ethernet Rx MA Descriptor */
+  #pragma data_alignment=4
+   ETH_DMADESCTypeDef  DMATxDscrTab[ETH_TXBUFNB];/* Ethernet Tx DMA Descriptor */
+  #pragma data_alignment=4
+   uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE]; /* Ethernet Receive Buffer */
+  #pragma data_alignment=4
+   uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE]; /* Ethernet Transmit Buffer */
 
-//#elif defined (__GNUC__) /*!< GNU Compiler */
-//  ETH_DMADESCTypeDef  DMARxDscrTab[ETH_RXBUFNB] __attribute__ ((aligned (4))); /* Ethernet Rx DMA Descriptor */
-//  ETH_DMADESCTypeDef  DMATxDscrTab[ETH_TXBUFNB] __attribute__ ((aligned (4))); /* Ethernet Tx DMA Descriptor */
-//  uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE] __attribute__ ((aligned (4))); /* Ethernet Receive Buffer */
-//  uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE] __attribute__ ((aligned (4))); /* Ethernet Transmit Buffer */
+#elif defined (__GNUC__) /*!< GNU Compiler */
+  ETH_DMADESCTypeDef  DMARxDscrTab[ETH_RXBUFNB] __attribute__ ((aligned (4))); /* Ethernet Rx DMA Descriptor */
+  ETH_DMADESCTypeDef  DMATxDscrTab[ETH_TXBUFNB] __attribute__ ((aligned (4))); /* Ethernet Tx DMA Descriptor */
+  uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE] __attribute__ ((aligned (4))); /* Ethernet Receive Buffer */
+  uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE] __attribute__ ((aligned (4))); /* Ethernet Transmit Buffer */
 
-//#elif defined  (__TASKING__) /*!< TASKING Compiler */                           
-//  __align(4) 
-//   ETH_DMADESCTypeDef  DMARxDscrTab[ETH_RXBUFNB];/* Ethernet Rx MA Descriptor */
-//  __align(4) 
-//   ETH_DMADESCTypeDef  DMATxDscrTab[ETH_TXBUFNB];/* Ethernet Tx DMA Descriptor */
-//  __align(4) 
-//   uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE]; /* Ethernet Receive Buffer */
-//  __align(4) 
-//   uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE]; /* Ethernet Transmit Buffer */
+#elif defined  (__TASKING__) /*!< TASKING Compiler */                           
+  __align(4) 
+   ETH_DMADESCTypeDef  DMARxDscrTab[ETH_RXBUFNB];/* Ethernet Rx MA Descriptor */
+  __align(4) 
+   ETH_DMADESCTypeDef  DMATxDscrTab[ETH_TXBUFNB];/* Ethernet Tx DMA Descriptor */
+  __align(4) 
+   uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE]; /* Ethernet Receive Buffer */
+  __align(4) 
+   uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE]; /* Ethernet Transmit Buffer */
 
-//#endif /* __CC_ARM */
+#endif /* __CC_ARM */
 
 
 /* Global pointers on Tx and Rx descriptor used to track transmit and receive descriptors */
@@ -167,54 +186,54 @@ void ETH_StructInit(ETH_InitTypeDef* ETH_InitStruct)
   /*------------------------   MAC Configuration   ---------------------------*/
   
   /* PHY Auto-negotiation enabled */
-  ETH_InitStruct->ETH_AutoNegotiation = ETH_AutoNegotiation_Enable; 			//使能自适应模式       
+  ETH_InitStruct->ETH_AutoNegotiation = ETH_AutoNegotiation_Enable;           
   /* MAC watchdog enabled: cuts-off long frame */
-  ETH_InitStruct->ETH_Watchdog = ETH_Watchdog_Enable;										 	//使能看门狗
-  /* MAC Jabber enabled in Half-duplex mode */					
-  ETH_InitStruct->ETH_Jabber = ETH_Jabber_Enable;       									//使能Jabber                                                
+  ETH_InitStruct->ETH_Watchdog = ETH_Watchdog_Enable;
+  /* MAC Jabber enabled in Half-duplex mode */
+  ETH_InitStruct->ETH_Jabber = ETH_Jabber_Enable;                                                       
   /* Ethernet interframe gap set to 96 bits */
-  ETH_InitStruct->ETH_InterFrameGap = ETH_InterFrameGap_96Bit;  					//设置帧间隔为96bit                                                                                                                          
+  ETH_InitStruct->ETH_InterFrameGap = ETH_InterFrameGap_96Bit;                                                                                                                             
   /* Carrier Sense Enabled in Half-Duplex mode */ 
-  ETH_InitStruct->ETH_CarrierSense = ETH_CarrierSense_Enable; 						//半双工模式下使能载波侦听功能                               
+  ETH_InitStruct->ETH_CarrierSense = ETH_CarrierSense_Enable;                                
   /* PHY speed configured to 100Mbit/s */
-  ETH_InitStruct->ETH_Speed = ETH_Speed_100M; 														//PHY层速度为100M
+  ETH_InitStruct->ETH_Speed = ETH_Speed_100M; 
   /* Receive own Frames in Half-Duplex mode enabled */
-  ETH_InitStruct->ETH_ReceiveOwn = ETH_ReceiveOwn_Enable;                	//半双工模式下允许接收 own frame
+  ETH_InitStruct->ETH_ReceiveOwn = ETH_ReceiveOwn_Enable;                
   /* MAC MII loopback disabled */ 
-  ETH_InitStruct->ETH_LoopbackMode = ETH_LoopbackMode_Disable; 						//关闭MII接口的反馈功能             
+  ETH_InitStruct->ETH_LoopbackMode = ETH_LoopbackMode_Disable;              
   /* Full-Duplex mode selected */
-  ETH_InitStruct->ETH_Mode = ETH_Mode_FullDuplex;   											//使用全双工模式                   
+  ETH_InitStruct->ETH_Mode = ETH_Mode_FullDuplex;                      
   /* IPv4 and TCP/UDP/ICMP frame Checksum Offload disabled */
-  ETH_InitStruct->ETH_ChecksumOffload = ETH_ChecksumOffload_Disable;   		//关闭ipv4和TCP/UDP/ICMP的帧校验和卸载                                                          
+  ETH_InitStruct->ETH_ChecksumOffload = ETH_ChecksumOffload_Disable;                                                             
   /* Retry Transmission enabled for half-duplex mode */ 
-  ETH_InitStruct->ETH_RetryTransmission = ETH_RetryTransmission_Enable;   //开启半双工模式下的重试传输功能                                                                              
+  ETH_InitStruct->ETH_RetryTransmission = ETH_RetryTransmission_Enable;                                                                                   
   /* Automatic PAD/CRC strip disabled*/
-  ETH_InitStruct->ETH_AutomaticPadCRCStrip = ETH_AutomaticPadCRCStrip_Disable;  //关闭自动去除PDA/CRC功能                                                        
+  ETH_InitStruct->ETH_AutomaticPadCRCStrip = ETH_AutomaticPadCRCStrip_Disable;                                                          
   /* half-duplex mode retransmission Backoff time_limit = 10 slot times*/ 
-  ETH_InitStruct->ETH_BackOffLimit = ETH_BackOffLimit_10;     						//设置半双工模式下的最大重传回退事件10 slot times
+  ETH_InitStruct->ETH_BackOffLimit = ETH_BackOffLimit_10;     
   /* half-duplex mode Deferral check disabled */
-  ETH_InitStruct->ETH_DeferralCheck = ETH_DeferralCheck_Disable;          //关闭半双工模式下的延时检查功能                                                                                                      
+  ETH_InitStruct->ETH_DeferralCheck = ETH_DeferralCheck_Disable;                                                                                                                  
   /* Receive all frames disabled */ 
-  ETH_InitStruct->ETH_ReceiveAll = ETH_ReceiveAll_Disable;								//禁止接收所有帧
+  ETH_InitStruct->ETH_ReceiveAll = ETH_ReceiveAll_Disable;
   /* Source address filtering (on the optional MAC addresses) disabled */
-  ETH_InitStruct->ETH_SourceAddrFilter = ETH_SourceAddrFilter_Disable;   	//关闭MAC地址的源地址过滤功能
+  ETH_InitStruct->ETH_SourceAddrFilter = ETH_SourceAddrFilter_Disable;   
   /* Do not forward control frames that do not pass the address filtering */
-  ETH_InitStruct->ETH_PassControlFrames = ETH_PassControlFrames_BlockAll; //
+  ETH_InitStruct->ETH_PassControlFrames = ETH_PassControlFrames_BlockAll;   
   /* Disable reception of Broadcast frames */
-  ETH_InitStruct->ETH_BroadcastFramesReception = ETH_BroadcastFramesReception_Disable;//禁止接收所有的广播帧
+  ETH_InitStruct->ETH_BroadcastFramesReception = ETH_BroadcastFramesReception_Disable;
   /* Normal Destination address filtering (not reverse addressing) */
-  ETH_InitStruct->ETH_DestinationAddrFilter = ETH_DestinationAddrFilter_Normal;			//正常的远端地址过滤
+  ETH_InitStruct->ETH_DestinationAddrFilter = ETH_DestinationAddrFilter_Normal;
   /* Promiscuous address filtering mode disabled */
-  ETH_InitStruct->ETH_PromiscuousMode = ETH_PromiscuousMode_Disable;			//关闭混合模式的地址过滤                                                            
+  ETH_InitStruct->ETH_PromiscuousMode = ETH_PromiscuousMode_Disable;                                                             
   /* Perfect address filtering for multicast addresses */
-  ETH_InitStruct->ETH_MulticastFramesFilter = ETH_MulticastFramesFilter_Perfect;  //对于组播地址使用完美地址过滤   
+  ETH_InitStruct->ETH_MulticastFramesFilter = ETH_MulticastFramesFilter_Perfect;       
   /* Perfect address filtering for unicast addresses */
-  ETH_InitStruct->ETH_UnicastFramesFilter = ETH_UnicastFramesFilter_Perfect;     	//对单播地址使用完美地址过滤 
+  ETH_InitStruct->ETH_UnicastFramesFilter = ETH_UnicastFramesFilter_Perfect;      
   /* Initialize hash table high and low regs */
-  ETH_InitStruct->ETH_HashTableHigh = 0x0;   											//初始化HASH表的高位寄存器             
-  ETH_InitStruct->ETH_HashTableLow = 0x0;                     		//初始化HASH表的低位位寄存器  
+  ETH_InitStruct->ETH_HashTableHigh = 0x0;                
+  ETH_InitStruct->ETH_HashTableLow = 0x0;                     
   /* Flow control config (flow control disabled)*/
-  ETH_InitStruct->ETH_PauseTime = 0x0;                 					//流控配置 
+  ETH_InitStruct->ETH_PauseTime = 0x0;                 
   ETH_InitStruct->ETH_ZeroQuantaPause = ETH_ZeroQuantaPause_Disable;            
   ETH_InitStruct->ETH_PauseLowThreshold = ETH_PauseLowThreshold_Minus4;         
   ETH_InitStruct->ETH_UnicastPauseFrameDetect = ETH_UnicastPauseFrameDetect_Disable;   
@@ -227,31 +246,31 @@ void ETH_StructInit(ETH_InitTypeDef* ETH_InitStruct)
   /*---------------------- DMA Configuration   -------------------------------*/
 
   /* Drops frames with with TCP/IP checksum errors */
-  ETH_InitStruct->ETH_DropTCPIPChecksumErrorFrame = ETH_DropTCPIPChecksumErrorFrame_Disable; //关闭丢弃TCP/IP错误帧
+  ETH_InitStruct->ETH_DropTCPIPChecksumErrorFrame = ETH_DropTCPIPChecksumErrorFrame_Disable; 
   /* Store and forward mode enabled for receive */
-  ETH_InitStruct->ETH_ReceiveStoreForward = ETH_ReceiveStoreForward_Enable;       //开启接收数据的存储转发功能
+  ETH_InitStruct->ETH_ReceiveStoreForward = ETH_ReceiveStoreForward_Enable;       
   /* Flush received frame that created FIFO overflow */
   ETH_InitStruct->ETH_FlushReceivedFrame = ETH_FlushReceivedFrame_Enable; 
   /* Store and forward mode enabled for transmit */
-  ETH_InitStruct->ETH_TransmitStoreForward = ETH_TransmitStoreForward_Enable;   	//开启发送模式的存储转发功能
+  ETH_InitStruct->ETH_TransmitStoreForward = ETH_TransmitStoreForward_Enable;  
   /* Threshold TXFIFO level set to 64 bytes (used when threshold mode is enabled) */
-  ETH_InitStruct->ETH_TransmitThresholdControl = ETH_TransmitThresholdControl_64Bytes;  //设置阈值模式下的发送FIFO的阈值为64字节
+  ETH_InitStruct->ETH_TransmitThresholdControl = ETH_TransmitThresholdControl_64Bytes;  
   /* Disable forwarding frames with errors (short frames, CRC,...)*/
-  ETH_InitStruct->ETH_ForwardErrorFrames = ETH_ForwardErrorFrames_Disable;   //禁止转发错误帧
+  ETH_InitStruct->ETH_ForwardErrorFrames = ETH_ForwardErrorFrames_Disable; 
   /* Disable undersized good frames */
-  ETH_InitStruct->ETH_ForwardUndersizedGoodFrames = ETH_ForwardUndersizedGoodFrames_Disable; //不转发过小的好帧
+  ETH_InitStruct->ETH_ForwardUndersizedGoodFrames = ETH_ForwardUndersizedGoodFrames_Disable; 
   /* Threshold RXFIFO level set to 64 bytes (used when Cut-through mode is enabled) */
-  ETH_InitStruct->ETH_ReceiveThresholdControl = ETH_ReceiveThresholdControl_64Bytes;    //设置直通模式下的发送FIFO阈值为64字节                        
+  ETH_InitStruct->ETH_ReceiveThresholdControl = ETH_ReceiveThresholdControl_64Bytes;                             
   /* Disable Operate on second frame (transmit a second frame to FIFO without 
   waiting status of previous frame*/                           
-  ETH_InitStruct->ETH_SecondFrameOperate = ETH_SecondFrameOperate_Disable;							//关闭处理第二帧数据
+  ETH_InitStruct->ETH_SecondFrameOperate = ETH_SecondFrameOperate_Disable;
   /* DMA works on 32-bit aligned start source and destinations addresses */
-  ETH_InitStruct->ETH_AddressAlignedBeats = ETH_AddressAlignedBeats_Enable;						//开启DMA传输的地址对齐功能
+  ETH_InitStruct->ETH_AddressAlignedBeats = ETH_AddressAlignedBeats_Enable;
   /* Enabled Fixed Burst Mode (mix of INC4, INC8, INC16 and SINGLE DMA transactions */
-  ETH_InitStruct->ETH_FixedBurst = ETH_FixedBurst_Enable;    												//开启固定突发功能
+  ETH_InitStruct->ETH_FixedBurst = ETH_FixedBurst_Enable;
   /* DMA transfer max burst length = 32 beats = 32 x 32bits */
-  ETH_InitStruct->ETH_RxDMABurstLength = ETH_RxDMABurstLength_32Beat;    //DMA发送的最大突发长度为32
-  ETH_InitStruct->ETH_TxDMABurstLength = ETH_TxDMABurstLength_32Beat;    //DMA接收的最大突发长度为32
+  ETH_InitStruct->ETH_RxDMABurstLength = ETH_RxDMABurstLength_32Beat;
+  ETH_InitStruct->ETH_TxDMABurstLength = ETH_TxDMABurstLength_32Beat;
   /* DMA Ring mode skip length = 0 */
   ETH_InitStruct->ETH_DescriptorSkipLength = 0x0; 
   /* Equal priority (round-robin) between transmit and receive DMA engines */
@@ -413,30 +432,32 @@ uint32_t ETH_Init(ETH_InitTypeDef* ETH_InitStruct, uint16_t PHYAddress)
     
     /* Read the result of the auto-negotiation */
     RegValue = ETH_ReadPHYRegister(PHYAddress, PHY_SR);
-  
-    /* Configure the MAC with the Duplex Mode fixed by the auto-negotiation process */
-    if((RegValue & PHY_DUPLEX_STATUS) != (uint32_t)RESET)
-    {
-      /* Set Ethernet duplex mode to Full-duplex following the auto-negotiation */
-      ETH_InitStruct->ETH_Mode = ETH_Mode_FullDuplex;  
-    }
-    else
-    {
-      /* Set Ethernet duplex mode to Half-duplex following the auto-negotiation */
-      ETH_InitStruct->ETH_Mode = ETH_Mode_HalfDuplex;           
-    }
 
-    /* Configure the MAC with the speed fixed by the auto-negotiation process */
-    if(RegValue & PHY_SPEED_STATUS)
-    {  
-      /* Set Ethernet speed to 10M following the auto-negotiation */    
-      ETH_InitStruct->ETH_Speed = ETH_Speed_10M; 
-    }
-    else
-    {   
-      /* Set Ethernet speed to 100M following the auto-negotiation */ 
-      ETH_InitStruct->ETH_Speed = ETH_Speed_100M;      
-    }    
+		switch (RegValue & PHY_DUPLEX_SPEED_STATUS_MASK)
+		{
+		  case PHY_100BTX_FULL:
+			  ETH_InitStruct->ETH_Mode  = ETH_Mode_FullDuplex;
+				ETH_InitStruct->ETH_Speed = ETH_Speed_100M; 
+			  break;
+
+		  case PHY_100BTX_HALF:
+			  ETH_InitStruct->ETH_Mode  = ETH_Mode_HalfDuplex;
+				ETH_InitStruct->ETH_Speed = ETH_Speed_100M; 
+  			break;
+
+		  case PHY_10M_FULL:
+			  ETH_InitStruct->ETH_Mode  = ETH_Mode_FullDuplex;
+				ETH_InitStruct->ETH_Speed = ETH_Speed_10M;
+			  break;
+
+		  case PHY_10M_HALF:
+			  ETH_InitStruct->ETH_Mode  = ETH_Mode_HalfDuplex;
+				ETH_InitStruct->ETH_Speed = ETH_Speed_10M; 
+			  break;
+
+		  default:
+			  break;
+		}		   
   }
   else
   {
@@ -817,16 +838,14 @@ void ETH_MACAddressConfig(uint32_t MacAddr, uint8_t *Addr)
   assert_param(IS_ETH_MAC_ADDRESS0123(MacAddr));
   
   /* Calculate the selected MAC address high register */
-  tmpreg = ((uint32_t)Addr[5] << 8) | (uint32_t)Addr[4]; //计算出所选择的MAC地址的高位寄存器值
-																												 //即ETH_MACA0HR的16位值
+  tmpreg = ((uint32_t)Addr[5] << 8) | (uint32_t)Addr[4];
   /* Load the selected MAC address high register */
-  (*(__IO uint32_t *) (ETH_MAC_ADDR_HBASE + MacAddr)) = tmpreg; //将计算出的高位值写入ETH_MAC0HR中
+  (*(__IO uint32_t *) (ETH_MAC_ADDR_HBASE + MacAddr)) = tmpreg;
   /* Calculate the selected MAC address low register */
-	//计算出所选择的MAC地址的第位寄存器值,即ETH_MACA0LR的16位值
   tmpreg = ((uint32_t)Addr[3] << 24) | ((uint32_t)Addr[2] << 16) | ((uint32_t)Addr[1] << 8) | Addr[0];
  
   /* Load the selected MAC address low register */
-  (*(__IO uint32_t *) (ETH_MAC_ADDR_LBASE + MacAddr)) = tmpreg;//将计算出的低位值写入ETH_MAC0LR中
+  (*(__IO uint32_t *) (ETH_MAC_ADDR_LBASE + MacAddr)) = tmpreg;
 }
 
 

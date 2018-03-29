@@ -6,29 +6,34 @@
  */
  
 #include "usart.h"
+
+uint8_t flag = 0;
+
  #if 1
-//#pragma import(__use_no_semihosting)             
+#pragma import(__use_no_semihosting)             
 //标准库需要的支持函数                 
-//struct __FILE 
-//{ 
-//    int handle; 
-//}; 
+struct __FILE 
+{ 
+    int handle; 
+}; 
 
 //FILE __stdout;       
-////定义_sys_exit()以避免使用半主机模式    
-//void _sys_exit(int x) 
-//{ 
-//    x = x; 
-//} 
+//定义_sys_exit()以避免使用半主机模式    
+void _sys_exit(int x) 
+{ 
+    x = x; 
+} 
 //重定义fputc函数 
 int fputc(int ch, FILE *f)
-{     
-    while((USART6->SR&0X40)==0);//循环发送,直到发送完毕   
-    USART6->DR = (u8) ch;      
+{
+    if(flag == 1) { 
+        while((USART6->SR&0X40)==0);//循环发送,直到发送完毕   
+        USART6->DR = (u8) ch; 
+    }
     return ch;
 }
 #endif
- 
+
 #if EN_USART6_RX   //如果使能了接收
 //串口1中断服务程序
 //注意,读取USARTx->SR能避免莫名其妙的错误       
@@ -42,6 +47,8 @@ u16 USART_RX_STA=0;       //接收状态标记
 //初始化IO 串口1 
 //bound:波特率
 void uart_init(u32 bound){
+    flag = 1;
+    
     //GPIO端口设置
     GPIO_InitTypeDef GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;

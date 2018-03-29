@@ -81,7 +81,31 @@ extern "C" {
 #define TFT_RS_PORT     GPIOA
 #define TFT_RS_PIN      GPIO_PIN_9
     
-    
+/* MAC ADDRESS*/
+#define MAC_ADDR0   02
+#define MAC_ADDR1   00
+#define MAC_ADDR2   00
+#define MAC_ADDR3   00
+#define MAC_ADDR4   00
+#define MAC_ADDR5   00
+ 
+/*Static IP ADDRESS*/
+#define IP_ADDR0   192
+#define IP_ADDR1   168
+#define IP_ADDR2   1
+#define IP_ADDR3   159
+   
+/*NETMASK*/
+#define NETMASK_ADDR0   255
+#define NETMASK_ADDR1   255
+#define NETMASK_ADDR2   255
+#define NETMASK_ADDR3   0
+
+/*Gateway Address*/
+#define GW_ADDR0   192
+#define GW_ADDR1   168
+#define GW_ADDR2   1
+#define GW_ADDR3   1  
     
 #ifdef __cplusplus
 }

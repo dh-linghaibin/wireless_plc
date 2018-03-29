@@ -14,7 +14,7 @@
 #define Bank1_SRAM3_ADDR    ((u32)(0x68000000))    
                              
 //初始化外部SRAM
-void FSMC_SRAM_Init(void)
+void fsmc_sram_init(void)
 {    
     GPIO_InitTypeDef  GPIO_InitStructure;
     FSMC_NORSRAMInitTypeDef  FSMC_NORSRAMInitStructure;

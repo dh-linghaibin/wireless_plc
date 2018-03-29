@@ -304,3 +304,220 @@ static lv_res_t list_btn_action(lv_obj_t *btn)
 
     return LV_RES_OK;
 }
+
+
+//    lv_vdb_init();
+//    lv_init();
+//    lv_disp_drv_t disp_drv;                         /*Descriptor of a display driver*/
+//    lv_disp_drv_init(&disp_drv);                    /*Basic initialization*/
+//    /*Set up the functions to access to your display*/
+//    disp_drv.disp_flush = monitor_flush;            /*Used in buffered mode (LV_VDB_SIZE != 0  in lv_conf.h)*/
+//    //disp_drv.disp_fill = tft_fill;              /*Used in unbuffered mode (LV_VDB_SIZE == 0  in lv_conf.h)*/
+//    //disp_drv.disp_map = tft_fill;                /*Used in unbuffered mode (LV_VDB_SIZE == 0  in lv_conf.h)*/
+
+//    lv_indev_drv_t indev_drv;
+//    lv_indev_drv_init(&indev_drv);          /*Basic initialization*/
+//    indev_drv.type = LV_INDEV_TYPE_POINTER;
+//    indev_drv.read = mouse_read;         /*This function will be called periodically (by the library) to get the mouse position and state*/
+//    lv_indev_drv_register(&indev_drv);
+
+//    lv_disp_drv_register(&disp_drv);
+//    /*Create a simple base object*/
+//    //  lv_test_object_1();
+//    demo_create();
+//    //vTaskStartScheduler();
+// lv_task_handler();
+// lv_tick_inc(1);
+
+
+
+
+//    FATFS fs;
+//    u8 res=f_mount(&fs,"1:",1);                 //挂载FLASH.    
+//    if(res==0X0D)//FLASH磁盘,FAT文件系统错误,重新格式化FLASH
+//    {
+//        printf("Flash Disk Formatting...\n");    //格式化FLASH
+//        res=f_mkfs("1:",1,4096);//格式化FLASH,1,盘符;1,不需要引导区,8个扇区为1个簇
+//        if(res==0)
+//        {
+//            f_setlabel((const TCHAR *)"1:ALIENTEK");    //设置Flash磁盘的名字为：ALIENTEK
+//            printf("Flash Disk Format Finish\n");    //格式化完成
+//        } else { 
+//            printf("Flash Disk Format Error \n");    //格式化失败
+//        }
+//        delay_ms(1000);
+//    } else {
+//        printf("Flash Disk ok \n");
+//    }
+//static int Delay_ms(lua_State *L)  
+//{  
+//    delay_ms(luaL_checkinteger(L, -1));  
+//    return 0;  
+//}  
+//static int print(lua_State *L)  
+//{  
+//    int n=lua_gettop(L);  
+//    int i;  
+//    for (i=1; i<=n; i++)  
+//    {  
+//        if (lua_isstring(L,i))  
+//            printf("%s",lua_tostring(L,i));  
+//        else if (lua_isnil(L,i))  
+//            printf("%s","nil");  
+//        else if (lua_isboolean(L,i))  
+//            printf("%s",lua_toboolean(L,i) ? "true" : "false");  
+//        else  
+//            printf("%s:%p",luaL_typename(L,i),lua_topointer(L,i));  
+//     }  
+//     return 0;  
+//}  
+//static luaL_Reg LuaLib1_0[] =   
+//{   
+//    //c接口函数都可以放在这里在lua中声明  
+//    {"Delay_ms", Delay_ms},  
+//    {"print", print},  
+//  
+//    {NULL, NULL}   
+//};  
+
+
+///* 测试的Lua代码字符串 */  
+//const char lua_test[] = {   
+//    "print(\"Hello,I am lua!\\n--this is newline printf\")\n"  
+//    "function foo()\n"  
+//    "  local i = 0\n"  
+//    "  local sum = 1\n"  
+//    "  while i <= 10 do\n"  
+//    "    sum = sum * 2\n"  
+//    "    i = i + 1\n"  
+//    "  end\n"  
+//    "return sum\n"  
+//    "end\n"  
+//    "print(\"sum =\", foo())\n"  
+//    "print(\"and sum = 2^11 =\", 2 ^ 11)\n"  
+//    "print(\"exp(200) =\", math.exp(200))\n"  
+//};  
+
+//uint8_t fatfs_test_mkdir(void) {
+//    FIL fnew; /* 文件对象 */
+//    FRESULT res_sd; /* 文件操作结果 */
+//    UINT fnum; /* 文件成功读写数量 */
+//    BYTE ReadBuffer[1024]= {0}; /* 读缓冲区 */
+//    BYTE WriteBuffer[1024] = {0,};//
+//    BYTE work[100]; /* Work area (larger is better for processing time) */
+//    /*--------------------- 文件系统测试：写测试 -----------------------*/
+//    /* 打开文件，如果文件不存在则创建它 */
+////    printf("\r\n****** 即将进行文件写入测试... ******\r\n");
+////    res_sd=f_open(&fnew,"1:test.lua",FA_CREATE_ALWAYS|FA_WRITE);
+////    if ( res_sd == FR_OK ) {
+////        printf("open ok write \r\n");
+////        /* 将指定存储区内容写入到文件内 */
+////        res_sd=f_write(&fnew,lua_test,sizeof(lua_test),&fnum);
+////        if (res_sd==FR_OK) {
+////            printf("ok %d\n",fnum);
+////        } else {
+////            printf("fale\n");
+////        }
+////        /* 不再读写，关闭文件 */
+////        f_close(&fnew);
+////    } else {
+////        printf("open file\r\n");
+////    }
+//    /*------------------ 文件系统测试：读测试 --------------------------*/
+//   // printf("file read\r\n");
+//    res_sd=f_open(&fnew,"1:test.lua",FA_OPEN_EXISTING|FA_READ);
+//    if (res_sd == FR_OK) {
+//       // printf("open ok\r\n");
+//        res_sd = f_read(&fnew, ReadBuffer, sizeof(ReadBuffer), &fnum);
+//        if (res_sd==FR_OK) {
+//            //printf("read: %d\r\n",fnum);
+//            //printf("read-a: \r\n%s \r\n", ReadBuffer);
+//        } else {
+//           // printf("file (%d)\n",res_sd);
+//        }
+//    } else {
+//        printf("file\r\n");
+//    }
+//    /* 不再读写，关闭文件 */
+//    f_close(&fnew);
+//    /* 不再使用文件系统，取消挂载文件系统 */
+//    //f_mount(0,"0:",0);
+//    
+//     lua_State* L;  
+//    L = luaL_newstate();  
+//    luaL_openlibs(L);  
+//  
+//    luaL_newlibtable(L, LuaLib1_0);  
+//    luaL_setfuncs(L, LuaLib1_0, 0);  
+//    //这里定义全局变量把栈顶的table赋值给LuaLib1_0，这个方式使用模块是因为无法将c模块生成动态链接库.so或.dll给LUA_CPATH_DEFAULT加载  
+//    lua_setglobal(L, "lhb");  
+//    //dostring(L,"print('hello my name is a linghaibin haha ')","Test_lua");
+//    luaL_dostring(L, ReadBuffer); /* 运行Lua脚本 */  
+//    lua_close(L);
+//}
+
+
+//void Lua_task(void)  
+//{   
+//    lua_State* L;  
+//    L = luaL_newstate();  
+//    luaL_openlibs(L);  
+//  
+//    luaL_newlibtable(L, LuaLib1_0);  
+//    luaL_setfuncs(L, LuaLib1_0, 0);  
+//    //这里定义全局变量把栈顶的table赋值给LuaLib1_0，这个方式使用模块是因为无法将c模块生成动态链接库.so或.dll给LUA_CPATH_DEFAULT加载  
+//    lua_setglobal(L, "lhb");  
+//    //dostring(L,"print('hello my name is a linghaibin haha ')","Test_lua");
+//    luaL_dostring(L, lua_test); /* 运行Lua脚本 */  
+//    lua_close(L);
+//}  
+
+//void lv_test_roller_1(void)
+//{
+//    /* Default object*/
+//    lv_obj_t *roller1 = lv_roller_create(lv_scr_act(), NULL);
+//    lv_obj_set_pos(roller1, 10, 10);
+
+
+//    static lv_style_t bg;
+//    lv_style_copy(&bg, &lv_style_pretty);
+//    bg.body.main_color = LV_COLOR_GRAY;
+//    bg.body.grad_color = LV_COLOR_WHITE;
+//    bg.body.shadow.width = 5;
+//    bg.text.line_space = 10;
+//    bg.text.opa = LV_OPA_60;
+//    bg.text.color = LV_COLOR_GRAY;
+
+//    lv_obj_t *roller2 = lv_roller_create(lv_scr_act(), NULL);
+//    lv_obj_set_size(roller2, 80, 120);
+//    lv_roller_set_options(roller2, "0\n1\n2\n3\n4\n5\n6\n7\n8\n9");
+//    lv_obj_align(roller2, roller1, LV_ALIGN_OUT_RIGHT_TOP, 20, 0);
+//    lv_roller_set_anim_time(roller2, 500);
+//    lv_roller_set_style(roller2, LV_ROLLER_STYLE_BG, &bg);
+//    lv_roller_set_style(roller2, LV_ROLLER_STYLE_SEL, &lv_style_plain);
+//    lv_roller_set_selected(roller2, 4, true);
+
+//    lv_obj_t *roller3 = lv_roller_create(lv_scr_act(), roller2);
+//    lv_obj_align(roller3, roller2, LV_ALIGN_OUT_RIGHT_TOP, 20, 0);
+//    lv_roller_set_hor_fit(roller3, false);
+//    lv_obj_set_width(roller3, LV_DPI);
+
+//}
+
+//void lcd_test(void) {
+//    int c = 100;
+//    for(int i = 0;i < 500;i++) {
+//        tft_fill(0,0,100,300,c);
+//        c+= 10;
+//        xpt2046_loop();
+//    }
+//}
+
+//const char logo[] = "\
+///*\n\
+// * This file is part of the \n\
+// *\n\
+// * Copyright (c) 2017-2018 linghaibin\n\
+// *\n\
+// */\n\
+// Welcome to use device!\n";

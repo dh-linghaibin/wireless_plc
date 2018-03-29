@@ -14,8 +14,7 @@ extern "C" {
 
 #include "gd32f10x.h"
 
-void
-wireless_init(void);
+void wireless_init(void);
 
 #ifdef __cplusplus
 }

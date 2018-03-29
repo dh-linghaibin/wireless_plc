@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\device\include;..\..\frame\include;..\..\kernel\FreeRTOS\include;..\..\kernel\FreeRTOS\portable\RVDS\ARM_CM3</IncludePath>
+              <IncludePath>..\..\device\include;..\..\frame\include;..\..\kernel\FreeRTOS\include;..\..\kernel\FreeRTOS\portable\RVDS\ARM_CM3;..\..\device\wireless</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -463,6 +463,16 @@
               <FileName>sign_configure.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\device\sign_configure.c</FilePath>
+            </File>
+            <File>
+              <FileName>sm16703p.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\sm16703p.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\delay.c</FilePath>
             </File>
           </Files>
         </Group>
