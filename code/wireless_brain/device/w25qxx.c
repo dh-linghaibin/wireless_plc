@@ -41,6 +41,7 @@ void W25QXX_Init(void) {
     SPI1_Init();//初始化SPI
     SPI1_SetSpeed(SPI_BaudRatePrescaler_2);//设置为42M时钟,高速模式 
     W25QXX_TYPE=W25QXX_ReadID();   //读取FLASH ID
+    printf("id: %x",W25QXX_TYPE);
 }  
 
 //读取W25QXX的状态寄存器
