@@ -51,7 +51,7 @@
   * @{
   */ 
 
-extern  USBD_Usr_cb_TypeDef USRD_cb;
+extern  USBD_Usr_cb_TypeDef USR_cb;
 extern  USBD_Usr_cb_TypeDef USR_FS_cb;
 extern  USBD_Usr_cb_TypeDef USR_HS_cb;
 

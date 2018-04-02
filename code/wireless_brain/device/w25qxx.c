@@ -271,5 +271,28 @@ void W25QXX_WAKEUP(void)
     SPI1_ReadWriteByte(W25X_ReleasePowerDown);   //  send W25X_PowerDown command 0xAB    
    W25QXX_CS=1;                            //取消片选              
     delay_us(3);                               //等待TRES1
-}   
+}
 
+
+
+
+void sf_ReadBuffer(uint8_t * _pBuf, uint32_t _uiReadAddr, uint32_t _uiSize)
+{
+	/* 如果读取的数据长度为0或者超出串行Flash地址空间，则直接返回 */
+	if ((_uiSize == 0) ||(_uiReadAddr + _uiSize) >  (16 * 1024 * 1024))
+	{
+		return;
+	}
+
+	/* 擦除扇区操作 */
+	W25QXX_CS=0; 									/* 使能片选 */
+	SPI1_ReadWriteByte(0x03);							/* 发送读命令 */
+	SPI1_ReadWriteByte((_uiReadAddr & 0xFF0000) >> 16);	/* 发送扇区地址的高8bit */
+	SPI1_ReadWriteByte((_uiReadAddr & 0xFF00) >> 8);		/* 发送扇区地址中间8bit */
+	SPI1_ReadWriteByte(_uiReadAddr & 0xFF);				/* 发送扇区地址低8bit */
+	while (_uiSize--)
+	{
+		*_pBuf++ = SPI1_ReadWriteByte(0XFF);			/* 读一个字节并存储到pBuf，读完后指针自加1 */
+	}
+	 W25QXX_CS=1;									/* 禁能片选 */
+}

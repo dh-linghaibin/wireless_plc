@@ -335,7 +335,7 @@
               <MiscControls> --gnu</MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,USE_USB_OTG_FS,USE_EMBEDDED_PHY</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\device\include;..\..\user\include;..\..\arch\m4\inc;..\..\arch\m4\core;..\..\lib\include;..\..\arch\m4\eth\inc;..\..\software\fatfs\src;..\..\software\fatfs\exfuns;..\..\software\lwip;..\..\software\lwip\lwip-1.4.1\src\include;..\..\software\lwip\lwip-1.4.1\src\include\ipv4;..\..\software\lwip\lwip-1.4.1\src\include\lwip;..\..\software\lwip\lwip-1.4.1\src\include\netif;..\..\software\lwip\lwip_app\lwip_comm;..\..\software\freertos\include;..\..\software\freertos\portable\RVDS\ARM_CM4F;..\..\software\ugui;..\..\software\lvgl\lvgl-master\lv_core;..\..\software\lua-5.3.4;..\..\software\lwip\port;..\..\software\lwip\port\include\arch\;..\..\software\lwip\port\include\;..\..\software\lwip\src\include;..\..\software\lwip\src\include\ipv4;..\..\software\lwip\src\include\lwip;..\..\software\lwip\src\netif;..\..\software\freertos\include;..\..\software\freertos\portable\ARM_CM4F;..\..\software\freemodbus\modbus\tcp;..\..\software\freemodbus\modbus\include;..\..\software\freemodbus\port;..\..\arch\m4\usb_otg\inc;..\..\software\usb_port\include;..\..\arch\m4\usb_device\Core\inc;..\..\arch\m4\usb_device\Class\msc\inc</IncludePath>
+              <IncludePath>..\..\device\include;..\..\user\include;..\..\arch\m4\inc;..\..\arch\m4\core;..\..\lib\include;..\..\arch\m4\eth\inc;..\..\software\fatfs\src;..\..\software\fatfs\exfuns;..\..\software\lwip;..\..\software\lwip\lwip-1.4.1\src\include;..\..\software\lwip\lwip-1.4.1\src\include\ipv4;..\..\software\lwip\lwip-1.4.1\src\include\lwip;..\..\software\lwip\lwip-1.4.1\src\include\netif;..\..\software\lwip\lwip_app\lwip_comm;..\..\software\freertos\include;..\..\software\freertos\portable\RVDS\ARM_CM4F;..\..\software\ugui;..\..\software\lvgl\lvgl-master\lv_core;..\..\software\lua-5.3.4;..\..\software\lwip\port;..\..\software\lwip\port\include\arch\;..\..\software\lwip\port\include\;..\..\software\lwip\src\include;..\..\software\lwip\src\include\ipv4;..\..\software\lwip\src\include\lwip;..\..\software\lwip\src\netif;..\..\software\freertos\include;..\..\software\freertos\portable\ARM_CM4F;..\..\software\freemodbus\modbus\tcp;..\..\software\freemodbus\modbus\include;..\..\software\freemodbus\port;..\..\arch\m4\usb_otg\inc;..\..\software\usb_port\include;..\..\arch\m4\usb_device\Core\inc;..\..\arch\m4\usb_device\Class\msc\inc;..\..\arch\m4\usb_port</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1577,56 +1577,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>usb_otg</GroupName>
-          <Files>
-            <File>
-              <FileName>usb_core.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\arch\m4\usb_otg\src\usb_core.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_dcd_int.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\arch\m4\usb_otg\src\usb_dcd_int.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_dcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\arch\m4\usb_otg\src\usb_dcd.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>usb_port</GroupName>
-          <Files>
-            <File>
-              <FileName>usb_bsp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\software\usb_port\usb_bsp.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_storage_msd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\software\usb_port\usbd_storage_msd.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\software\usb_port\usb_it.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_usr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\software\usb_port\usbd_usr.c</FilePath>
-            </File>
-            <File>
-              <FileName>usbd_desc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\software\usb_port\usbd_desc.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>usb_device</GroupName>
           <Files>
             <File>
@@ -1663,6 +1613,51 @@
               <FileName>usbd_msc_scsi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\arch\m4\usb_device\Class\msc\src\usbd_msc_scsi.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>usb_otg</GroupName>
+          <Files>
+            <File>
+              <FileName>usb_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\arch\m4\usb_otg\src\usb_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_dcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\arch\m4\usb_otg\src\usb_dcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_dcd_int.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\arch\m4\usb_otg\src\usb_dcd_int.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>usb_port</GroupName>
+          <Files>
+            <File>
+              <FileName>usb_bsp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\arch\m4\usb_port\usb_bsp.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\arch\m4\usb_port\usbd_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_storage_msd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\arch\m4\usb_port\usbd_storage_msd.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_usr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\arch\m4\usb_port\usbd_usr.c</FilePath>
             </File>
           </Files>
         </Group>

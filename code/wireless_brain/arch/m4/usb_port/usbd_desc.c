@@ -58,12 +58,12 @@
 #define USBD_PID                   0x5720
 
 #define USBD_LANGID_STRING         0x409
-#define USBD_MANUFACTURER_STRING   "STMicroelectronics"
+#define USBD_MANUFACTURER_STRING   "ALIENTEK"
 
 
 #define USBD_PRODUCT_HS_STRING        "Mass Storage in HS Mode"
 #define USBD_SERIALNUMBER_HS_STRING   "00000000001A"
-#define USBD_PRODUCT_FS_STRING        "Mass Storage in FS Mode"
+#define USBD_PRODUCT_FS_STRING        "ALIENTEK USB Card Reader"
 #define USBD_SERIALNUMBER_FS_STRING   "00000000001B"
 #define USBD_CONFIGURATION_HS_STRING  "MSC Config"
 #define USBD_INTERFACE_HS_STRING      "MSC Interface"

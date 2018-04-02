@@ -30,7 +30,7 @@
 #define FLASH_SECTOR_SIZE     512              
 //对于W25Q128
 //前12M字节给fatfs用,12M字节后,用于存放字库,字库占用3.09M.    剩余部分,给客户自己用                     
-u16        FLASH_SECTOR_COUNT=2048*16;    //W25Q1218,前12M字节给FATFS占用
+u16        FLASH_SECTOR_COUNT=2048*12;    //W25Q1218,前12M字节给FATFS占用
 #define FLASH_BLOCK_SIZE       8         //每个BLOCK有8个扇区
 
 //初始化磁盘
@@ -42,11 +42,13 @@ DSTATUS disk_initialize (
     switch(pdrv)
     {
         case SD_CARD://SD卡
+             //printf("flash");
             //res=SD_Init();//SD卡初始化 
               break;
         case EX_FLASH://外部flash
+            //printf("flash");
             W25QXX_Init();
-            FLASH_SECTOR_COUNT=2048*16;//W25Q1218,前12M字节给FATFS占用 
+            FLASH_SECTOR_COUNT=2048*12;//W25Q1218,前12M字节给FATFS占用 
              break;
         default:
             res=1; 
@@ -81,14 +83,15 @@ DRESULT disk_read (
     {
         case SD_CARD://SD卡
             //res=SD_ReadDisk(buff,sector,count);     
-            while(res)//读出错
-            {
-                //SD_Init();    //重新初始化SD卡
-                //res=SD_ReadDisk(buff,sector,count);    
-                //printf("sd rd error:%d\r\n",res);
-            }
+//            while(res)//读出错
+//            {
+//                SD_Init();    //重新初始化SD卡
+//                res=SD_ReadDisk(buff,sector,count);    
+//                //printf("sd rd error:%d\r\n",res);
+//            }
             break;
         case EX_FLASH://外部flash
+            //printf("flash r\n");
             for(;count>0;count--)
             {
                 W25QXX_Read(buff,sector*FLASH_SECTOR_SIZE,FLASH_SECTOR_SIZE);
@@ -123,17 +126,17 @@ DRESULT disk_write (
     switch(pdrv)
     {
         case SD_CARD://SD卡
-            //res=SD_WriteDisk((u8*)buff,sector,count);
-            while(res)//写出错
-            {
-                //SD_Init();    //重新初始化SD卡
-                //res=SD_WriteDisk((u8*)buff,sector,count);    
-                //printf("sd wr error:%d\r\n",res);
-            }
+//            res=SD_WriteDisk((u8*)buff,sector,count);
+//            while(res)//写出错
+//            {
+//                SD_Init();    //重新初始化SD卡
+//                res=SD_WriteDisk((u8*)buff,sector,count);    
+//                //printf("sd wr error:%d\r\n",res);
+//            }
             break;
         case EX_FLASH://外部flash
             for(;count>0;count--)
-            {
+            {                                            
                 W25QXX_Write((u8*)buff,sector*FLASH_SECTOR_SIZE,FLASH_SECTOR_SIZE);
                 sector++;
                 buff+=FLASH_SECTOR_SIZE;
@@ -156,9 +159,9 @@ DRESULT disk_write (
  //*buff:发送/接收缓冲区指针
 #if _USE_IOCTL
 DRESULT disk_ioctl (
-    BYTE pdrv,/* Physical drive nmuber (0..) */
-    BYTE cmd,/* Control code */
-    void *buff/* Buffer to send/receive control data */
+    BYTE pdrv,        /* Physical drive nmuber (0..) */
+    BYTE cmd,        /* Control code */
+    void *buff        /* Buffer to send/receive control data */
 )
 {
     DRESULT res;                                           
@@ -170,7 +173,7 @@ DRESULT disk_ioctl (
                 res = RES_OK; 
                 break;     
             case GET_SECTOR_SIZE:
-                *(DWORD*)buff = 512; 
+                //*(DWORD*)buff = 512; 
                 res = RES_OK;
                 break;     
             case GET_BLOCK_SIZE:
@@ -178,7 +181,7 @@ DRESULT disk_ioctl (
                 res = RES_OK;
                 break;     
             case GET_SECTOR_COUNT:
-                //*(DWORD*)buff = SDCardInfo.CardCapacity/512;
+               // *(DWORD*)buff = SDCardInfo.CardCapacity/512;
                 res = RES_OK;
                 break;
             default:
@@ -214,19 +217,19 @@ DRESULT disk_ioctl (
 #endif
 //获得时间
 //User defined function to give a current time to fatfs module      */
-//31-25: Year(0-127 org.1980), 24-21: Month(1-12), 20-16: Day(1-31) */
-//15-11: Hour(0-23), 10-5: Minute(0-59), 4-0: Second(0-29 *2) */
+//31-25: Year(0-127 org.1980), 24-21: Month(1-12), 20-16: Day(1-31) */                                                                                                                                                                                                                                          
+//15-11: Hour(0-23), 10-5: Minute(0-59), 4-0: Second(0-29 *2) */                                                                                                                                                                                                                                                
 DWORD get_fattime (void)
-{
+{                 
     return 0;
-}
+}             
 //动态分配内存
-void *ff_memalloc (UINT size)
+void *ff_memalloc (UINT size)            
 {
     return (void*)mymalloc(SRAMIN,size);
 }
 //释放内存
-void ff_memfree (void* mf)
+void ff_memfree (void* mf)         
 {
     myfree(SRAMIN,mf);
 }

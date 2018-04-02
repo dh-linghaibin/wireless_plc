@@ -79,7 +79,7 @@ uint8_t   SCSI_Sense_Tail;
 uint32_t  SCSI_blk_size;
 uint32_t  SCSI_blk_nbr;
 
-uint32_t  SCSI_blk_addr;
+uint64_t  SCSI_blk_addr;	//对大于4GB的SD卡,要用64位表示
 uint32_t  SCSI_blk_len;
 
 USB_OTG_CORE_HANDLE  *cdev;

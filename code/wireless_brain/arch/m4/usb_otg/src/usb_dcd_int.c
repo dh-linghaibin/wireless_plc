@@ -27,8 +27,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usb_dcd_int.h"
-#include "usb_conf.h"		/* armfly add */
-
 /** @addtogroup USB_OTG_DRIVER
 * @{
 */
