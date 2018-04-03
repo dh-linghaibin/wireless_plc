@@ -35,9 +35,23 @@ extern "C" {
 #define PINK        0xF81F
 
 
+//扫描方向定义
+#define L2R_U2D  0 //从左到右,从上到下
+#define L2R_D2U  1 //从左到右,从下到上
+#define R2L_U2D  2 //从右到左,从上到下
+#define R2L_D2U  3 //从右到左,从下到上
+
+#define U2D_L2R  4 //从上到下,从左到右
+#define U2D_R2L  5 //从上到下,从右到左
+#define D2U_L2R  6 //从下到上,从左到右
+#define D2U_R2L  7 //从下到上,从右到左	 
+
+#define DFT_SCAN_DIR  D2U_L2R  //默认的扫描方向
+
 //void tft_init(const char* name);
 void tft_init(void);
-void tft_fill(u16 sx,u16 sy,u16 ex,u16 ey,u16 color);
+void lcd_set_dir(u8 dir);
+void lcd_fill(u16 sx,u16 sy,u16 ex,u16 ey,u16 color);
 void monitor_flush(int32_t sx, int32_t sy, int32_t ex, int32_t ey, const u16 *color_p);
 
 #ifdef __cplusplus

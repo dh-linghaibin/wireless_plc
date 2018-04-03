@@ -2420,7 +2420,7 @@ FRESULT f_open (
     DIR dj;
     BYTE *dir;
     DEF_NAMEBUF;
-
+    printf("open %s %d \n",path,mode);
 
     if (!fp) return FR_INVALID_OBJECT;
     fp->fs = 0;            /* Clear file object */

@@ -177,4 +177,4 @@ void tcp_server_init(void) {
     sys_thread_new("tcp_server_thread",  modbus_task, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO - 1);  
     sys_thread_new("tcp_server_thread",  modbus_task2, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO - 1);  
     sys_thread_new("tcp_server_thread",  modbus_task3, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO - 1);  
-}  
+}
