@@ -103,7 +103,7 @@ void SPI3_Init(void) {
     SPI_Init(SPI3, &SPI_InitStructure);  //根据SPI_InitStruct中指定的参数初始化外设SPIx寄存器
     SPI_Cmd(SPI3, ENABLE); //使能SPI外设
     
-    SPI3_SetSpeed(SPI_BaudRatePrescaler_2);
+    SPI3_SetSpeed(SPI_BaudRatePrescaler_256);
     //SPI1_ReadWriteByte(0xff);//启动传输
 }   
 //SPI1速度设置函数

@@ -11,13 +11,13 @@
 #include <string.h>
 
 #define MB_TCP_DEFAULT_PORT  502          /* TCP listening port. */
-#define MB_TCP_BUF_SIZE     ( 256 + 7 )   /* Must hold a complete Modbus TCP frame. */
+#define MB_TCP_BUF_SIZE     ( 50 + 7 )   /* Must hold a complete Modbus TCP frame. */
 
 /* ----------------------- Prototypes ---------------------------------------*/
-UCHAR    ucTCPRequestFrame[263];
+UCHAR    ucTCPRequestFrame[50];
 USHORT   ucTCPRequestLen;
 
-UCHAR    ucTCPResponseFrame[263];
+UCHAR    ucTCPResponseFrame[50];
 USHORT   ucTCPResponseLen;
 
 BOOL   bFrameSent = FALSE;

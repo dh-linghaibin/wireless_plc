@@ -88,6 +88,7 @@ task.h is included from an application file. */
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "malloc.h"
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
@@ -99,7 +100,7 @@ void *pvReturn;
 
 	vTaskSuspendAll();
 	{
-		pvReturn = malloc( xWantedSize );
+		pvReturn = l_malloc( xWantedSize );
 		traceMALLOC( pvReturn, xWantedSize );
 	}
 	( void ) xTaskResumeAll();
@@ -124,7 +125,7 @@ void vPortFree( void *pv )
 	{
 		vTaskSuspendAll();
 		{
-			free( pv );
+			l_free( pv );
 			traceFREE( pv, 0 );
 		}
 		( void ) xTaskResumeAll();

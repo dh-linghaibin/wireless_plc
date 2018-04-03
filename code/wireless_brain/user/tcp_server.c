@@ -6,70 +6,10 @@
 #include "mb.h"
 #include "mbutils.h"
 
-#define PORT 502  
-  
-uint8_t data_buffer[100];  
-  
-static void tcp_server_thread(void *p_arg)  
-{  
-    struct sockaddr_in server_addr;
-    struct sockaddr_in conn_addr;
-    int sock_fd;/* server socked */
-    int sock_conn;/* request socked */
-    socklen_t addr_len;
-    int err;
-    int length;
-    int count = 0;
-    
-    eMBTCPInit(PORT);
-    eMBEnable();
-      
-    sock_fd = socket(AF_INET, SOCK_STREAM, 0);  
-    if (sock_fd == -1) {
-        
-    }
-      
-    server_addr.sin_family = AF_INET;  
-    server_addr.sin_addr.s_addr =htonl(INADDR_ANY);  
-    server_addr.sin_port = htons(PORT);  
-      
-    err = bind(sock_fd, (struct sockaddr *)&server_addr, sizeof(server_addr));  
-    if (err < 0) {  
-        
-    }
-
-    err = listen(sock_fd, 1);  
-    if (err < 0) {  
-        
-    }
-
-    addr_len = sizeof(struct sockaddr_in);  
-      
-    printf("before accept!\n");  
-    sock_conn = accept(sock_fd, (struct sockaddr *)&conn_addr, &addr_len);  
-    printf("after accept!\n");  
-      
-    while (1) {        
-        eMBPoll();
-//        length = recv(sock_conn, (unsigned int *)data_buffer, 20, 0);  
-//        if(length > 0) {
-//            printf("length received %d\n", length);  
-//            printf("received string: %s\n", data_buffer);  
-//            printf("received count: %d\n", count);  
-//      
-//            //send(sock_conn, "good", 5, 0);
-//        } else {
-//            printf("before accept!\n");  
-//            sock_conn = accept(sock_fd, (struct sockaddr *)&conn_addr, &addr_len);  
-//            printf("after accept!\n"); 
-//        }
-    }  
-}  
-
-extern UCHAR    ucTCPRequestFrame[263];
+extern UCHAR    ucTCPRequestFrame[50];
 extern USHORT   ucTCPRequestLen;
 
-extern UCHAR    ucTCPResponseFrame[263];
+extern UCHAR    ucTCPResponseFrame[50];
 extern USHORT   ucTCPResponseLen;
 
 extern BOOL   bFrameSent;
@@ -82,10 +22,10 @@ void modbus_tcp_server(int conn)
   int i;
     
   printf("start modbus tcp\r\n");
-  ret = read(conn, ucTCPRequestFrame, 263); 
+  ret = read(conn, ucTCPRequestFrame, 50); 
   while ( ret > 0 )
   {
-      ret = read(conn, ucTCPRequestFrame, 263);
+      ret = read(conn, ucTCPRequestFrame, 50);
       printf("\r\n>:");  // debug print
       for(i=0; i<ret; i++)
       {
@@ -174,7 +114,7 @@ void modbus_task3(void *p) {
 }
 
 void tcp_server_init(void) {
-    sys_thread_new("tcp_server_thread",  modbus_task, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO - 1);  
-    sys_thread_new("tcp_server_thread",  modbus_task2, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO - 1);  
-    sys_thread_new("tcp_server_thread",  modbus_task3, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO - 1);  
+    sys_thread_new("tcp_server_thread",  modbus_task, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO );  
+    sys_thread_new("tcp_server_thread",  modbus_task2, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO );  
+    sys_thread_new("tcp_server_thread",  modbus_task3, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO );  
 }

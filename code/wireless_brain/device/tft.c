@@ -62,6 +62,160 @@ void LCD_WriteRAM_Prepare(void) {
     LCD->LCD_REG = 0X2C;
 }
 
+void LCD_SSD_BackLightSet(u8 pwm)
+{	
+	LCD_WR_REG(0xBE);	//配置PWM输出
+	LCD_WR_DATA(0x05);	//1设置PWM频率
+	LCD_WR_DATA(pwm*2.55);//2设置PWM占空比
+	LCD_WR_DATA(0x01);	//3设置C
+	LCD_WR_DATA(0xFF);	//4设置D
+	LCD_WR_DATA(0x00);	//5设置E
+	LCD_WR_DATA(0x00);	//6设置F
+}
+
+
+#define LCD_ILI9341_CMD  LCD_WR_REG
+#define LCD_ILI9341_Parameter LCD_WR_DATA
+#define delayms  delay_ms
+
+void ILI9341_HSD32_Initial(void)
+{
+//************* Start Initial Sequence **********//
+	//20171122 OK
+LCD_ILI9341_CMD(0xcf); 
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0xC1);//0x99
+LCD_ILI9341_Parameter(0x30);
+LCD_ILI9341_CMD(0xed); 
+LCD_ILI9341_Parameter(0x64);
+LCD_ILI9341_Parameter(0x03);
+LCD_ILI9341_Parameter(0x12);
+LCD_ILI9341_Parameter(0x81);
+LCD_ILI9341_CMD(0xe8); 
+LCD_ILI9341_Parameter(0x85);
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x78);	
+LCD_ILI9341_CMD(0xcb); 
+LCD_ILI9341_Parameter(0x39);
+LCD_ILI9341_Parameter(0x2c);
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x34);
+LCD_ILI9341_Parameter(0x02);
+LCD_ILI9341_CMD(0xF7); 
+LCD_ILI9341_Parameter(0x20);
+LCD_ILI9341_CMD(0xea); 
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x00);
+
+LCD_ILI9341_CMD(0xC0); //Power control
+LCD_ILI9341_Parameter(0x23); //VRH[5:0]  23 20171122
+
+LCD_ILI9341_CMD(0xC1); //Power control
+LCD_ILI9341_Parameter(0x12); //SAP[2:0];BT[3:0]
+
+LCD_ILI9341_CMD(0xC2);
+LCD_ILI9341_Parameter(0x11);
+
+LCD_ILI9341_CMD(0xC5); //VCM control
+LCD_ILI9341_Parameter(0x40);
+LCD_ILI9341_Parameter(0x30);//调对比度，调大变浅，调小变深 
+
+LCD_ILI9341_CMD(0xC7); 
+LCD_ILI9341_Parameter(0xA8);//调水波纹,VCOML调小时，C7要调大  B6  A5
+
+LCD_ILI9341_CMD(0xB1); // Frame Rate Control
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x18);//18
+
+LCD_ILI9341_CMD(0x3A); 
+LCD_ILI9341_Parameter(0x55);
+
+//LCD_ILI9341_CMD(0x36); // Memory Access Control
+//LCD_ILI9341_Parameter(0x08);//48
+
+LCD_ILI9341_CMD(0x36);     //set the model of scanning
+//LCD_ILI9341_Parameter((1<<5)|(0<<6)|(1<<7)|(1<<3)); //左横屏
+LCD_ILI9341_Parameter((1<<5)|(1<<6)|(1<<3));//右横屏幕
+//LCD_ILI9341_Parameter(0x08); 竖屏幕
+LCD_ILI9341_CMD(0x2B);     //set the page address 横屏幕设置
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0xEF);
+LCD_ILI9341_CMD(0x2A);    //set the column address
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x01);
+LCD_ILI9341_Parameter(0x3F);
+//        LCD_ILI9341_CMD(0x2A);     //set the page address 竖屏幕设置
+//        LCD_ILI9341_Parameter(0x00);
+//        LCD_ILI9341_Parameter(0x00);
+//        LCD_ILI9341_Parameter(0x00);
+//        LCD_ILI9341_Parameter(0xEF);
+//        LCD_ILI9341_CMD(0x2B);    //set the column address
+//        LCD_ILI9341_Parameter(0x00);
+//        LCD_ILI9341_Parameter(0x00);
+//        LCD_ILI9341_Parameter(0x01);
+//        LCD_ILI9341_Parameter(0x3F);
+
+
+LCD_ILI9341_CMD(0xB6); // Display Function Control
+LCD_ILI9341_Parameter(0x0a);
+LCD_ILI9341_Parameter(0xa2);
+
+LCD_ILI9341_CMD(0xF6); //20171122
+LCD_ILI9341_Parameter(0x01);
+LCD_ILI9341_Parameter(0x30);
+
+LCD_ILI9341_CMD(0xF2); // 3Gamma Function Disable
+LCD_ILI9341_Parameter(0x00);
+
+LCD_ILI9341_CMD(0xF7);//Pump ratio control (F7h)
+LCD_ILI9341_Parameter(0x20);
+
+LCD_ILI9341_CMD(0x26); //Gamma curve selected
+LCD_ILI9341_Parameter(0x01);
+
+LCD_ILI9341_CMD(0xE0); //Set Gamma
+LCD_ILI9341_Parameter(0x1f);
+LCD_ILI9341_Parameter(0x24);
+LCD_ILI9341_Parameter(0x23);
+LCD_ILI9341_Parameter(0x0b);
+LCD_ILI9341_Parameter(0x0f);
+LCD_ILI9341_Parameter(0x08);
+LCD_ILI9341_Parameter(0x50);
+LCD_ILI9341_Parameter(0xd8);
+LCD_ILI9341_Parameter(0x3b);
+LCD_ILI9341_Parameter(0x08);
+LCD_ILI9341_Parameter(0x0a);
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x00);
+
+LCD_ILI9341_CMD(0XE1); //Set Gamma
+LCD_ILI9341_Parameter(0x00);
+LCD_ILI9341_Parameter(0x1b);
+LCD_ILI9341_Parameter(0x1c);
+LCD_ILI9341_Parameter(0x04);
+LCD_ILI9341_Parameter(0x10);
+LCD_ILI9341_Parameter(0x07);
+LCD_ILI9341_Parameter(0x2f);
+LCD_ILI9341_Parameter(0x27);
+LCD_ILI9341_Parameter(0x44);
+LCD_ILI9341_Parameter(0x07);
+LCD_ILI9341_Parameter(0x15);
+LCD_ILI9341_Parameter(0x0f);
+LCD_ILI9341_Parameter(0x3f);
+LCD_ILI9341_Parameter(0x3f);
+LCD_ILI9341_Parameter(0x1F);
+
+LCD_ILI9341_CMD(0x11); //Exit Sleep
+delay_ms(60);
+LCD_ILI9341_CMD(0x29); //display on
+
+}
+
 void tft_init(void) {
     GPIO_InitTypeDef  GPIO_InitStructure;
     FSMC_NORSRAMInitTypeDef  FSMC_NORSRAMInitStructure;
@@ -234,154 +388,8 @@ void tft_init(void) {
         FSMC_Bank1E->BWTR[6]&=~(0XF<<8);//数据保存时间清零
         FSMC_Bank1E->BWTR[6]|=3<<0;        //地址建立时间(ADDSET)为3个HCLK =18ns       
         FSMC_Bank1E->BWTR[6]|=2<<8;     //数据保存时间(DATAST)为6ns*3个HCLK=18ns
-        LCD_WR_REG(0xCF);  
-        LCD_WR_DATA(0x00); 
-        LCD_WR_DATA(0xC1); 
-        LCD_WR_DATA(0X30); 
-        LCD_WR_REG(0xED);  
-        LCD_WR_DATA(0x64); 
-        LCD_WR_DATA(0x03); 
-        LCD_WR_DATA(0X12); 
-        LCD_WR_DATA(0X81); 
-        LCD_WR_REG(0xE8);  
-        LCD_WR_DATA(0x85); 
-        LCD_WR_DATA(0x10); 
-        LCD_WR_DATA(0x7A); 
-        LCD_WR_REG(0xCB);  
-        LCD_WR_DATA(0x39); 
-        LCD_WR_DATA(0x2C); 
-        LCD_WR_DATA(0x00); 
-        LCD_WR_DATA(0x34); 
-        LCD_WR_DATA(0x02); 
-        LCD_WR_REG(0xF7);  
-        LCD_WR_DATA(0x20); 
-        LCD_WR_REG(0xEA);  
-        LCD_WR_DATA(0x00); 
-        LCD_WR_DATA(0x00); 
-        LCD_WR_REG(0xC0);    //Power control 
-        LCD_WR_DATA(0x1B);   //VRH[5:0] 
-        LCD_WR_REG(0xC1);    //Power control 
-        LCD_WR_DATA(0x01);   //SAP[2:0];BT[3:0] 
-        LCD_WR_REG(0xC5);    //VCM control 
-        LCD_WR_DATA(0x30);      //3F
-        LCD_WR_DATA(0x30);      //3C
-        LCD_WR_REG(0xC7);    //VCM control2 
-        LCD_WR_DATA(0XB7); 
-        LCD_WR_REG(0x36);    // Memory Access Control 
-        LCD_WR_DATA(0x48); 
-        LCD_WR_REG(0x3A);   
-        LCD_WR_DATA(0x55); 
-        LCD_WR_REG(0xB1);   
-        LCD_WR_DATA(0x00);   
-        LCD_WR_DATA(0x1A); 
-        LCD_WR_REG(0xB6);    // Display Function Control 
-        LCD_WR_DATA(0x0A); 
-        LCD_WR_DATA(0xA2); 
-        LCD_WR_REG(0xF2);    // 3Gamma Function Disable 
-        LCD_WR_DATA(0x00); 
-        LCD_WR_REG(0x26);    //Gamma curve selected 
-        LCD_WR_DATA(0x01); 
-        LCD_WR_REG(0xE0);    //Set Gamma 
-        LCD_WR_DATA(0x0F); 
-        LCD_WR_DATA(0x2A); 
-        LCD_WR_DATA(0x28); 
-        LCD_WR_DATA(0x08); 
-        LCD_WR_DATA(0x0E); 
-        LCD_WR_DATA(0x08); 
-        LCD_WR_DATA(0x54); 
-        LCD_WR_DATA(0XA9); 
-        LCD_WR_DATA(0x43); 
-        LCD_WR_DATA(0x0A); 
-        LCD_WR_DATA(0x0F); 
-        LCD_WR_DATA(0x00); 
-        LCD_WR_DATA(0x00); 
-        LCD_WR_DATA(0x00); 
-        LCD_WR_DATA(0x00);          
-        LCD_WR_REG(0XE1);    //Set Gamma 
-        LCD_WR_DATA(0x00); 
-        LCD_WR_DATA(0x15); 
-        LCD_WR_DATA(0x17); 
-        LCD_WR_DATA(0x07); 
-        LCD_WR_DATA(0x11); 
-        LCD_WR_DATA(0x06); 
-        LCD_WR_DATA(0x2B); 
-        LCD_WR_DATA(0x56); 
-        LCD_WR_DATA(0x3C); 
-        LCD_WR_DATA(0x05); 
-        LCD_WR_DATA(0x10); 
-        LCD_WR_DATA(0x0F); 
-        LCD_WR_DATA(0x3F); 
-        LCD_WR_DATA(0x3F); 
-        LCD_WR_DATA(0x0F); 
-        LCD_WR_REG(0x2B); 
-        LCD_WR_DATA(0x00);
-        LCD_WR_DATA(0x00);
-        LCD_WR_DATA(0x01);
-        LCD_WR_DATA(0x3f);
-        LCD_WR_REG(0x2A); 
-        LCD_WR_DATA(0x00);
-        LCD_WR_DATA(0x00);
-        LCD_WR_DATA(0x00);
-        LCD_WR_DATA(0xef);
-        LCD_WR_REG(0x11); //Exit Sleep
-        delay_ms(120);
-        LCD_WR_REG(0x29); //display on
+        ILI9341_HSD32_Initial();
         GPIO_SetBits(GPIOF,GPIO_Pin_6);
-        //lcd_fill(0,0,240,240,PINK);
-        lcd_set_dir(0);
-    }
-}
-
-//设置LCD的自动扫描方向
-//注意:其他函数可能会受到此函数设置的影响(尤其是9341/6804这两个奇葩),
-//所以,一般设置为L2R_U2D即可,如果设置为其他扫描方式,可能导致显示不正常.
-//dir:0~7,代表8个方向(具体定义见lcd.h)
-//9320/9325/9328/4531/4535/1505/b505/5408/9341/5310/5510/1963等IC已经实际测试              
-void LCD_Scan_Dir(u8 dir,uint16_t width,uint16_t height) {
-    u16 regval=0;
-    u16 dirreg=0;
-    u16 temp;  
-    switch(dir) {
-        case L2R_U2D://从左到右,从上到下
-            regval|=(0<<7)|(0<<6)|(0<<5); 
-        break;
-        case L2R_D2U://从左到右,从下到上
-            regval|=(1<<7)|(0<<6)|(0<<5); 
-        break;
-        case R2L_U2D://从右到左,从上到下
-            regval|=(0<<7)|(1<<6)|(0<<5); 
-        break;
-        case R2L_D2U://从右到左,从下到上
-            regval|=(1<<7)|(1<<6)|(0<<5); 
-        break;     
-        case U2D_L2R://从上到下,从左到右
-            regval|=(0<<7)|(0<<6)|(1<<5); 
-        break;
-        case U2D_R2L://从上到下,从右到左
-            regval|=(0<<7)|(1<<6)|(1<<5); 
-        break;
-        case D2U_L2R://从下到上,从左到右
-            regval|=(1<<7)|(0<<6)|(1<<5); 
-        break;
-        case D2U_R2L://从下到上,从右到左
-            regval|=(1<<7)|(1<<6)|(1<<5); 
-        break;
-    }
-    LCD_WriteReg(dirreg,regval);
-    LCD_WR_REG(0X2A); 
-    LCD_WR_DATA(0);LCD_WR_DATA(0);
-    LCD_WR_DATA((width-1)>>8);LCD_WR_DATA((width-1)&0XFF);
-    LCD_WR_REG(0X2B); 
-    LCD_WR_DATA(0);LCD_WR_DATA(0);
-    LCD_WR_DATA((height-1)>>8);LCD_WR_DATA((height-1)&0XFF);
-}     
-//设置LCD显示方向
-//dir:0,竖屏；1,横屏
-void lcd_set_dir(u8 dir) {
-    if(dir==0) {//竖屏
-        LCD_Scan_Dir(DFT_SCAN_DIR,240,320);
-    } else {//横屏
-        LCD_Scan_Dir(DFT_SCAN_DIR,320,240);
     }
 }
 

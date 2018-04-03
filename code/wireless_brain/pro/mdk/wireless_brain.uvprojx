@@ -1294,6 +1294,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\software\lua-5.3.4\lua.c</FilePath>
             </File>
+            <File>
+              <FileName>equipment.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\port\equipment.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1525,9 +1530,9 @@
               <FilePath>..\..\software\freertos\portable\ARM_CM4F\port.c</FilePath>
             </File>
             <File>
-              <FileName>heap_4.c</FileName>
+              <FileName>heap_3.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\software\freertos\portable\MemMang\heap_4.c</FilePath>
+              <FilePath>..\..\software\freertos\portable\MemMang\heap_3.c</FilePath>
             </File>
           </Files>
         </Group>
