@@ -28,7 +28,7 @@ static void ETH_NVIC_Config(void);
 #include "netif.h"
 #include <stdio.h>
 
-struct netif xnetif; /* network interface structure */
+static struct netif xnetif; /* network interface structure */
 
 //lwip控制结构体
 typedef struct  
@@ -45,7 +45,7 @@ typedef struct
 					//2,成功获取DHCP地址
 					//0XFF,获取失败.
 }__lwip_dev;
-__lwip_dev lwipdev;						//lwip控制结构体 
+static __lwip_dev lwipdev;						//lwip控制结构体 
 
 //lwip 默认IP设置
 //lwipx:lwip控制结构体指针
@@ -86,7 +86,6 @@ static void b_lwip_init(void) {
   ip_addr_t ipaddr;
   ip_addr_t netmask;
   ip_addr_t gw;
-
   /* Create tcp_ip stack thread */
   tcpip_init( NULL, NULL );	
   lwip_comm_default_ip_set(&lwipdev);	//设置默认IP等信息

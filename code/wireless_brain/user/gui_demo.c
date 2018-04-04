@@ -89,8 +89,8 @@ void demo_create(void)
 #endif
 
     lv_obj_t *tab1 = lv_tabview_add_tab(tv, "Write");
-    lv_obj_t *tab2 = lv_tabview_add_tab(tv, "List");
-    lv_obj_t *tab3 = lv_tabview_add_tab(tv, "Chart");
+ //   lv_obj_t *tab2 = lv_tabview_add_tab(tv, "List");
+   // lv_obj_t *tab3 = lv_tabview_add_tab(tv, "Chart");
 
 #if DEMO_WALLPAPER == 0
     /*Blue bg instead of wallpaper*/
@@ -104,8 +104,8 @@ void demo_create(void)
     lv_tabview_set_style(tv, LV_TABVIEW_STYLE_BTN_TGL_PR, &style_tv_btn_pr);
 
     write_create(tab1);
-    list_create(tab2);
-    chart_create(tab3);
+//    list_create(tab2);
+//    chart_create(tab3);
 }
 
 

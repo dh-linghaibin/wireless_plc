@@ -41,8 +41,8 @@ typedef enum {
    static volatile lv_vdb_state_t vdb_state = LV_VDB_STATE_ACTIVE;
 #  if LV_VDB_ADR == 0
      /*If the buffer address is not specified  simply allocate it*/
-     static lv_color_t vdb_buf[LV_VDB_SIZE];
-     static lv_vdb_t vdb = {.buf = vdb_buf};//{.buf = vdb_buf};
+     //static lv_color_t vdb_buf[LV_VDB_SIZE];
+     static lv_vdb_t vdb;// = {.buf = vdb_buf};//{.buf = vdb_buf};
 #  else
      /*If the buffer address is specified use that address*/
      static lv_vdb_t vdb = {.buf = (lv_color_t *)LV_VDB_ADR};
@@ -72,10 +72,11 @@ typedef enum {
 /* mallor mey
 */
 void lv_vdb_init(void) {
+    vdb.buf = l_malloc(sizeof(lv_color16_t)*LV_VDB_SIZE);
     //vdb.buf = mymalloc(SRAMEX,sizeof(lv_color16_t)*LV_VDB_SIZE);
-    for(int i = 0;i < LV_VDB_SIZE;i++) {
-        vdb_buf[i].full = 0x55;
-    }
+//    for(int i = 0;i < LV_VDB_SIZE;i++) {
+//        vdb_buf[i].full = 0x55;
+//    }
 }
    
 /**

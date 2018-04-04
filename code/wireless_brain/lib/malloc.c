@@ -170,3 +170,11 @@ void *l_malloc(u32 size) {
 void l_free(void *ptr) {
     return myfree(SRAMEX,ptr);
 }
+
+void *lf_malloc(u32 size) {
+    return mymalloc(SRAMIN,size);
+}
+
+void lf_free(void *ptr) {
+    return myfree(SRAMIN,ptr);
+}

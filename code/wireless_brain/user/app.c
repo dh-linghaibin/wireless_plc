@@ -95,6 +95,8 @@ void TaskA( void *pvParameters );
 void TaskB( void *pvParameters );  
 
 
+lua_State* L;
+
 int main(void) {
     delay_init(168);
     uart_init(115200);
@@ -107,7 +109,9 @@ int main(void) {
     my_mem_init(SRAMCCM);//初始化CCM内存池
     SPI3_Init();
     xpt2046_init();
-    
+    can1_init(CAN_SJW_1tq,CAN_BS1_8tq,CAN_BS2_1tq,168,CAN_Mode_LoopBack);
+    L = luaL_newstate();
+    luaL_openlibs(L);
     
     W25QXX_Init();
     //W25QXX_Erase_Chip();
@@ -137,7 +141,7 @@ int main(void) {
         
        // fatfs_test_mkdir();
     }
-    USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
+    //USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
     
     lv_vdb_init();
     lv_init();
@@ -156,16 +160,18 @@ int main(void) {
     /*Create a simple base object*/
     demo_create();
     Lua_task();
-  //  eth_init();
-    //tcp_server_init();
-    xTaskCreate(vtask_gui_tic, "ui", 512, NULL, 2, NULL);
+    eth_init();
+    eMBTCPInit(502);      
+    eMBEnable();
+   // tcp_server_init();
+    xTaskCreate(vtask_gui_tic, "ui", 512, NULL, 3, NULL);
      /* 建立队列 */  
-    MsgQueue = xQueueCreate( 5 , sizeof( int16_t ) );  
+   // MsgQueue = xQueueCreate( 5 , sizeof( int16_t ) );  
     /* 建立任务 */  
-    xTaskCreate( TaskA, ( signed portCHAR * ) "TaskA", 512,  
-                            NULL, tskIDLE_PRIORITY+1, NULL );  
+    xTaskCreate( TaskA, ( signed portCHAR * ) "TaskA", 2048,  
+                            NULL, tskIDLE_PRIORITY+3, NULL );  
     xTaskCreate( TaskB, ( signed portCHAR * ) "TaskB", 512,  
-                            NULL, tskIDLE_PRIORITY+1, NULL );  
+                            NULL, tskIDLE_PRIORITY+2, NULL );  
     vTaskStartScheduler();
     while(1);
 }
@@ -173,13 +179,16 @@ int main(void) {
 /*-----------------------------------------------------------*/  
 void TaskA( void *pvParameters )  
 {  
+    u8 canbuf[8];
     int16_t SendNum = 1;  
     for( ;; )  
     {  
         vTaskDelay( 1000/portTICK_RATE_MS );  
+        can1_send_msg(canbuf,8);
+        //Lua_task();
         /* 向队列中填充内容 */  
-        xQueueSend( MsgQueue, ( void* )&SendNum, 0 );  
-        SendNum++;  
+        //xQueueSend( MsgQueue, ( void* )&SendNum, 0 );  
+       // SendNum++;  
     }  
 }  
 void TaskB( void *pvParameters )  
@@ -187,28 +196,25 @@ void TaskB( void *pvParameters )
     int16_t ReceiveNum = 0;  
     for( ;; )  
     {  
+        vTaskDelay( 1000/portTICK_RATE_MS );  
         /* 从队列中获取内容 */  
-        if( xQueueReceive( MsgQueue, &ReceiveNum, 100/portTICK_RATE_MS ) == pdPASS)  
-        {  
+        //if( xQueueReceive( MsgQueue, &ReceiveNum, 100/portTICK_RATE_MS ) == pdPASS) {
             printf("ReceiveNum:%d\r\n",ReceiveNum);  
-        }  
+       // }
     }  
 }  
 
 
 void Lua_task(void)  
 {   
-    lua_State* L;
-    L = luaL_newstate();
-    luaL_openlibs(L);
     if (luaL_dofile(L,"1:test.lua")!=0)//加载sd卡中的Lua.lua并运行  
           printf(lua_tostring(L,-1));
 }  
 
 void vtask_gui_tic(void *pvParameters) {
     while(1) {
-        vTaskDelay(1 / portTICK_RATE_MS);
-        lv_tick_inc(1);
+        vTaskDelay(5 / portTICK_RATE_MS);
+        lv_tick_inc(5);
         lv_task_handler();
         xpt2046_loop();
     }
