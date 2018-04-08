@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef _DELAY_H_
-#define _DELAY_H_
+#ifndef _LAN8720_H_
+#define _LAN8720_H_
 
 #ifdef __cplusplus
 extern "C" {

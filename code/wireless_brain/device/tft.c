@@ -238,6 +238,8 @@ void tft_init(void) {
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;//100MHz
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
     GPIO_Init(GPIOD, &GPIO_InitStructure);//初始化 //PB15 推挽输出,控制背光
+    PDout(7) = 0;
+    delay_ms(50);
     PDout(7) = 1;
     
     GPIO_InitStructure.GPIO_Pin = (3<<0)|(3<<4)|(7<<8)|(3<<14);//PD0,1,4,5,8,9,10,14,15 AF OUT

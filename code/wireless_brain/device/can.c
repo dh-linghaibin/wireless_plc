@@ -7,6 +7,7 @@
  
 #include "can.h"
 #include <stdio.h>
+#include "task_can.h"
 
 u8 can1_init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode) {
     GPIO_InitTypeDef GPIO_InitStructure; 
@@ -63,7 +64,7 @@ u8 can1_init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode) {
     CAN_ITConfig(CAN1,CAN_IT_FMP0,ENABLE);//FIFO0消息挂号中断允许.            
 
     NVIC_InitStructure.NVIC_IRQChannel = CAN1_RX0_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;     // 主优先级为1
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 5;     // 主优先级为1
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;            // 次优先级为0
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
@@ -74,11 +75,17 @@ u8 can1_init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode) {
 #if CAN1_RX0_INT_ENABLE    //使能RX0中断
 //中断服务函数                
 void CAN1_RX0_IRQHandler(void) {
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;//中断中唤醒新任务
+    //taskENTER_CRITICAL();//进入中断
     CanRxMsg RxMessage;
-    int i=0;
     CAN_Receive(CAN1, 0, &RxMessage);
-    for(i=0;i<8;i++)
-    printf("rxbuf[%d]:%d\r\n",i,RxMessage.Data[i]);
+    if(task_can_get_queue() != NULL) {
+        xQueueSendFromISR( task_can_get_queue(), &RxMessage, 0 );
+    }
+   // taskEXIT_CRITICAL();
+    if( xHigherPriorityTaskWoken != pdFALSE ) {
+        portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );//强制上下文切换
+    }
 }
 #endif
 

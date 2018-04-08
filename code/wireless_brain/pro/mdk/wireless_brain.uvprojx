@@ -400,9 +400,19 @@
               <FilePath>..\..\user\mbserver.c</FilePath>
             </File>
             <File>
-              <FileName>tcp_server.c</FileName>
+              <FileName>task_file.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\user\tcp_server.c</FilePath>
+              <FilePath>..\..\user\task_file.c</FilePath>
+            </File>
+            <File>
+              <FileName>task_gui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\user\task_gui.c</FilePath>
+            </File>
+            <File>
+              <FileName>task_can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\user\task_can.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -503,6 +513,11 @@
               <FileName>lan8720.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\device\lan8720.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\rtc.c</FilePath>
             </File>
           </Files>
         </Group>

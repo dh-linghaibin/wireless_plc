@@ -383,7 +383,7 @@ int8_t *pcAllocatedBuffer;
 		mtCOVERAGE_TEST_MARKER();
 	}
 
-	//configASSERT( xReturn );
+	configASSERT( xReturn );
 
 	return xReturn;
 }

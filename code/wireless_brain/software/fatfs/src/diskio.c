@@ -10,26 +10,13 @@
 #include "diskio.h"        /* FatFs lower layer API */
 #include "w25qxx.h"
 #include "malloc.h"        
-//////////////////////////////////////////////////////////////////////////////////     
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32F407开发板
-//FATFS底层(diskio) 驱动代码       
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2014/5/15
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
-//All rights reserved                                      
-//////////////////////////////////////////////////////////////////////////////////      
-
 
 #define SD_CARD     0  //SD卡,卷标为0
 #define EX_FLASH 1    //外部flash,卷标为1
 
 #define FLASH_SECTOR_SIZE     512              
 //对于W25Q128
-//前12M字节给fatfs用,12M字节后,用于存放字库,字库占用3.09M.    剩余部分,给客户自己用                     
+//前12M字节给fatfs用,12M字节后,用于存放字库,字库占用3.09M.    剩余部分,给客户自己用
 u16        FLASH_SECTOR_COUNT=2048*12;    //W25Q1218,前12M字节给FATFS占用
 #define FLASH_BLOCK_SIZE       8         //每个BLOCK有8个扇区
 
@@ -47,7 +34,7 @@ DSTATUS disk_initialize (
               break;
         case EX_FLASH://外部flash
             //printf("flash");
-            W25QXX_Init();
+            w25qxx_Init();
             FLASH_SECTOR_COUNT=2048*12;//W25Q1218,前12M字节给FATFS占用 
              break;
         default:
@@ -216,20 +203,25 @@ DRESULT disk_ioctl (
 }
 #endif
 //获得时间
-//User defined function to give a current time to fatfs module      */
-//31-25: Year(0-127 org.1980), 24-21: Month(1-12), 20-16: Day(1-31) */                                                                                                                                                                                                                                          
-//15-11: Hour(0-23), 10-5: Minute(0-59), 4-0: Second(0-29 *2) */                                                                                                                                                                                                                                                
+//User defined function to give a current time to fatfs module*/
+//31-25: Year(0-127 org.1980), 24-21: Month(1-12), 20-16: Day(1-31) */
+//15-11: Hour(0-23), 10-5: Minute(0-59), 4-0: Second(0-29 *2) */
 DWORD get_fattime (void)
-{                 
-    return 0;
-}             
+{
+    return ((2013UL-1980) << 25)         // Year = 2006
+            | (8UL << 21)         // Month = Feb
+            | (30UL << 16)         // Day = 9
+            | (13U << 11)         // Hour = 22
+            | (00U << 5)         // Min = 30
+            | (00U >> 1);        // Sec = 0
+}
 //动态分配内存
-void *ff_memalloc (UINT size)            
+void *ff_memalloc (UINT size)
 {
     return (void*)mymalloc(SRAMIN,size);
 }
 //释放内存
-void ff_memfree (void* mf)         
+void ff_memfree (void* mf)
 {
     myfree(SRAMIN,mf);
 }

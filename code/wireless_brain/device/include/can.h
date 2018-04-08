@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef _SPI_H_
-#define _SPI_H_
+#ifndef _CAN_H_
+#define _CAN_H_
 
 #ifdef __cplusplus
 extern "C" {

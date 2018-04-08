@@ -17,7 +17,7 @@ u16 W25QXX_TYPE=W25Q128;   //默认是W25Q128
 //容量为16M字节,共有128个Block,4096个Sector 
                                         
 //初始化SPI FLASH的IO口
-void W25QXX_Init(void) {
+void w25qxx_Init(void) {
     GPIO_InitTypeDef  GPIO_InitStructure;
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);//使能GPIOB时钟
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOG, ENABLE);//使能GPIOB时钟

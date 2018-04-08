@@ -6,7 +6,7 @@
  */
  
 #include "malloc.h"
- 
+#include "sram.h"
 
 //内存池(32字节对齐)
 __align(32) u8 mem1base[MEM1_MAX_SIZE];                                                    //内部SRAM内存池
@@ -161,6 +161,13 @@ void *myrealloc(u8 memx,void *ptr,u32 size)
         myfree(memx,ptr);                                                        //释放旧内存
         return (void*)((u32)mallco_dev.membase[memx]+offset);                  //返回新内存首地址
     }  
+}
+
+void l_malloc_init(void) {
+    fsmc_sram_init();//初始化外部SRAM
+    my_mem_init(SRAMIN);//初始化内部内存池
+    my_mem_init(SRAMEX);//初始化外部内存池
+    my_mem_init(SRAMCCM);//初始化CCM内存池
 }
 
 void *l_malloc(u32 size) {

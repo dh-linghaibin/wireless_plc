@@ -67,6 +67,8 @@ void myfree(u8 memx,void *ptr);  			//内存释放(外部调用)
 void *mymalloc(u8 memx,u32 size);			//内存分配(外部调用)
 void *myrealloc(u8 memx,void *ptr,u32 size);//重新分配内存(外部调用)
 
+
+void l_malloc_init(void);
 void *l_malloc(u32 size);
 void l_free(void *ptr);
 

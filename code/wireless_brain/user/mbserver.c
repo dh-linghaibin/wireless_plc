@@ -1,3 +1,10 @@
+/*
+ * This file is part of the 
+ *
+ * Copyright (c) 2017-2018 linghaibin
+ *
+ */
+
 #include "mb.h"
 #include "mbutils.h"
 #include "app_configure.h"
