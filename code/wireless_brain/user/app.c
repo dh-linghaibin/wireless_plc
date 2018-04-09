@@ -46,6 +46,7 @@
 #include "mb.h"
 
 #include "task_can.h"
+#include "task_modbus.h"
 
 const char logo[] = "\
 /*\n\
@@ -60,18 +61,16 @@ USB_OTG_CORE_HANDLE USB_OTG_dev;
 //USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
 
 int main(void) {
-    delay_init(168);
+    delay_init(168); /* 延时初始化 */
     l_malloc_init();    /*内存初始化*/
     delay_ms(500);
-    uart_init(115200);
-    printf("%s",logo);
-    //rtc_init();
-    task_can_init();
-    task_file_init();
-    
-    eth_init();
-    eMBTCPInit(502);
-    eMBEnable(); 
+    uart_init(115200); /* 串口初始化 */
+    printf("%s",logo); 
+    //rtc_init(); /* 时钟初始化 */
+    task_can_init(); /* can初始化 */
+    task_file_init(); /* 文件系统初始化 */
+    eth_init(); /* 网络初始化 */
+    task_modbus_init(); /* modbus 初始化 */
     task_can_create();
     vTaskStartScheduler();
     while(1);

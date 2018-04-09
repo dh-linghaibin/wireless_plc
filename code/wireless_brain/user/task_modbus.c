@@ -5,27 +5,37 @@
  *
  */
 
+#include "task_modbus.h"
 #include "mb.h"
 #include "mbutils.h"
-#include "app_configure.h"
 
-#define REG_INPUT_START       0                     // 输入寄存器起始地址
-#define REG_INPUT_NREGS       10                    // 输入寄存器数量
+static uint8_t * modbus_coil; /* 线圈 */
+static uint8_t * modbus_input;
+uint16_t * modbus_Holding;
 
-#define REG_HOLDING_START     0                // 保持寄存器起始地址
-#define REG_HOLDING_NREGS     10                    // 保持寄存器数量
+void task_modbus_init(void) {
+    modbus_coil = l_malloc(sizeof(uint8_t)*99);
+    modbus_input = l_malloc(sizeof(uint8_t)*99);
+    modbus_Holding = l_malloc(sizeof(uint16_t)*99);
+    eMBTCPInit(502);
+    eMBEnable(); 
+}
 
-#define REG_COILS_START       0                // 线圈起始地址
-#define REG_COILS_SIZE        10              // 线圈数量
+void task_modbus_set_coil(uint16_t address,uint8_t val) {
+    if(address <= 99) {
+        modbus_coil[address] = val;
+    }
+}
 
-#define REG_DISCRETE_START    0                // 开关寄存器起始地址
-#define REG_DISCRETE_SIZE     10                    // 开关寄存器数量
-
-//static uint8_t modbus_coil[10];
-//static uint8_t modbus_input[10];
-//static int modbus_Holding[10];
-
-uint16_t modbus_Holding[10];
+void task_modbus_set_coil_bit(uint16_t address,uint8_t num,uint8_t val) {
+    if(address <= 99) {
+        if(val == 0) {
+            modbus_coil[address] &= ~(1 << val);
+        } else {
+            modbus_coil[address] |= 1 << val;
+        }
+    }
+}
 
 eMBErrorCode
 eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs ) {
@@ -136,3 +146,5 @@ eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete ) {
     }
     return eStatus;
 }
+
+ 

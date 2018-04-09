@@ -395,11 +395,6 @@
               <FilePath>..\..\user\lua_api.c</FilePath>
             </File>
             <File>
-              <FileName>mbserver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\user\mbserver.c</FilePath>
-            </File>
-            <File>
               <FileName>task_file.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\user\task_file.c</FilePath>
@@ -413,6 +408,11 @@
               <FileName>task_can.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\user\task_can.c</FilePath>
+            </File>
+            <File>
+              <FileName>task_modbus.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\user\task_modbus.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -448,6 +448,11 @@
               <FileName>malloc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lib\malloc.c</FilePath>
+            </File>
+            <File>
+              <FileName>l_list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\l_list.c</FilePath>
             </File>
           </Files>
         </Group>
