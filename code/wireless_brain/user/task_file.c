@@ -9,6 +9,7 @@
 #include "w25qxx.h"
 #include "ff.h"
 #include "stdio.h"
+#include "delay.h"
 
 //FRESULT scan_files (
 //    char* path        /* Start node to be scanned (***also used as work area***) */
@@ -42,22 +43,19 @@
 //}
 
 void task_file_init(void) {
-    //w25qxx_Init();
-    //W25QXX_Erase_Chip();
-    FATFS fs;
-    u8 res=f_mount(&fs,"1:",1);                 //挂载FLASH.    
-    if(res==0X0D)//FLASH磁盘,FAT文件系统错误,重新格式化FLASH
-    {
-    printf("Flash Disk Formatting...\n");    //格式化FLASH
-//        res=f_mkfs("1:",0,0);//格式化FLASH,1,盘符;1,不需要引导区,8个扇区为1个簇 4096
-//        if(res==0)
-//        {
-//            f_setlabel((const TCHAR *)"1:lhb");    //设置Flash磁盘的名字为：ALIENTEK
-//            printf("Flash Disk Format Finish\n");    //格式化完成
-//        } else { 
-//            printf("Flash Disk Format Error \n");    //格式化失败
-//        }
-//        delay_ms(1000);
+    FATFS *fs;
+    fs = l_malloc(sizeof(FATFS));
+    u8 res=f_mount(fs,"1:",1);
+    if(res==0X0D) {//FLASH磁盘,FAT文件系统错误,重新格式化FLASH
+        printf("Flash Disk Formatting...\n");    //格式化FLASH
+        res=f_mkfs("1:",1,4096);//格式化FLASH,1,盘符;1,不需要引导区,8个扇区为1个簇 4096
+        if(res==0) {
+            f_setlabel((const TCHAR *)"1:lhb");    //设置Flash磁盘的名字为：ALIENTEK
+            printf("Flash Disk Format Finish\n");    //格式化完成
+        } else { 
+            printf("Flash Disk Format Error \n");    //格式化失败
+        }
+        delay_ms(1000);
     } else {
 //        printf("Flash Disk ok \n");
 //        f_mkdir("1:sub1");
@@ -66,8 +64,6 @@ void task_file_init(void) {
 //        char buff[256];
 //        strcpy(buff, "1:");
 //        res = scan_files(buff);
-//printf("mu: %s \n",buff);
-
-// fatfs_test_mkdir();
+//        printf("mu: %s \n",buff);
     }
 }

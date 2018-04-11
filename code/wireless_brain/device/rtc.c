@@ -152,7 +152,7 @@ void rtc_set_wakeup(u32 wksel,u16 cnt) {
 void RTC_Alarm_IRQHandler(void) {
     if(RTC_GetFlagStatus(RTC_FLAG_ALRAF)==SET) {//ALARM A中断?
         RTC_ClearFlag(RTC_FLAG_ALRAF);//清除中断标志
-        printf("ALARM A!\r\n");
+        //printf("ALARM A!\r\n");
     }   
     EXTI_ClearITPendingBit(EXTI_Line17);   //清除中断线17的中断标志
 }
@@ -165,10 +165,10 @@ void RTC_WKUP_IRQHandler(void) {
     if(RTC_GetFlagStatus(RTC_FLAG_WUTF)==SET) {//WK_UP中断?
         RTC_ClearFlag(RTC_FLAG_WUTF);//清除中断标志
         
-        RTC_GetTime(RTC_Format_BIN,&RTC_TimeStruct);
-        RTC_GetDate(RTC_Format_BIN, &RTC_DateStruct);
+//        RTC_GetTime(RTC_Format_BIN,&RTC_TimeStruct);
+//        RTC_GetDate(RTC_Format_BIN, &RTC_DateStruct);
         
-        printf("Time:%02d:%02d:%02d Date:20%02d-%02d-%02d !\r\n",RTC_TimeStruct.RTC_Hours,RTC_TimeStruct.RTC_Minutes,RTC_TimeStruct.RTC_Seconds,RTC_DateStruct.RTC_Year,RTC_DateStruct.RTC_Month,RTC_DateStruct.RTC_Date);
+        //printf("Time:%02d:%02d:%02d Date:20%02d-%02d-%02d !\r\n",RTC_TimeStruct.RTC_Hours,RTC_TimeStruct.RTC_Minutes,RTC_TimeStruct.RTC_Seconds,RTC_DateStruct.RTC_Year,RTC_DateStruct.RTC_Month,RTC_DateStruct.RTC_Date);
     }
     EXTI_ClearITPendingBit(EXTI_Line22);//清除中断线22的中断标志
 }

@@ -284,7 +284,6 @@ lv_style_t * lv_btn_get_style(lv_obj_t *btn, lv_btn_style_t type)
 static lv_res_t lv_btn_signal(lv_obj_t * btn, lv_signal_t sign, void * param)
 {
     lv_res_t res;
-
     /* Include the ancient signal function */
     res = ancestor_signal(btn, sign, param);
     if(res != LV_RES_OK) return res;

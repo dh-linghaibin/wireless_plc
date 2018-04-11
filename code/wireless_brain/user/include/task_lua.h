@@ -13,8 +13,11 @@ extern "C" {
 #endif
 
 #include "app_configure.h"
+#include "stdbool.h"
 
 void task_lua_init(void);
+void task_lua_create(void);
+void task_lua_set(bool cmd);
 
 #ifdef __cplusplus
 }

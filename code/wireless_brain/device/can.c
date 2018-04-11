@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "task_can.h"
 
-u8 can1_init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode) {
+u8 can1_init(uint16_t baud_rate,u8 mode) {
     GPIO_InitTypeDef GPIO_InitStructure; 
     CAN_InitTypeDef        CAN_InitStructure;
     CAN_FilterInitTypeDef  CAN_FilterInitStructure;
@@ -41,10 +41,10 @@ u8 can1_init(u8 tsjw,u8 tbs2,u8 tbs1,u16 brp,u8 mode) {
     CAN_InitStructure.CAN_RFLM=DISABLE;    //报文不锁定,新的覆盖旧的  
     CAN_InitStructure.CAN_TXFP=DISABLE;    //优先级由报文标识符决定 
     CAN_InitStructure.CAN_Mode= mode;     //模式设置 
-    CAN_InitStructure.CAN_SJW=tsjw;    //重新同步跳跃宽度(Tsjw)为tsjw+1个时间单位 CAN_SJW_1tq~CAN_SJW_4tq
-    CAN_InitStructure.CAN_BS1=tbs1; //Tbs1范围CAN_BS1_1tq ~CAN_BS1_16tq
-    CAN_InitStructure.CAN_BS2=tbs2;//Tbs2范围CAN_BS2_1tq ~    CAN_BS2_8tq
-    CAN_InitStructure.CAN_Prescaler=brp;  //分频系数(Fdiv)为brp+1    
+    CAN_InitStructure.CAN_SJW=CAN_SJW_1tq;    //重新同步跳跃宽度(Tsjw)为tsjw+1个时间单位 CAN_SJW_1tq~CAN_SJW_4tq
+    CAN_InitStructure.CAN_BS1=CAN_BS1_16tq; //Tbs1范围CAN_BS1_1tq ~CAN_BS1_16tq
+    CAN_InitStructure.CAN_BS2=CAN_BS2_4tq;  //Tbs2范围CAN_BS2_1tq ~    CAN_BS2_8tq
+    CAN_InitStructure.CAN_Prescaler=baud_rate;  //分频系数(Fdiv)为brp+1    
     CAN_Init(CAN1, &CAN_InitStructure);   // 初始化CAN1 
 
     //配置过滤器
@@ -94,19 +94,10 @@ void CAN1_RX0_IRQHandler(void) {
 //msg:数据指针,最大为8个字节.
 //返回值:0,成功;
 //         其他,失败;
-u8 can1_send_msg(u8* msg,u8 len) {
+u8 can1_send_msg( CanTxMsg TxMessage) {
     u8 mbox;
-    u16 i=0;
-    CanTxMsg TxMessage;
-    TxMessage.StdId=0x12;     // 标准标识符为0
-    TxMessage.ExtId=0x12;     // 设置扩展标示符（29位）
-    TxMessage.IDE=0;          // 使用扩展标识符
-    TxMessage.RTR=0;          // 消息类型为数据帧，一帧8位
-    TxMessage.DLC=len;                             // 发送两帧信息
-    for(i=0;i<len;i++)
-        TxMessage.Data[i]=msg[i];                 // 第一帧信息
+    int i = 0;
     mbox= CAN_Transmit(CAN1, &TxMessage);   
-    i=0;
     while((CAN_TransmitStatus(CAN1, mbox)==CAN_TxStatus_Failed)&&(i<0XFFF))i++;    //等待发送结束
     if(i>=0XFFF)return 1;
     return 0;

@@ -12,7 +12,9 @@
 #include "l_list.h"
 
 static void task_can(void *pvParameters);
+static void task_can_send(void *pvParameters);
 static xQueueHandle can_msg_queue = NULL; /*队列句柄*/
+static xQueueHandle can_send_queue = NULL; /*队列句柄*/
 static TimerHandle_t xtime_can; /* 定义句柄 */
 static l_list_t * online_head; /* 链表头 */
 
@@ -39,11 +41,13 @@ void task_can_init(void) {
     online_head = (l_list_t *)l_malloc(sizeof(l_list_t)); /* 创建头节点 */
     static device_online * online;
     list_init(online_head); //初始化链表
-    can1_init(CAN_SJW_1tq,CAN_BS2_6tq,CAN_BS1_7tq,6,CAN_Mode_Normal); /* 初始化can 500k */
+    //can1_init(CAN_SJW_1tq,CAN_BS2_6tq,CAN_BS1_7tq,6,CAN_Mode_Normal); /* 初始化can 500k */
+    can1_init(BAUD_RATE_50K,CAN_Mode_Normal); /* 初始化can 50k */
 }
 
 void task_can_create(void) {
     xTaskCreate( task_can,"task_can", 1024, NULL, tskIDLE_PRIORITY+3, NULL );
+    xTaskCreate( task_can_send,"task_send", 1024, NULL, tskIDLE_PRIORITY+3, NULL );
 }
 
 xQueueHandle task_can_get_queue(void) {
@@ -54,7 +58,7 @@ xQueueHandle task_can_get_queue(void) {
 static void vtimer_callback( TimerHandle_t xTimer ) {
     uint32_t ulTimerID;
     configASSERT(xTimer);
-    printf("time \n");
+    //printf("time \n");
     device_online *temp;
     for (int i = 0; i < list_len(online_head); i++){ //list_len获取链表的长度
         list_get(online_head, i, (void **)&temp); //取得位置为i的结点的数据
@@ -62,18 +66,25 @@ static void vtimer_callback( TimerHandle_t xTimer ) {
             list_pop(online_head,i);
             l_free(temp);
         } else {
-            printf("设备类型:%d  设备地址:%d 设备在线:%d\n", temp->type,temp->address,temp->online);
+            //printf("设备类型:%d  设备地址:%d 设备在线:%d\n", temp->type,temp->address,temp->online);
             temp->online ++;
         }
     }
+    /* 广播 */
+    CanTxMsg tx_msg;
+    tx_msg.StdId = RADIO;
+    tx_msg.ExtId = RADIO;
+    tx_msg.RTR=CAN_RTR_DATA;
+    tx_msg.IDE=CAN_ID_STD;
+    tx_msg.Data[0] = 0x00;
+    tx_msg.DLC = 1;
+    can1_send_msg(tx_msg);
 }
 
 static void task_can(void *pvParameters) {
-    u8* canbuf;
     CanRxMsg rx_message;
     /* 建立队列 */  
     can_msg_queue = xQueueCreate( 20 , sizeof( CanRxMsg ) );
-    canbuf = l_malloc(sizeof(u8)*8);
     xtime_can = xTimerCreate("can_tic",         /* 定时器名字 */
                               2000,             /* 定时器周期,单位时钟节拍 */
                               pdTRUE,           /* 周期性 */
@@ -125,7 +136,43 @@ static void task_can(void *pvParameters) {
                 
                 } break;
             }
-            //can1_send_msg(canbuf,8);
         }
     }
 }
+
+void task_can_set(device_send send_msg) {
+    if(can_send_queue != NULL) {
+        xQueueSendFromISR( can_send_queue, &send_msg, 0 ); /* 0的意思是立即进入队列 */
+    }
+}
+
+static void task_can_send(void *pvParameters) {
+    device_send send_msg;
+    /* 建立队列 */  
+    can_send_queue = xQueueCreate( 20 , sizeof( device_send ) );
+    for( ;; ) {
+        if( xQueueReceive( can_send_queue, &send_msg, 100/portTICK_RATE_MS ) == pdPASS) {
+            switch(send_msg.type) {
+                case DO_8: {
+                    CanTxMsg tx_msg;
+                    tx_msg.StdId = send_msg.address;
+                    tx_msg.ExtId = send_msg.address;
+                    tx_msg.RTR=CAN_RTR_DATA;
+                    tx_msg.IDE=CAN_ID_STD;
+                    tx_msg.Data[0] = DO_8;
+                    tx_msg.Data[1] = send_msg.data[0];
+                    tx_msg.Data[2] = send_msg.data[1];
+                    tx_msg.DLC = 3;
+                    can1_send_msg(tx_msg);
+                } break;
+                case DO_4: {
+                
+                } break;
+                case DI_4: {
+                
+                } break;
+            }
+        }
+    }
+}
+

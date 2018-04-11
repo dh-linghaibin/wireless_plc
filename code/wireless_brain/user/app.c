@@ -12,6 +12,7 @@
 #include "spi.h"
 #include "tft.h"
 #include "can.h"
+#include "buzzer.h"
 #include "xpt2046.h"
 #include "task_file.h"
 #include "ff.h"
@@ -37,16 +38,18 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
+//freemodbus
+#include "mb.h"
 //usb
 #include "usbd_msc_core.h"
 #include "usbd_usr.h"
 #include "usbd_desc.h"
 #include "usb_conf.h" 
-//freemodbus
-#include "mb.h"
 
 #include "task_can.h"
 #include "task_modbus.h"
+#include "task_gui.h"
+#include "task_lua.h"
 
 const char logo[] = "\
 /*\n\
@@ -57,21 +60,24 @@ const char logo[] = "\
  */\n\
  Welcome to use device!\n";
 
-USB_OTG_CORE_HANDLE USB_OTG_dev;
-//USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
 
 int main(void) {
     delay_init(168); /* 延时初始化 */
     l_malloc_init();    /*内存初始化*/
+    buzzer_init(); /* 蜂鸣器初始化 */
     delay_ms(500);
     uart_init(115200); /* 串口初始化 */
     printf("%s",logo); 
-    //rtc_init(); /* 时钟初始化 */
-    task_can_init(); /* can初始化 */
-    task_file_init(); /* 文件系统初始化 */
-    eth_init(); /* 网络初始化 */
+    rtc_init();         /* 时钟初始化 */
+    task_can_init();    /* can初始化 */
+    task_gui_init();    /* gui初始化 */
+    task_file_init();   /* 文件系统初始化 */
+    task_lua_init();    /* lua环境初始化 */
+    eth_init();         /* 网络初始化 */
     task_modbus_init(); /* modbus 初始化 */
     task_can_create();
+    task_gui_create();/* gui任务 */
+    task_lua_create();/* lua任务 */
     vTaskStartScheduler();
     while(1);
 }

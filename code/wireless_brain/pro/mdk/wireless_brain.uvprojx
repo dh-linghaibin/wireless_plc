@@ -385,16 +385,6 @@
               <FilePath>..\..\user\app.c</FilePath>
             </File>
             <File>
-              <FileName>gui_demo.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\user\gui_demo.c</FilePath>
-            </File>
-            <File>
-              <FileName>lua_api.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\user\lua_api.c</FilePath>
-            </File>
-            <File>
               <FileName>task_file.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\user\task_file.c</FilePath>
@@ -413,6 +403,21 @@
               <FileName>task_modbus.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\user\task_modbus.c</FilePath>
+            </File>
+            <File>
+              <FileName>task_lua.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\user\task_lua.c</FilePath>
+            </File>
+            <File>
+              <FileName>l_logo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\user\l_logo.c</FilePath>
+            </File>
+            <File>
+              <FileName>jt_logo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\user\jt_logo.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -523,6 +528,16 @@
               <FileName>rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\device\rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>buzzer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\buzzer.c</FilePath>
+            </File>
+            <File>
+              <FileName>si446x.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\si446x.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1318,6 +1333,11 @@
               <FileName>equipment.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\software\lua-5.3.4\port\equipment.c</FilePath>
+            </File>
+            <File>
+              <FileName>lua_api.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\port\lua_api.c</FilePath>
             </File>
           </Files>
         </Group>

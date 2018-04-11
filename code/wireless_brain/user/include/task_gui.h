@@ -15,6 +15,7 @@ extern "C" {
 #include "app_configure.h"
 
 void task_gui_init(void);
+void task_gui_create(void);
 
 #ifdef __cplusplus
 }

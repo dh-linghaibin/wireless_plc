@@ -61,7 +61,7 @@ USBD_STORAGE_cb_TypeDef  *USBD_STORAGE_fops=&USBD_MICRO_SDIO_fops;//÷∏œÚUSBD_MIC
 int8_t STORAGE_Init (uint8_t lun)
 {
 	//SD_Init();
-	w25qxx_Init();
+	//w25qxx_Init();
 	return 0; 
 } 
 

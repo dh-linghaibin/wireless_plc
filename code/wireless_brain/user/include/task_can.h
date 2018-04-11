@@ -27,6 +27,11 @@ typedef enum {
     DI_4 = 2,
 } device_type;
 
+/* 消息频道 */
+typedef enum {
+    RADIO = 0x0155,
+} device_channel;
+
 /* 设备在线记录 */
 typedef struct {
     device_type type; /* 设备类型 */
@@ -34,9 +39,17 @@ typedef struct {
     uint8_t online; /* 设备是否在线 */
 } device_online;
 
+typedef struct {
+    device_type type; /* 设备类型 */
+    uint16_t address; /* 设备地址 */
+    uint8_t cmd;      /* 命令 */
+    uint8_t data[2];  /* 设备命令 */
+} device_send;
+
 void task_can_init(void);
 void task_can_create(void);
 xQueueHandle task_can_get_queue(void);
+void task_can_set(device_send send_msg);
 
 #ifdef __cplusplus
 }
