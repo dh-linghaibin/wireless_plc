@@ -76,7 +76,7 @@ static void vtimer_callback( TimerHandle_t xTimer ) {
     tx_msg.ExtId = RADIO;
     tx_msg.RTR=CAN_RTR_DATA;
     tx_msg.IDE=CAN_ID_STD;
-    tx_msg.Data[0] = 0x00;
+    tx_msg.Data[0] = RADIO_ASK;
     tx_msg.DLC = 1;
     can1_send_msg(tx_msg);
 }
@@ -104,9 +104,12 @@ static void task_can(void *pvParameters) {
             switch(rx_message.Data[0]) {
                 case DO_8: {
                     switch(rx_message.Data[1]) {
-                        case 0: { /* 读取 */
+                        case 0xf0: { /* 读取 */
                             //printf("DO-8 地址 %d 变量 %d\n",rx_message.StdId,rx_message.Data[2]);
                             task_modbus_set_coil(rx_message.StdId,rx_message.Data[2]);
+                        } break;
+                        case 0x0f1: {
+                        
                         } break;
                     }
                     device_online online;
@@ -116,9 +119,12 @@ static void task_can(void *pvParameters) {
                 } break;
                 case DO_4: {
                     switch(rx_message.Data[1]) {
-                        case 0: { /* 读取 */
+                        case 0xf0: { /* 读取 */
                             //printf("DO-4 地址 %d 变量 %d\n",rx_message.StdId,rx_message.Data[2]);
                             task_modbus_set_coil(rx_message.StdId,rx_message.Data[2]);
+                        } break;
+                        case 0x0f1: {
+                        
                         } break;
                     }
                     device_online online;

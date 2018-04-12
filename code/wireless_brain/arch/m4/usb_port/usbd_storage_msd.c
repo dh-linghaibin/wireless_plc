@@ -60,9 +60,7 @@ USBD_STORAGE_cb_TypeDef  *USBD_STORAGE_fops=&USBD_MICRO_SDIO_fops;//指向USBD_MIC
 //    其他,错误代码
 int8_t STORAGE_Init (uint8_t lun)
 {
-	//SD_Init();
-	//w25qxx_Init();
-	return 0; 
+    return 0; 
 } 
 
 //获取存储设备的容量和块大小

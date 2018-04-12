@@ -69,7 +69,8 @@ extern "C" {
 #define SI_SDN_LOW()   GPIO_ResetBits(PORT_SI_SDN, PIN_SI_SDN);
 #define SI_SDN_HIGH()  GPIO_SetBits(PORT_SI_SDN, PIN_SI_SDN);
 
-
+void RF_Initial(uint8_t mode);
+void si446x_init(void);
 
 #ifdef __cplusplus
 }

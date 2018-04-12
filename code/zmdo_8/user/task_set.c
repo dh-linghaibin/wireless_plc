@@ -10,6 +10,7 @@
 #include "outsignal.h"
 #include "flash.h"
 #include "can.h"
+#include "wdog.h"
 
 typedef struct {
     uint8_t device_id;
@@ -62,6 +63,38 @@ void task_set_create(void) {
     xTaskCreate( task_set,"task_set", 512, NULL, tskIDLE_PRIORITY+3, NULL );
 }
 
+void task_set_br(uint8_t br) {
+    if(br > 7) {
+        br = 2;
+    }
+    menu_t.page = M_PAGE1_SHOW;
+    //xTimerStop(xtime_show,0);/*关闭定时器*/
+    vTaskDelay(50 / portTICK_RATE_MS);
+    menu_t.device_br = br;
+    bxcan_set_br(menu_t.device_br);
+    taskENTER_CRITICAL();//进入〇接
+    flash_write(C_BR,menu_t.device_br);
+    taskEXIT_CRITICAL();
+    tm1650_set_nex(0,13);
+    tm1650_set_nex(1,menu_t.device_br);
+}
+
+void task_set_address(uint8_t address) {
+    if(address > 99) {
+        address = 2;
+    }
+    //xTimerStop(xtime_show,0);/*关闭定时器*/
+    menu_t.page = M_PAGE1_SHOW;
+    vTaskDelay(50 / portTICK_RATE_MS);
+    menu_t.device_id = address;
+    bxcan_set_id(menu_t.device_id);
+    taskENTER_CRITICAL();//进入〇接
+    flash_write(C_ADDR,menu_t.device_id);
+    taskEXIT_CRITICAL();
+    tm1650_set_nex(0,menu_t.device_id/10);
+    tm1650_set_nex(1,menu_t.device_id%10);
+}
+
 static void vtimer_show( TimerHandle_t xtimer ) {
     configASSERT(xtimer);
     static uint8_t dr = 0;
@@ -75,6 +108,7 @@ static void vtimer_show( TimerHandle_t xtimer ) {
         run_hz = 0;
         run_dr = run_dr==0?1:0;
         tm1650_set_led(L_RUN,run_dr);
+        wdog_reload();/* 喂狗 */
     }
     
     switch(menu_t.page) {
@@ -182,80 +216,114 @@ static void task_set(void *pvParameters) {
     for(;;) {
         vTaskDelay(20 / portTICK_RATE_MS);
         uint8_t key = tm1650_read_key();
-        switch(key) {
-            case K_COIL1: {
-                if(flag == 0x00) {
-                    flag = key;
-                    outsignal_set_out(0,!outsignal_read_out(0));
-                    tm1650_set_led((tm1650_led)0,outsignal_read_out(0));
-                }
-            } break;
-            case K_COIL2: {
-                if(flag == 0x00) {
-                    flag = key;
-                    outsignal_set_out(1,!outsignal_read_out(1));
-                    tm1650_set_led((tm1650_led)1,outsignal_read_out(1));
-                }
-            } break;
-            case K_COIL3: {
-                if(flag == 0x00) {
-                    flag = key;
-                    outsignal_set_out(2,!outsignal_read_out(2));
-                    tm1650_set_led((tm1650_led)2,outsignal_read_out(2));
-                }
-            } break;
-            case K_COIL4: {
-                if(flag == 0x00) {
-                    flag = key;
-                    outsignal_set_out(3,!outsignal_read_out(3));
-                    tm1650_set_led((tm1650_led)3,outsignal_read_out(3));
-                }
-            } break;
-            case K_COIL5: {
-                if(flag == 0x00) {
-                    flag = key;
-                    outsignal_set_out(4,!outsignal_read_out(4));
-                    tm1650_set_led((tm1650_led)4,outsignal_read_out(4));
-                }
-            } break;
-            case K_COIL6: {
-                if(flag == 0x00) {
-                    flag = key;
-                    outsignal_set_out(5,!outsignal_read_out(5));
-                    tm1650_set_led((tm1650_led)5,outsignal_read_out(5));
-                }
-            } break;
-            case K_COIL7: {
-                if(flag == 0x00) {
-                    flag = key;
-                    outsignal_set_out(6,!outsignal_read_out(6));
-                    tm1650_set_led((tm1650_led)6,outsignal_read_out(6));
-                }
-            } break;
-            case K_COIL8: {
-                if(flag == 0x00) {
-                    flag = key;
-                    outsignal_set_out(7,!outsignal_read_out(7));
-                    tm1650_set_led((tm1650_led)7,outsignal_read_out(7));
-                }
-            } break;
-            case K_ALL: {
-                if(flag == 0x00) {
-                    flag = key;
-                    uint8_t open_num = 0;
-                    for(int i = 0;i < 8;i++) {
-                        if(outsignal_read_out(i) == SET) {
-                            open_num++;
+        if(outsignal_emergency_stop() == RESET) { /* 急停按钮 */
+            outsignal_set_out(8,0x00);
+            tm1650_set_led((tm1650_led)8,0x00);
+        } else {
+            switch(key) {
+                case K_COIL1: {
+                    if(flag == 0x00) {
+                        flag = key;
+                        outsignal_set_out(0,!outsignal_read_out(0));
+                        tm1650_set_led((tm1650_led)0,outsignal_read_out(0));
+                    }
+                } break;
+                case K_COIL2: {
+                    if(flag == 0x00) {
+                        flag = key;
+                        outsignal_set_out(1,!outsignal_read_out(1));
+                        tm1650_set_led((tm1650_led)1,outsignal_read_out(1));
+                    }
+                } break;
+                case K_COIL3: {
+                    if(flag == 0x00) {
+                        flag = key;
+                        outsignal_set_out(2,!outsignal_read_out(2));
+                        tm1650_set_led((tm1650_led)2,outsignal_read_out(2));
+                    }
+                } break;
+                case K_COIL4: {
+                    if(flag == 0x00) {
+                        flag = key;
+                        outsignal_set_out(3,!outsignal_read_out(3));
+                        tm1650_set_led((tm1650_led)3,outsignal_read_out(3));
+                    }
+                } break;
+                case K_COIL5: {
+                    if(flag == 0x00) {
+                        flag = key;
+                        outsignal_set_out(4,!outsignal_read_out(4));
+                        tm1650_set_led((tm1650_led)4,outsignal_read_out(4));
+                    }
+                } break;
+                case K_COIL6: {
+                    if(flag == 0x00) {
+                        flag = key;
+                        outsignal_set_out(5,!outsignal_read_out(5));
+                        tm1650_set_led((tm1650_led)5,outsignal_read_out(5));
+                    }
+                } break;
+                case K_COIL7: {
+                    if(flag == 0x00) {
+                        flag = key;
+                        outsignal_set_out(6,!outsignal_read_out(6));
+                        tm1650_set_led((tm1650_led)6,outsignal_read_out(6));
+                    }
+                } break;
+                case K_COIL8: {
+                    if(flag == 0x00) {
+                        flag = key;
+                        outsignal_set_out(7,!outsignal_read_out(7));
+                        tm1650_set_led((tm1650_led)7,outsignal_read_out(7));
+                    }
+                } break;
+                case K_ALL: {
+                    if(flag == 0x00) {
+                        flag = key;
+                        uint8_t open_num = 0;
+                        for(int i = 0;i < 8;i++) {
+                            if(outsignal_read_out(i) == SET) {
+                                open_num++;
+                            }
+                        }
+                        if(open_num >= 4) {
+                            outsignal_set_out(8,0x00);
+                            tm1650_set_led((tm1650_led)8,0x00);
+                        } else {
+                            outsignal_set_out(8,0xff);
+                            tm1650_set_led((tm1650_led)8,0xff);
                         }
                     }
-                    if(open_num >= 4) {
-                        outsignal_set_out(8,0x00);
-                        tm1650_set_led((tm1650_led)8,0x00);
-                    } else {
-                        outsignal_set_out(8,0xff);
-                        tm1650_set_led((tm1650_led)8,0xff);
-                    }
-                }
+                } break;
+            }
+        }
+        switch(key) {
+            case K_COIL1: {
+                
+            } break;
+            case K_COIL2: {
+                
+            } break;
+            case K_COIL3: {
+               
+            } break;
+            case K_COIL4: {
+              
+            } break;
+            case K_COIL5: {
+               
+            } break;
+            case K_COIL6: {
+               
+            } break;
+            case K_COIL7: {
+                
+            } break;
+            case K_COIL8: {
+              
+            } break;
+            case K_ALL: {
+                
             } break;
             case K_ADD: {
                 flag = key;

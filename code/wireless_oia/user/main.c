@@ -31,6 +31,8 @@ int main(void) {
     sign_led();
     sign_configure();
     //sm16703p_init();
+    //wireless_init();
+    //si446x_init();
     
    // xTaskCreate(vTaskLED, "Task LED", 10, NULL, 1, NULL);    
     xTaskCreate(vTaskLEDFlash, "Task LED Flash", 20, NULL, 2, NULL);

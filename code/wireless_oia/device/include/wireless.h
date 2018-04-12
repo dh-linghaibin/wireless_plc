@@ -15,6 +15,7 @@ extern "C" {
 #include "gd32f10x.h"
 
 void wireless_init(void);
+uint8_t spi_send(uint8_t byte);
 
 #ifdef __cplusplus
 }

@@ -50,7 +50,7 @@ void task_file_init(void) {
         printf("Flash Disk Formatting...\n");    //格式化FLASH
         res=f_mkfs("1:",1,4096);//格式化FLASH,1,盘符;1,不需要引导区,8个扇区为1个簇 4096
         if(res==0) {
-            f_setlabel((const TCHAR *)"1:lhb");    //设置Flash磁盘的名字为：ALIENTEK
+            f_setlabel((const TCHAR *)"1:lhb");  
             printf("Flash Disk Format Finish\n");    //格式化完成
         } else { 
             printf("Flash Disk Format Error \n");    //格式化失败

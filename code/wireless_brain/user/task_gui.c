@@ -69,19 +69,19 @@ static void vtask_gui_tic(void *pvParameters) {
     }
 }
 
-USB_OTG_CORE_HANDLE USB_OTG_dev;
+//USB_OTG_CORE_HANDLE USB_OTG_dev;
 
 static lv_res_t change_action(lv_obj_t * sw) {
-//    if(lv_sw_get_state(sw) == true) {
-//        task_lua_set(false);
-//        taskENTER_CRITICAL();   /* 进入临界区 */
-//        USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
-//        delay_ms(2800);
-//        taskEXIT_CRITICAL();    /* 退出临界区 */
-//    } else {
-//        task_lua_set(true);
-//        DCD_DevDisconnect(&USB_OTG_dev);
-//    }
+    if(lv_sw_get_state(sw) == true) {
+        task_lua_set(false);
+        //taskENTER_CRITICAL();   /* 进入临界区 */
+        //USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
+        //delay_ms(2800);
+        //taskEXIT_CRITICAL();    /* 退出临界区 */
+    } else {
+        task_lua_set(true);
+        //DCD_DevDisconnect(&USB_OTG_dev);
+    }
     buzzer_set(50,1);
     return LV_RES_OK;
 }

@@ -9,6 +9,7 @@
 #include "can.h"
 #include "tm1650.h"
 #include "outsignal.h"
+#include "task_set.h"
 
 static void task_can(void *pvParameters);
 static xQueueHandle can_msg_queue = NULL; /*队列句柄*/
@@ -62,29 +63,37 @@ static void task_can(void *pvParameters) {
         if( xQueueReceive( can_msg_queue, &rx_message, 100/portTICK_RATE_MS ) == pdPASS) {
             switch(rx_message.rx_sfid) {
                 case RADIO: { /* 广播 */
-                    can_trasnmit_message_struct send_msg;
-                    send_msg.tx_sfid = bxcan_get_id();
-                    send_msg.tx_dlen = 3;
-                    send_msg.tx_data[0] = DO_8; /* 设备类型 */
-                    send_msg.tx_data[1] = 0x00; /* 命令 */
-                    send_msg.tx_data[2] = outsignal_read_out(8); /* 继电器状态 */
-                    bxcan_send(send_msg);
-                    online = 0;/* 设置设备在线 */
+                    switch(rx_message.rx_data[0]) {
+                        case RADIO_ASK:{
+                            can_trasnmit_message_struct send_msg;
+                            send_msg.tx_sfid = bxcan_get_id();
+                            send_msg.tx_dlen = 3;
+                            send_msg.tx_data[0] = DO_8; /* 设备类型 */
+                            if(outsignal_emergency_stop() == SET) {
+                                send_msg.tx_data[1] = 0xf0; /* 命令 */
+                            } else {
+                                send_msg.tx_data[1] = 0xf1; /* 告诉主控急停被按下 */
+                            }
+                            send_msg.tx_data[2] = outsignal_read_out(8); /* 继电器状态 */
+                            bxcan_send(send_msg);
+                            online = 0;/* 设置设备在线 */
+                        } break;
+                        case RADIO_SET_BR: { /* 我要修改波特率了 */
+                            task_set_br(rx_message.rx_data[1]);
+                        } break;
+                    }
                 } break;
                 default: {
                     if(rx_message.rx_sfid == bxcan_get_id()) { /* 判断地址 */
                         switch(rx_message.rx_data[0]) {
                             case 0:{ /* 设置设备 */
-                                outsignal_set_out(rx_message.rx_data[1],rx_message.rx_data[2]);
-                                tm1650_set_led((tm1650_led)rx_message.rx_data[1],rx_message.rx_data[2]);
-                                /* 更新设备状态 */
-//                                can_trasnmit_message_struct send_msg;
-//                                send_msg.tx_sfid = bxcan_get_id();
-//                                send_msg.tx_dlen = 3;
-//                                send_msg.tx_data[0] = DO_8; /* 设备类型 */
-//                                send_msg.tx_data[1] = 0x00; /* 命令 */
-//                                send_msg.tx_data[2] = outsignal_read_out(8); /* 继电器状态 */
-//                                bxcan_send(send_msg);
+                                if(outsignal_emergency_stop() == SET) { /* 急停按钮 */
+                                    outsignal_set_out(rx_message.rx_data[1],rx_message.rx_data[2]);
+                                    tm1650_set_led((tm1650_led)rx_message.rx_data[1],rx_message.rx_data[2]);
+                                }
+                            } break;
+                            case 1: { /* 修改设备地址 */
+                                task_set_address(rx_message.rx_data[1]);
                             } break;
                         }
                         online = 0;/* 设置设备在线 */

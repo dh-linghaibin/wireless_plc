@@ -474,6 +474,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\device\delay.c</FilePath>
             </File>
+            <File>
+              <FileName>si446x.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\si446x.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

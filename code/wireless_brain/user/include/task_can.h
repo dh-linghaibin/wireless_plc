@@ -30,6 +30,8 @@ typedef enum {
 /* 消息频道 */
 typedef enum {
     RADIO = 0x0155,
+    RADIO_ASK = 0,
+    RADIO_SET_BR = 1,
 } device_channel;
 
 /* 设备在线记录 */

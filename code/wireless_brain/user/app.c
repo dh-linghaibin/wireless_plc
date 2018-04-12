@@ -20,6 +20,7 @@
 #include "malloc.h"
 #include "timer.h"
 #include "stdio.h"
+#include "si446x.h"
 //lvgl
 #include "../lv_hal/lv_hal_disp.h"
 #include "../lv_misc/lv_mem.h"
@@ -60,18 +61,25 @@ const char logo[] = "\
  */\n\
  Welcome to use device!\n";
 
+USB_OTG_CORE_HANDLE USB_OTG_dev;
 
 int main(void) {
     delay_init(168); /* 延时初始化 */
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); /*  官方推荐 */
     l_malloc_init();    /*内存初始化*/
     buzzer_init(); /* 蜂鸣器初始化 */
-    delay_ms(500);
+    delay_ms(100);
     uart_init(115200); /* 串口初始化 */
     printf("%s",logo); 
     rtc_init();         /* 时钟初始化 */
     task_can_init();    /* can初始化 */
     task_gui_init();    /* gui初始化 */
     task_file_init();   /* 文件系统初始化 */
+    
+    //si446x_init();
+    //USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
+    //delay_ms(1800);
+    
     task_lua_init();    /* lua环境初始化 */
     eth_init();         /* 网络初始化 */
     task_modbus_init(); /* modbus 初始化 */

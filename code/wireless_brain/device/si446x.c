@@ -57,6 +57,7 @@ void si446x_init(void) {
     
     GPIO_SetBits(GPIOE,GPIO_Pin_2);//射频时钟（晶振）使能（高电平打开，低电平关断）
     GPIO_SetBits(GPIOE,GPIO_Pin_4);//射频 PA_VDD 电源使能引脚（高电平打开，低电平关断）
+    RF_Initial(0);
 }
 
 /*===========================================================================
@@ -270,7 +271,8 @@ void SI446X_RESET(void)
 {
     uint16_t x = 255;
     SI_SDN_HIGH();
-    while(x--);
+    //while(x--); lhb
+    delay_ms(50);
     SI_SDN_LOW();
     SI_CSN_HIGH();
 }
@@ -583,4 +585,60 @@ uint8_t SI446X_GET_DEVICE_STATE(void)
    SI446X_CMD(cmd, 1);
    SI446X_READ_RESPONSE(cmd, 3);
    return cmd[1] & 0x0F;
+}
+
+
+#define TX              1       // 发送模式
+#define RX              0       // 接收模式
+    
+#define ACK_LENGTH      10      // 应答信号长度   
+#define SEND_LENGTH     10      // 发送数据每包的长度
+
+uint16_t  RecvCnt = 0;            // 计数接收的数据包数                
+// 需要应答的数据
+uint8_t   AckBuffer[ACK_LENGTH] = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+
+void RF_Initial(uint8_t mode)
+{
+    SI446X_RESET();         // SI446X 模块复位
+    SI446X_CONFIG_INIT();   // 寄存器初始化，寄存器来自WDS配置的头文件
+    SI446X_SET_POWER(0x7F); // 将输出功率配置为最大
+    SI446X_START_RX(0, 0, PACKET_LENGTH, 8, 8, 8);  // 进入接收模式               
+}
+
+void rf_recv(void) {
+    uint8_t error=0, i=0, length=0, recv_buffer[65]={ 0 };
+    
+    SI446X_INT_STATUS(recv_buffer);     // 检测是否收到一个数据包
+    
+    // 收到一个数据包，翻转LED
+    if (recv_buffer[3] & (1<<4))
+    {       
+        length = SI446X_READ_PACKET(recv_buffer);
+
+        // 判断数据是否有误，接收到的信号应该为0-9
+        for (i=0, error=0; i<10; i++)
+        {
+            if (recv_buffer[i] != i)    { error=1; break; } // 数据出错
+        }
+
+        if ((length==10) && (error==0))                     // 数据正确
+        {
+//            LED0_TOG();// LED闪烁，用于指示收到正确数据
+//            USART_Send("Receive ok\r\n", 12);
+//            DelayMs(10);
+
+            // 返回应答信号,应答数据为10-19
+            SI446X_SEND_PACKET(AckBuffer, ACK_LENGTH, 0, 0);
+            do
+            {
+                SI446X_INT_STATUS(recv_buffer);
+            }while (!(recv_buffer[3] & (1<<5)));    //等待发射完成（中断产生）
+            
+            RecvCnt++; 
+        }
+        
+        //回到接收模式，继续等待下一包数据
+        SI446X_START_RX(0, 0, PACKET_LENGTH,8, 8, 8);
+    }   
 }
