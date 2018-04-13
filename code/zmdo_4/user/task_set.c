@@ -253,12 +253,12 @@ static void task_set(void *pvParameters) {
                     if(flag == 0x00) {
                         flag = key;
                         uint8_t open_num = 0;
-                        for(int i = 0;i < 8;i++) {
+                        for(int i = 0;i < 4;i++) {
                             if(outsignal_read_out(i) == SET) {
                                 open_num++;
                             }
                         }
-                        if(open_num >= 4) {
+                        if(open_num >= 2) {
                             outsignal_set_out(8,0x00);
                             tm1650_set_led((tm1650_led)8,0x00);
                         } else {

@@ -16,6 +16,7 @@
 static void rcu_config(void)
 {
     rcu_periph_clock_enable(RCU_GPIOB);
+    rcu_periph_clock_enable(RCU_GPIOC);
     rcu_periph_clock_enable(RCU_GPIOD);
     rcu_periph_clock_enable(RCU_AF);
     rcu_periph_clock_enable(RCU_SPI1);
@@ -45,19 +46,30 @@ static void gpio_config(void)
 */
 static void spi_config(void)
 {
+//    spi_parameter_struct spi_init_struct;
+
+//    /* SPI0 parameter config */
+//    spi_init_struct.trans_mode           = SPI_TRANSMODE_FULLDUPLEX;
+//    spi_init_struct.device_mode          = SPI_MASTER;
+//    spi_init_struct.frame_size           = SPI_FRAMESIZE_8BIT;
+//    spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_1EDGE;
+//    spi_init_struct.nss                  = SPI_NSS_SOFT;
+//    spi_init_struct.prescale             = SPI_PSC_256;
+//    spi_init_struct.endian               = SPI_ENDIAN_MSB;
+//    spi_init(SPI1, &spi_init_struct);
     spi_parameter_struct spi_init_struct;
 
     /* SPI0 parameter config */
     spi_init_struct.trans_mode           = SPI_TRANSMODE_FULLDUPLEX;
     spi_init_struct.device_mode          = SPI_MASTER;
     spi_init_struct.frame_size           = SPI_FRAMESIZE_8BIT;
-    spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_2EDGE;
+    spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_1EDGE;
     spi_init_struct.nss                  = SPI_NSS_SOFT;
     spi_init_struct.prescale             = SPI_PSC_256;
     spi_init_struct.endian               = SPI_ENDIAN_MSB;
     spi_init(SPI1, &spi_init_struct);
     
-    spi_nss_internal_high(SPI1);
+    //spi_nss_internal_high(SPI1);
 }
 
 uint8_t spi_send(uint8_t byte) {

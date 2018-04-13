@@ -98,19 +98,7 @@ void bxcan_send(can_trasnmit_message_struct send_msg) {
 }
 
 void bxcan_set_id(uint8_t id) {
-    can_filter_parameter_struct can_filter_parameter;
     can_id = id;
-    /* initialize filter */ 
-    can_filter_parameter.filter_number=0;
-    can_filter_parameter.filter_mode = CAN_FILTERMODE_MASK;
-    can_filter_parameter.filter_bits = CAN_FILTERBITS_32BIT;
-    can_filter_parameter.filter_list_high = (can_id<<5);
-    can_filter_parameter.filter_list_low = 0|0x0000;
-    can_filter_parameter.filter_mask_high = ((0xf001<<3)>>16) & 0xffff;
-    can_filter_parameter.filter_mask_low = ((0xf001<<3)& 0xffff) | 0x0004;
-    can_filter_parameter.filter_fifo_number = CAN_FIFO0;
-    can_filter_parameter.filter_enable = ENABLE;
-    can_filter_init(&can_filter_parameter);
 }
 
 void bxcan_set_br(uint8_t br) {
@@ -133,10 +121,10 @@ void bxcan_set_br(uint8_t br) {
     can_filter_parameter.filter_number=0;
     can_filter_parameter.filter_mode = CAN_FILTERMODE_MASK;
     can_filter_parameter.filter_bits = CAN_FILTERBITS_32BIT;
-    can_filter_parameter.filter_list_high = (can_id<<5);
-    can_filter_parameter.filter_list_low = 0|0x0000;
-    can_filter_parameter.filter_mask_high = ((0xf001<<3)>>16) & 0xffff;
-    can_filter_parameter.filter_mask_low = ((0xf001<<3)& 0xffff) | 0x0004;
+    can_filter_parameter.filter_list_high = 0;
+    can_filter_parameter.filter_list_low = 0;
+    can_filter_parameter.filter_mask_high = 0;
+    can_filter_parameter.filter_mask_low = 0;
     can_filter_parameter.filter_fifo_number = CAN_FIFO0;
     can_filter_parameter.filter_enable = ENABLE;
     switch(br) {

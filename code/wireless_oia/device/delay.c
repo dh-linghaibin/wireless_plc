@@ -12,7 +12,7 @@ static uint16_t fac_ms=0;                            //msÑÓÊ±±¶³ËÊı,ÔÚucosÏÂ,´ú±
 
 void delay_init(void) {
     systick_clksource_set(SYSTICK_CLKSOURCE_HCLK_DIV8);    //Ñ¡ÔñÍâ²¿Ê±ÖÓ  HCLK/8
-    fac_us=SystemCoreClock/108000000;                //ÎªÏµÍ³Ê±ÖÓµÄ1/8  
+    fac_us=SystemCoreClock/24000000;                //ÎªÏµÍ³Ê±ÖÓµÄ1/8  
     fac_ms=(uint16_t)fac_us*1000;                    //·ÇOSÏÂ,´ú±íÃ¿¸ömsĞèÒªµÄsystickÊ±ÖÓÊı   
 }
 

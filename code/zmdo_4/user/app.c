@@ -19,7 +19,6 @@ int main(void) {
     delay_init();
     delay_ms(100);
     tm1650_init();
-    delay_ms(100);
     wdog_init();/* 看门狗初始化 */
     outsigned_init();
     task_set_init();

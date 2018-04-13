@@ -269,10 +269,10 @@ Function : reset the SI446x device
 ============================================================================*/
 void SI446X_RESET(void)
 {
-    uint16_t x = 255;
+    uint16_t x = 2550;
     SI_SDN_HIGH();
-    //while(x--); lhb
-    delay_ms(50);
+    while(x--); //lhb
+    //delay_ms(50);
     SI_SDN_LOW();
     SI_CSN_HIGH();
 }

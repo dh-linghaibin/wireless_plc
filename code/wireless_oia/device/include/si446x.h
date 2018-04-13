@@ -63,11 +63,11 @@ extern "C" {
 //#define PORT_SI_GIO1    GPIOB
 //#define PIN_SI_GIO1     GPIO_Pin_2
 
-#define SI_CSN_LOW()   gpio_bit_reset(PORT_SI_CSN, PIN_SI_CSN);
-#define SI_CSN_HIGH()  gpio_bit_set(PORT_SI_CSN, PIN_SI_CSN);
+#define SI_CSN_LOW()   gpio_bit_write(PORT_SI_CSN, PIN_SI_CSN,RESET); delay_us(500)
+#define SI_CSN_HIGH()  gpio_bit_write(PORT_SI_CSN, PIN_SI_CSN,SET); delay_us(500)
 
-#define SI_SDN_LOW()   gpio_bit_reset(PORT_SI_SDN, PIN_SI_SDN);
-#define SI_SDN_HIGH()  gpio_bit_set(PORT_SI_SDN, PIN_SI_SDN);
+#define SI_SDN_LOW()   gpio_bit_write(PORT_SI_SDN, PIN_SI_SDN,RESET); delay_us(500)
+#define SI_SDN_HIGH()  gpio_bit_write(PORT_SI_SDN, PIN_SI_SDN,SET); delay_us(500)
 
 void SI446X_CHANGE_STATE(uint8_t NewState);
 void SI446X_RX_FIFO_RESET(void);

@@ -27,13 +27,15 @@ void vTaskLEDFlash(void *pvParameters);
 
 int main(void) {
     delay_init();
-    tm1650_init();		/* 显示初始化 */
+   // tm1650_init();		/* 显示初始化 */
     sign_led();
     sign_configure();
     //sm16703p_init();
-    //wireless_init();
-    //si446x_init();
-    
+    wireless_init();
+    si446x_init();
+    while(1) {
+        rf_recv();
+    }
    // xTaskCreate(vTaskLED, "Task LED", 10, NULL, 1, NULL);    
     xTaskCreate(vTaskLEDFlash, "Task LED Flash", 20, NULL, 2, NULL);
     vTaskStartScheduler();

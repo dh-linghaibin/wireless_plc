@@ -48,13 +48,13 @@
 
 /* use HXTAL (XD series CK_HXTAL = 8M, CL series CK_HXTAL = 25M) */
 //#define __SYSTEM_CLOCK_HXTAL                    (uint32_t)(__HXTAL)
-//#define __SYSTEM_CLOCK_24M_PLL_HXTAL            (uint32_t)(24000000)
+#define __SYSTEM_CLOCK_24M_PLL_HXTAL            (uint32_t)(24000000)
 //#define __SYSTEM_CLOCK_36M_PLL_HXTAL            (uint32_t)(36000000)
 //#define __SYSTEM_CLOCK_48M_PLL_HXTAL            (uint32_t)(48000000)
 //#define __SYSTEM_CLOCK_56M_PLL_HXTAL            (uint32_t)(56000000)
 //#define __SYSTEM_CLOCK_72M_PLL_HXTAL            (uint32_t)(72000000)
 //#define __SYSTEM_CLOCK_96M_PLL_HXTAL            (uint32_t)(96000000)
-#define __SYSTEM_CLOCK_108M_PLL_HXTAL           (uint32_t)(108000000)
+//#define __SYSTEM_CLOCK_108M_PLL_HXTAL           (uint32_t)(108000000)
 
 #define SEL_IRC8M       0x00U
 #define SEL_HXTAL       0x01U
