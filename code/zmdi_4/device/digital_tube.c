@@ -29,10 +29,10 @@
 #define PIN_DG1 GPIO_Pin_3
 #define PIN_DG2 GPIO_Pin_4
 
-static const uint8_t show_code[13] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x7c,0x00,0xff};//数码管编码
-static uint8_t show[2];//显示数字
-static uint8_t choice_num;//轮询标志
-static uint8_t point[2];//小数点
+static volatile const uint8_t show_code[13] = {0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x7c,0x00,0xff};//数码管编码
+static volatile uint8_t show[2];//显示数字
+static volatile uint8_t choice_num;//轮询标志
+static volatile uint8_t point[2];//小数点
 static void set_bit_num(uint8_t val);
 
 void digital_tube_init(void) {

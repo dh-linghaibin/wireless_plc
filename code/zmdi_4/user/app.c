@@ -26,10 +26,6 @@ int main(void) {
     for(;;);
 }
 
-//void HardFault_Handler(void) {
-//    while(1);
-//}
-
 #ifdef  USE_FULL_ASSERT
 /** °Ñ#ifdef DEBUGÌæ»»Îª#ifdef USE_FULL_ASSERT
   * @brief  Reports the name of the source file and the source line number

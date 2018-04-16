@@ -57,6 +57,42 @@ void si446x_init(void) {
     
     GPIO_SetBits(GPIOE,GPIO_Pin_2);//射频时钟（晶振）使能（高电平打开，低电平关断）
     GPIO_SetBits(GPIOE,GPIO_Pin_4);//射频 PA_VDD 电源使能引脚（高电平打开，低电平关断）
+    
+    SPI_InitTypeDef  SPI_InitStructure;
+
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);//使能GPIOB时钟
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3, ENABLE);//使能SPI1时钟
+
+    //GPIOFB3,4,5初始化设置
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10|GPIO_Pin_11|GPIO_Pin_12;//PB3~5复用功能输出   
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;//复用功能
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
+    GPIO_Init(GPIOC, &GPIO_InitStructure);//初始化
+
+    GPIO_PinAFConfig(GPIOC,GPIO_PinSource10,GPIO_AF_SPI3); //PB3复用为 SPI1
+    GPIO_PinAFConfig(GPIOC,GPIO_PinSource11,GPIO_AF_SPI3); //PB4复用为 SPI1
+    GPIO_PinAFConfig(GPIOC,GPIO_PinSource12,GPIO_AF_SPI3); //PB5复用为 SPI1
+
+    //这里只针对SPI口初始化
+    RCC_APB1PeriphResetCmd(RCC_APB1Periph_SPI3,ENABLE);//复位SPI1
+    RCC_APB1PeriphResetCmd(RCC_APB1Periph_SPI3,DISABLE);//停止复位SPI1
+    
+    SPI_I2S_DeInit(SPI3);
+
+    SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+    SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+    SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
+    SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
+    SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
+    SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+    SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
+    SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+    SPI_InitStructure.SPI_CRCPolynomial = 7;
+    SPI_Init(SPI3, &SPI_InitStructure);  //根据SPI_InitStruct中指定的参数初始化外设SPIx寄存器
+    SPI_Cmd(SPI3, ENABLE); //使能SPI外设
+    
     RF_Initial(0);
 }
 
@@ -67,15 +103,15 @@ Function : wait the device ready to response a command
 void SI446X_WAIT_CTS(void)
 {
     uint8_t cts;
-    IWDG_ReloadCounter();
+    //IWDG_ReloadCounter();
     do
     {
         SI_CSN_LOW();
-        SPI_ExchangeByte(READ_CMD_BUFF);
-        cts = SPI_ExchangeByte(0xFF);
+        cts = SPI_ExchangeByte(READ_CMD_BUFF);
+        //cts = SPI_ExchangeByte(0xff);
         SI_CSN_HIGH();
     }while(cts != 0xFF);
-    IWDG_ReloadCounter();
+    //IWDG_ReloadCounter();
 }
 
 /*===========================================================================
@@ -292,7 +328,7 @@ void SI446X_CONFIG_INIT(void)
     {
         j += 1;
         SI446X_CMD((uint8_t*)ptr + j, i);
-        IWDG_ReloadCounter();
+        //IWDG_ReloadCounter();
         j += i;
     }
 #if PACKET_LENGTH > 0           //fixed packet length

@@ -52,6 +52,8 @@
 #include "task_gui.h"
 #include "task_lua.h"
 
+#include "ini.h"
+
 const char logo[] = "\
 /*\n\
  * This file is part of the \n\
@@ -70,23 +72,29 @@ int main(void) {
     buzzer_init(); /* 蜂鸣器初始化 */
     delay_ms(100);
     uart_init(115200); /* 串口初始化 */
-    printf("%s",logo); 
+    //printf("%s",logo); 
     rtc_init();         /* 时钟初始化 */
-    task_can_init();    /* can初始化 */
-    task_gui_init();    /* gui初始化 */
-    task_file_init();   /* 文件系统初始化 */
+//    task_can_init();    /* can初始化 */
+//    task_gui_init();    /* gui初始化 */
+//    task_file_init();   /* 文件系统初始化 */
     
-    //si446x_init();
-    //USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
-    //delay_ms(1800);
+//    ini_t *config = ini_load("1:config.ini");
+//    const char *server = "default";
+//    int port = 80;
+//    ini_sget(config, "database", "server", NULL, &server);
+//    printf("server: %s:%d\n", server, port);
+//    
+    si446x_init();
+//    USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
+//    delay_ms(1800);
     
-    task_lua_init();    /* lua环境初始化 */
-    eth_init();         /* 网络初始化 */
-    task_modbus_init(); /* modbus 初始化 */
-    task_can_create();
-    task_gui_create();/* gui任务 */
-    task_lua_create();/* lua任务 */
-    vTaskStartScheduler();
+//    task_lua_init();    /* lua环境初始化 */
+//    eth_init();         /* 网络初始化 */
+//    task_modbus_init(); /* modbus 初始化 */
+//    task_can_create();
+//    task_gui_create();/* gui任务 */
+//    task_lua_create();/* lua任务 */
+//    vTaskStartScheduler();
     while(1);
 }
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

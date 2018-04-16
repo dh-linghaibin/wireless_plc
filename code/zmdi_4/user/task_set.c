@@ -35,42 +35,42 @@ void task_set_init(void) {
     menu_t.show_time = 0;
     menu_t.page = 0;
     menu_t.flag = 0;
-    menu_t.device_br = 2;
-    menu_t.device_id = 5;
     
     digital_tube_init();
     button_init();
-    bxcan_init();
     
+    menu_t.device_br = 2;
+    menu_t.device_id = 2;
     digital_tube_set_num(0,1);
     digital_tube_set_num(1,2);
     
-    uint32_t addr = 0;/* 读取地址 */
-//    flash_read(C_FLAG,&addr);
+//    uint16_t addr = 0;/* 读取地址 */
+//    flash_read(&addr,C_FLAG,1);
 //    if(addr != 0x5555) {/* 判断是否第一次上电 */
 //        addr = 0x5555; 
-//        flash_write(C_FLAG,addr);
+//        flash_write(&addr,C_FLAG,1);
 //        addr = 1;
-//        flash_write(C_ADDR,addr);
+//        flash_write(&addr,C_ADDR,1);
 //        addr = 0;
-//        flash_write(C_DEVICE_VAL,addr);
+//        flash_write(&addr,C_DEVICE_VAL,1);
 //        addr = 2;
-//        flash_write(C_BR,addr);
+//        flash_write(&addr,C_BR,1);
 //    }
-//    flash_read(C_ADDR,&addr);
+//    flash_read(&addr,C_ADDR,1);
 //    if(addr > 100) {/* 保护地址合法范围 */
 //        addr = 1;
 //    }
 //    menu_t.device_id = addr;
 //    digital_tube_set_num(0,menu_t.device_id/10);
 //    digital_tube_set_num(1,menu_t.device_id%10);
-//    bxcan_set_id(menu_t.device_id);
-//    flash_read(C_BR,&addr);
+    bxcan_set_id(menu_t.device_id);
+//    flash_read(&addr,C_BR,1);
 //    if(addr > 7) {/* 保护地址合法范围 */
 //        addr = 2;
 //    }
 //    menu_t.device_br = addr;
-//    bxcan_init(menu_t.device_br);
+    bxcan_init(menu_t.device_br);
+    //WriteFlash(0,100);
 }
 
 void task_set_create(void) {
@@ -78,35 +78,29 @@ void task_set_create(void) {
 }
 
 void task_set_br(uint8_t br) {
-//    if(br > 7) {
-//        br = 2;
-//    }
-//    menu_t.page = M_PAGE1_SHOW;
-//    //xTimerStop(xtime_show,0);/*关闭定时器*/
-//    vTaskDelay(50 / portTICK_RATE_MS);
-//    menu_t.device_br = br;
-//    bxcan_set_br(menu_t.device_br);
-//    taskENTER_CRITICAL();//进入〇接
-//    flash_write(C_BR,menu_t.device_br);
-//    taskEXIT_CRITICAL();
-//    digital_tube_set_num(0,13);
-//    digital_tube_set_num(1,menu_t.device_br);
+    if(br > 7) {
+        br = 2;
+    }
+    menu_t.page = M_PAGE1_SHOW;
+    vTaskDelay(50 / portTICK_RATE_MS);
+    menu_t.device_br = br;
+    bxcan_set_br(menu_t.device_br);
+   // flash_write((uint16_t *)&menu_t.device_br,C_BR,1);
+    digital_tube_set_num(0,13);
+    digital_tube_set_num(1,menu_t.device_br);
 }
 
 void task_set_address(uint8_t address) {
-//    if(address > 99) {
-//        address = 2;
-//    }
-//    //xTimerStop(xtime_show,0);/*关闭定时器*/
-//    menu_t.page = M_PAGE1_SHOW;
-//    vTaskDelay(50 / portTICK_RATE_MS);
-//    menu_t.device_id = address;
-//    bxcan_set_id(menu_t.device_id);
-//    taskENTER_CRITICAL();//进入〇接
-//    flash_write(C_ADDR,menu_t.device_id);
-//    taskEXIT_CRITICAL();
-//    digital_tube_set_num(0,menu_t.device_id/10);
-//    digital_tube_set_num(1,menu_t.device_id%10);
+    if(address > 99) {
+        address = 2;
+    }
+    menu_t.page = M_PAGE1_SHOW;
+    vTaskDelay(50 / portTICK_RATE_MS);
+    menu_t.device_id = address;
+    bxcan_set_id(menu_t.device_id);
+  //  flash_write((uint16_t *)&menu_t.device_br,C_ADDR,1);
+    digital_tube_set_num(0,menu_t.device_id/10);
+    digital_tube_set_num(1,menu_t.device_id%10);
 }
 
 static void vtimer_show( TimerHandle_t xtimer ) {
@@ -127,7 +121,7 @@ static void vtimer_tic( TimerHandle_t xtimer ) {
         run_hz = 0;
         run_dr = run_dr==0?1:0;
         igital_tube_toggle_point(0,run_dr);
-       // wdog_reload();/* 喂狗 */
+        wdog_reload();/* 喂狗 */
     }
     switch(menu_t.page) {
         case M_PAGE1_SHOW: {
@@ -309,28 +303,28 @@ static void task_set(void *pvParameters) {
                                 
                             } break;
                             case M_PAGE2_SET_ADDR: { /* 长按保存地址 */
-                                //xTimerStop(xtime_show,0);/*关闭定时器*/
-                                menu_t.page = M_PAGE1_SHOW;
-                                vTaskDelay(50 / portTICK_RATE_MS);
-                                menu_t.device_id = menu_t.line;
-                                bxcan_set_id(menu_t.device_id);
-                                taskENTER_CRITICAL();//进入〇接
-                                flash_write(C_ADDR,menu_t.device_id);
-                                taskEXIT_CRITICAL();
-                                digital_tube_set_num(0,menu_t.device_id/10);
-                                digital_tube_set_num(1,menu_t.device_id%10);
+                                task_set_address(menu_t.line);
+//                                menu_t.page = M_PAGE1_SHOW;
+//                                vTaskDelay(50 / portTICK_RATE_MS);
+//                                menu_t.device_id = menu_t.line;
+//                                bxcan_set_id(menu_t.device_id);
+//                                taskENTER_CRITICAL();//进入〇接
+//                                flash_write(C_ADDR,menu_t.device_id);
+//                                taskEXIT_CRITICAL();
+//                                digital_tube_set_num(0,menu_t.device_id/10);
+//                                digital_tube_set_num(1,menu_t.device_id%10);
                             } break;
                             case M_PAGE3_SET_BR: {
-                                menu_t.page = M_PAGE1_SHOW;
-                                //xTimerStop(xtime_show,0);/*关闭定时器*/
-                                vTaskDelay(50 / portTICK_RATE_MS);
-                                menu_t.device_br = menu_t.line;
-                                bxcan_set_br(menu_t.device_br);
-                                taskENTER_CRITICAL();//进入〇接
-                                flash_write(C_BR,menu_t.device_br);
-                                taskEXIT_CRITICAL();
-                                digital_tube_set_num(0,10);
-                                digital_tube_set_num(1,menu_t.device_br);
+                                task_set_br(menu_t.line);
+//                                menu_t.page = M_PAGE1_SHOW;
+//                                vTaskDelay(50 / portTICK_RATE_MS);
+//                                menu_t.device_br = menu_t.line;
+//                                bxcan_set_br(menu_t.device_br);
+//                                taskENTER_CRITICAL();//进入〇接
+//                                flash_write(C_BR,menu_t.device_br);
+//                                taskEXIT_CRITICAL();
+//                                digital_tube_set_num(0,10);
+//                                digital_tube_set_num(1,menu_t.device_br);
                             } break;
                         }
                     }

@@ -32,7 +32,7 @@ static void modbus_task(void *arg);
 /* ----------------------- Begin implementation -----------------------------*/
 BOOL xMBTCPPortInit( USHORT usTCPPort ) {
     ucTCPRequestFrame = l_malloc(sizeof(UCHAR)*MB_BUF_LEN);
-    xTaskCreate( modbus_task, ( signed portCHAR * ) "ts1", 512,
+    xTaskCreate( modbus_task,"ts1", 512,
                             NULL, tskIDLE_PRIORITY+1, NULL );  
     return TRUE;
 }

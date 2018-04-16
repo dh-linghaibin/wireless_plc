@@ -8,6 +8,7 @@
 #include "task_modbus.h"
 #include "mb.h"
 #include "mbutils.h"
+#include "task_can.h"
 
 static uint8_t * modbus_coil; /* ÏßÈ¦ */
 static uint8_t * modbus_input;
@@ -102,7 +103,7 @@ eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils,
         switch ( eMode ) {
         case MB_REG_READ:
             while( iNCoils > 0 ) {
-                *pucRegBuffer++ = 0x00;//modbus_coil[adr_num];
+                *pucRegBuffer++ = modbus_coil[adr_num];
                 iNCoils -= 8;
                 adr_num += 1;
             }
@@ -111,11 +112,14 @@ eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils,
             while( iNCoils > 0 ) {
                 uint16_t r_num = usBitOffset/8;
                 uint16_t r_bit = usBitOffset%8;
-                if((*pucRegBuffer++) == 0) {
-                    //modbus_coil[r_num] &= ~(1<<r_bit);
-                } else {
-                   // modbus_coil[r_num] |= 1<<r_bit;
-                }
+                
+                device_send send_msg;
+                send_msg.type = DO_8;
+                send_msg.address = r_num;
+                send_msg.cmd = 0x00;
+                send_msg.data[0] = r_bit;
+                send_msg.data[1] = (*pucRegBuffer++);
+                task_can_set(send_msg);
                 iNCoils -= 8;
                 usBitOffset += 8;
             }
@@ -137,7 +141,7 @@ eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete ) {
         usBitOffset = ( unsigned short )( usAddress - REG_DISCRETE_START );
         uint16_t adr_num = usBitOffset/8;
         while( iNDiscrete > 0 ) {
-            *pucRegBuffer++ = 0x00;//modbus_input[adr_num];
+            *pucRegBuffer++ = modbus_input[adr_num];
             iNDiscrete -= 8;
             adr_num += 1;
         }

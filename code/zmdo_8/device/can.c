@@ -6,7 +6,6 @@
  */
 
 #include "can.h"
-#include <cstring>
 #include "task_can.h"
 /* Scheduler includes. */
 #include "FreeRTOS.h"

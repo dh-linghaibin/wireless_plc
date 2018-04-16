@@ -30,7 +30,7 @@ extern "C" {
 #define BR_800K  4
 #define BR_1000K 3
     
-void bxcan_init(void);
+void bxcan_init(uint8_t br);
 void bxcan_send(CanTxMsg send_msg);
 void bxcan_set_id(uint8_t id);
 void bxcan_set_br(uint8_t br);

@@ -28,12 +28,14 @@
 #include "usb_conf.h" 
 
 #include "task_lua.h"
+#include "task_can.h"
 
 LV_IMG_DECLARE(l_logo);
 LV_IMG_DECLARE(jt_logo);
 
 static void vtask_gui_tic(void *pvParameters);
 static void demo_init(void);
+static void vtask_show_device(void *pvParameters);
 
 void task_gui_init(void) {
     SPI3_Init();
@@ -58,6 +60,7 @@ void task_gui_init(void) {
 
 void task_gui_create(void) {
     xTaskCreate(vtask_gui_tic, "ui", 512, NULL, 3, NULL);
+    xTaskCreate(vtask_show_device, "device", 512, NULL, 3, NULL);
 }
 
 static void vtask_gui_tic(void *pvParameters) {
@@ -84,6 +87,43 @@ static lv_res_t change_action(lv_obj_t * sw) {
     }
     buzzer_set(50,1);
     return LV_RES_OK;
+}
+
+/*Will be called on click of a button of a list*/
+static lv_res_t list_release_action(lv_obj_t * list_btn) {
+    printf("List element click:%s\n", lv_list_get_btn_text(list_btn));
+
+    return LV_RES_OK; /*Return OK because the list is not deleted*/
+}
+
+lv_obj_t * list1;
+lv_obj_t* label3;
+
+static void vtask_show_device(void *pvParameters) {
+    for( ;; ) {
+        vTaskDelay(1000 / portTICK_RATE_MS);
+        lv_obj_del(list1);
+        list1 = lv_list_create(lv_scr_act(), NULL);
+        lv_obj_set_size(list1, 130, 170);
+        device_online *temp;
+        for (int i = 0; i < list_len(task_can_get_device()); i++){ //list_len获取链表的长度
+            list_get(task_can_get_device(), i, (void **)&temp); //取得位置为i的结点的数据
+            char *buf = l_malloc(sizeof(char)*10);
+            switch(temp->type) {
+                case DO_8: {
+                    sprintf(buf, "DI_8  %d", temp->address);
+                } break;
+                case DO_4: {
+                    sprintf(buf, "DO_4  %d", temp->address);
+                } break;
+                case DI_4: {
+                    sprintf(buf, "DI_4  %d", temp->address);
+                } break;
+            }
+            lv_list_add(list1, SYMBOL_FILE, buf, list_release_action);
+            l_free(buf);
+        }
+    }
 }
 
 static void demo_init(void) {
@@ -132,9 +172,21 @@ static void demo_init(void) {
     lv_obj_align(sw1, NULL, LV_ALIGN_CENTER, 0, -50);
     lv_sw_set_action(sw1, change_action);
 
-    lv_obj_t* label3 = lv_label_create(tab2, NULL);
+    label3 = lv_label_create(tab2, NULL);
     lv_obj_set_pos(label3, 20, 100);
     lv_label_set_text(label3, "pro_lua "SYMBOL_OK);
+    
+    /*Crate the list*/
+    list1 = lv_list_create(lv_scr_act(), NULL);
+    lv_obj_set_size(list1, 130, 170);
+    lv_obj_align(list1, NULL, LV_ALIGN_IN_TOP_LEFT, 20, 40);
+
+    /*Add list elements*/
+    lv_list_add(list1, SYMBOL_FILE, "New", list_release_action);
+    lv_list_add(list1, SYMBOL_DIRECTORY, "Open", list_release_action);
+    lv_list_add(list1, SYMBOL_CLOSE, "Delete", list_release_action);
+    lv_list_add(list1, SYMBOL_EDIT, "Edit", list_release_action);
+    lv_list_add(list1, SYMBOL_SAVE, "Save", list_release_action);
     
 //    lv_obj_t *img1 = lv_img_create(tab3, NULL);
 //    lv_img_set_src(img1, &jt_logo);

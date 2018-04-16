@@ -9,7 +9,6 @@
 #include "task_modbus.h"
 #include "can.h"
 #include "stdio.h"
-#include "l_list.h"
 
 static void task_can(void *pvParameters);
 static void task_can_send(void *pvParameters);
@@ -54,6 +53,10 @@ xQueueHandle task_can_get_queue(void) {
     return can_msg_queue;
 }
 
+l_list_t * task_can_get_device(void) {
+    return online_head;;
+}
+
 // 定时器回调函数格式
 static void vtimer_callback( TimerHandle_t xTimer ) {
     uint32_t ulTimerID;
@@ -66,7 +69,7 @@ static void vtimer_callback( TimerHandle_t xTimer ) {
             list_pop(online_head,i);
             l_free(temp);
         } else {
-            //printf("设备类型:%d  设备地址:%d 设备在线:%d\n", temp->type,temp->address,temp->online);
+            printf("设备类型:%d  设备地址:%d 设备在线:%d\n", temp->type,temp->address,temp->online);
             temp->online ++;
         }
     }

@@ -13,6 +13,7 @@ extern "C" {
 #endif
 
 #include "app_configure.h"
+#include "l_list.h"
 //freertos
 #include "FreeRTOS.h"
 #include "task.h"
@@ -52,6 +53,7 @@ void task_can_init(void);
 void task_can_create(void);
 xQueueHandle task_can_get_queue(void);
 void task_can_set(device_send send_msg);
+l_list_t * task_can_get_device(void);
 
 #ifdef __cplusplus
 }

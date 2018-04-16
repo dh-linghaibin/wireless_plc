@@ -10,6 +10,7 @@
 #include "ff.h"
 #include "stdio.h"
 #include "delay.h"
+#include "malloc.h"
 
 //FRESULT scan_files (
 //    char* path        /* Start node to be scanned (***also used as work area***) */

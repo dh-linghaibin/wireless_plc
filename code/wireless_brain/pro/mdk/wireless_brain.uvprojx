@@ -10,7 +10,8 @@
       <TargetName>brain</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060300::V5.06 update 3 (build 300)::ARMCC</pCCUsed>
+      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F407ZGTx</Device>
@@ -323,6 +324,7 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
+            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
             <v6LangP>1</v6LangP>
@@ -335,7 +337,7 @@
               <MiscControls> --gnu</MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,USE_USB_OTG_FS,USE_EMBEDDED_PHY</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\device\include;..\..\user\include;..\..\arch\m4\inc;..\..\arch\m4\core;..\..\lib\include;..\..\arch\m4\eth\inc;..\..\software\fatfs\src;..\..\software\fatfs\exfuns;..\..\software\lwip;..\..\software\lwip\lwip-1.4.1\src\include;..\..\software\lwip\lwip-1.4.1\src\include\ipv4;..\..\software\lwip\lwip-1.4.1\src\include\lwip;..\..\software\lwip\lwip-1.4.1\src\include\netif;..\..\software\lwip\lwip_app\lwip_comm;..\..\software\freertos\include;..\..\software\freertos\portable\RVDS\ARM_CM4F;..\..\software\ugui;..\..\software\lvgl\lvgl-master\lv_core;..\..\software\lua-5.3.4;..\..\software\lwip\port;..\..\software\lwip\port\include\arch\;..\..\software\lwip\port\include\;..\..\software\lwip\src\include;..\..\software\lwip\src\include\ipv4;..\..\software\lwip\src\include\lwip;..\..\software\lwip\src\netif;..\..\software\freertos\include;..\..\software\freertos\portable\ARM_CM4F;..\..\software\freemodbus\modbus\tcp;..\..\software\freemodbus\modbus\include;..\..\software\freemodbus\port;..\..\arch\m4\usb_otg\inc;..\..\software\usb_port\include;..\..\arch\m4\usb_device\Core\inc;..\..\arch\m4\usb_device\Class\msc\inc;..\..\arch\m4\usb_port;..\..\software\lua-5.3.4\port\include</IncludePath>
+              <IncludePath>..\..\device\include;..\..\user\include;..\..\arch\m4\inc;..\..\arch\m4\core;..\..\lib\include;..\..\arch\m4\eth\inc;..\..\software\fatfs\src;..\..\software\fatfs\exfuns;..\..\software\lwip;..\..\software\lwip\lwip-1.4.1\src\include;..\..\software\lwip\lwip-1.4.1\src\include\ipv4;..\..\software\lwip\lwip-1.4.1\src\include\lwip;..\..\software\lwip\lwip-1.4.1\src\include\netif;..\..\software\lwip\lwip_app\lwip_comm;..\..\software\freertos\include;..\..\software\freertos\portable\RVDS\ARM_CM4F;..\..\software\ugui;..\..\software\lvgl\lvgl-master\lv_core;..\..\software\lua-5.3.4;..\..\software\lwip\port;..\..\software\lwip\port\include\arch\;..\..\software\lwip\port\include\;..\..\software\lwip\src\include;..\..\software\lwip\src\include\ipv4;..\..\software\lwip\src\include\lwip;..\..\software\lwip\src\netif;..\..\software\freertos\include;..\..\software\freertos\portable\ARM_CM4F;..\..\software\freemodbus\modbus\tcp;..\..\software\freemodbus\modbus\include;..\..\software\freemodbus\port;..\..\arch\m4\usb_otg\inc;..\..\software\usb_port\include;..\..\arch\m4\usb_device\Core\inc;..\..\arch\m4\usb_device\Class\msc\inc;..\..\arch\m4\usb_port;..\..\software\lua-5.3.4\port\include;..\..\software\ini\src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -408,16 +410,6 @@
               <FileName>task_lua.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\user\task_lua.c</FilePath>
-            </File>
-            <File>
-              <FileName>l_logo.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\user\l_logo.c</FilePath>
-            </File>
-            <File>
-              <FileName>jt_logo.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\user\jt_logo.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1721,8 +1713,29 @@
             </File>
           </Files>
         </Group>
+        <Group>
+          <GroupName>ini</GroupName>
+          <Files>
+            <File>
+              <FileName>ini.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\ini\src\ini.c</FilePath>
+            </File>
+            <File>
+              <FileName>ini.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\software\ini\src\ini.h</FilePath>
+            </File>
+          </Files>
+        </Group>
       </Groups>
     </Target>
   </Targets>
+
+  <RTE>
+    <apis/>
+    <components/>
+    <files/>
+  </RTE>
 
 </Project>

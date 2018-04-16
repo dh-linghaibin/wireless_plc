@@ -17,9 +17,8 @@
 
 static uint8_t can_id = 0x06;
 
-void bxcan_init(void) {
+void bxcan_init(uint8_t br) {
     GPIO_InitTypeDef                    GPIO_InitStructure;
-    CAN_InitTypeDef                     CAN_InitStructure;
     CAN_FilterInitTypeDef               CAN_FilterInitStructure;
     NVIC_InitTypeDef                    NVIC_InitStructure;
     
@@ -56,20 +55,7 @@ void bxcan_init(void) {
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
         
-    //CAN单元设置
-    CAN_InitStructure.CAN_TTCM = DISABLE; 
-    CAN_InitStructure.CAN_ABOM = DISABLE;  
-    CAN_InitStructure.CAN_AWUM = DISABLE; 
-    CAN_InitStructure.CAN_NART = ENABLE; 
-    CAN_InitStructure.CAN_RFLM = DISABLE;
-    CAN_InitStructure.CAN_TXFP = DISABLE;
-    CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;//CAN_Mode_Normal; 
-    //CAN波特率设置,500KHz@48MHz
-    CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;
-    CAN_InitStructure.CAN_BS1 = CAN_BS1_3tq;
-    CAN_InitStructure.CAN_BS2 = CAN_BS2_2tq;
-    CAN_InitStructure.CAN_Prescaler = 160;
-    CAN_Init(CAN, &CAN_InitStructure);
+    bxcan_set_br(br);
     
     CAN_FilterInitStructure.CAN_FilterNumber = 0;
     CAN_FilterInitStructure.CAN_FilterMode = CAN_FilterMode_IdMask;
