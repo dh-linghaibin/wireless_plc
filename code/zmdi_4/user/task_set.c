@@ -6,12 +6,11 @@
  */
  
 #include "task_set.h"
-#include "digital_tube.h"
+#include "flash.h"
 #include "can.h"
 #include "wdog.h"
-#include "flash.h"
+#include "digital_tube.h"
 #include "button.h"
-#include "time.h"
 
 typedef struct {
     uint8_t device_id;
@@ -23,8 +22,6 @@ typedef struct {
     uint8_t show_num[2]; /* 当前显示内容 */
 } menu_v;
 
-static menu_v menu_t;
-
 static TimerHandle_t xtime_show; /* 定义句柄 */
 static TimerHandle_t xtime_tic; /* 定义句柄 */
 static menu_v menu_t;
@@ -33,48 +30,38 @@ static void task_set(void *pvParameters);
 
 void task_set_init(void) {
     menu_t.show_time = 0;
-    menu_t.page = 0;
     menu_t.flag = 0;
-    
-    digital_tube_init();
-    button_init();
-    
-    menu_t.device_br = 2;
-    menu_t.device_id = 2;
-    digital_tube_set_num(0,1);
-    digital_tube_set_num(1,2);
-    
-//    uint16_t addr = 0;/* 读取地址 */
-//    flash_read(&addr,C_FLAG,1);
-//    if(addr != 0x5555) {/* 判断是否第一次上电 */
-//        addr = 0x5555; 
-//        flash_write(&addr,C_FLAG,1);
-//        addr = 1;
-//        flash_write(&addr,C_ADDR,1);
-//        addr = 0;
-//        flash_write(&addr,C_DEVICE_VAL,1);
-//        addr = 2;
-//        flash_write(&addr,C_BR,1);
-//    }
-//    flash_read(&addr,C_ADDR,1);
-//    if(addr > 100) {/* 保护地址合法范围 */
-//        addr = 1;
-//    }
-//    menu_t.device_id = addr;
-//    digital_tube_set_num(0,menu_t.device_id/10);
-//    digital_tube_set_num(1,menu_t.device_id%10);
+
+    uint32_t addr = 0;/* 读取地址 */
+    flash_read(C_FLAG,&addr);
+    if(addr != 0x5555) {/* 判断是否第一次上电 */
+        addr = 0x5555; 
+        flash_write(C_FLAG,addr);
+        addr = 1;
+        flash_write(C_ADDR,addr);
+        addr = 0;
+        flash_write(C_DEVICE_VAL,addr);
+        addr = 2;
+        flash_write(C_BR,addr);
+    }
+    flash_read(C_ADDR,&addr);
+    if(addr > 100) {/* 保护地址合法范围 */
+        addr = 1;
+    }
+    menu_t.device_id = addr;
+    digital_tube_set_num(0,menu_t.device_id/10);
+    digital_tube_set_num(1,menu_t.device_id%10);
     bxcan_set_id(menu_t.device_id);
-//    flash_read(&addr,C_BR,1);
-//    if(addr > 7) {/* 保护地址合法范围 */
-//        addr = 2;
-//    }
-//    menu_t.device_br = addr;
+    flash_read(C_BR,&addr);
+    if(addr > 7) {/* 保护地址合法范围 */
+        addr = 2;
+    }
+    menu_t.device_br = addr;
     bxcan_init(menu_t.device_br);
-    //WriteFlash(0,100);
 }
 
 void task_set_create(void) {
-    xTaskCreate( task_set,"task_set", 400, NULL, tskIDLE_PRIORITY+3, NULL );
+    xTaskCreate( task_set,"task_set", 512, NULL, tskIDLE_PRIORITY+3, NULL );
 }
 
 void task_set_br(uint8_t br) {
@@ -82,11 +69,14 @@ void task_set_br(uint8_t br) {
         br = 2;
     }
     menu_t.page = M_PAGE1_SHOW;
+    //xTimerStop(xtime_show,0);/*关闭定时器*/
     vTaskDelay(50 / portTICK_RATE_MS);
     menu_t.device_br = br;
     bxcan_set_br(menu_t.device_br);
-   // flash_write((uint16_t *)&menu_t.device_br,C_BR,1);
-    digital_tube_set_num(0,13);
+    taskENTER_CRITICAL();//进入〇接
+    flash_write(C_BR,menu_t.device_br);
+    taskEXIT_CRITICAL();
+    digital_tube_set_num(0,10);
     digital_tube_set_num(1,menu_t.device_br);
 }
 
@@ -94,21 +84,24 @@ void task_set_address(uint8_t address) {
     if(address > 99) {
         address = 2;
     }
+    //xTimerStop(xtime_show,0);/*关闭定时器*/
     menu_t.page = M_PAGE1_SHOW;
     vTaskDelay(50 / portTICK_RATE_MS);
     menu_t.device_id = address;
     bxcan_set_id(menu_t.device_id);
-  //  flash_write((uint16_t *)&menu_t.device_br,C_ADDR,1);
+    taskENTER_CRITICAL();//进入〇接
+    flash_write(C_ADDR,menu_t.device_id);
+    taskEXIT_CRITICAL();
     digital_tube_set_num(0,menu_t.device_id/10);
     digital_tube_set_num(1,menu_t.device_id%10);
 }
 
-static void vtimer_show( TimerHandle_t xtimer ) {
+static void vtimer_tic( TimerHandle_t xtimer ) {
     configASSERT(xtimer);
     digital_tube_refresh();
 }
 
-static void vtimer_tic( TimerHandle_t xtimer ) {
+static void vtimer_show( TimerHandle_t xtimer ) {
     configASSERT(xtimer);
     static uint8_t dr = 0;
     static uint8_t hz = 0;
@@ -212,22 +205,8 @@ static void vtimer_tic( TimerHandle_t xtimer ) {
 static void task_set(void *pvParameters) {
     uint8_t flag = 0;
     uint8_t long_down  = 0;
-    xtime_show = xTimerCreate("set_show",         /* 定时器名字 */
-                              8,             /* 定时器周期,单位时钟节拍 */
-                              pdTRUE,           /* 周期性 */
-                              (void *) 0,       /* 定时器ID */
-                              vtimer_show); /* 定时器回调函数 */
-    if(xtime_show == NULL) {
-        /* 没有创建成功，用户可以在这里加入创建失败的处理机制 */
-    } else {
-        /* 启动定时器，系统启动后才开始工作  0 表示不阻塞*/
-        if(xTimerStart(xtime_show, 0) != pdPASS) {
-            /* 定时器还没有进入激活状态 */
-        }
-    }
-    
     xtime_tic = xTimerCreate("set_tic",         /* 定时器名字 */
-                          50,             /* 定时器周期,单位时钟节拍 */
+                          8,             /* 定时器周期,单位时钟节拍 */
                           pdTRUE,           /* 周期性 */
                           (void *) 0,       /* 定时器ID */
                           vtimer_tic); /* 定时器回调函数 */
@@ -240,6 +219,19 @@ static void task_set(void *pvParameters) {
         }
     }
     
+    xtime_show = xTimerCreate("can_tic",         /* 定时器名字 */
+                              50,             /* 定时器周期,单位时钟节拍 */
+                              pdTRUE,           /* 周期性 */
+                              (void *) 0,       /* 定时器ID */
+                              vtimer_show); /* 定时器回调函数 */
+    if(xtime_show == NULL) {
+        /* 没有创建成功，用户可以在这里加入创建失败的处理机制 */
+    } else {
+        /* 启动定时器，系统启动后才开始工作  0 表示不阻塞*/
+        if(xTimerStart(xtime_show, 0) != pdPASS) {
+            /* 定时器还没有进入激活状态 */
+        }
+    }
     for(;;) {
         vTaskDelay(20 / portTICK_RATE_MS);
         uint8_t key = button_read();
@@ -304,27 +296,9 @@ static void task_set(void *pvParameters) {
                             } break;
                             case M_PAGE2_SET_ADDR: { /* 长按保存地址 */
                                 task_set_address(menu_t.line);
-//                                menu_t.page = M_PAGE1_SHOW;
-//                                vTaskDelay(50 / portTICK_RATE_MS);
-//                                menu_t.device_id = menu_t.line;
-//                                bxcan_set_id(menu_t.device_id);
-//                                taskENTER_CRITICAL();//进入〇接
-//                                flash_write(C_ADDR,menu_t.device_id);
-//                                taskEXIT_CRITICAL();
-//                                digital_tube_set_num(0,menu_t.device_id/10);
-//                                digital_tube_set_num(1,menu_t.device_id%10);
                             } break;
                             case M_PAGE3_SET_BR: {
                                 task_set_br(menu_t.line);
-//                                menu_t.page = M_PAGE1_SHOW;
-//                                vTaskDelay(50 / portTICK_RATE_MS);
-//                                menu_t.device_br = menu_t.line;
-//                                bxcan_set_br(menu_t.device_br);
-//                                taskENTER_CRITICAL();//进入〇接
-//                                flash_write(C_BR,menu_t.device_br);
-//                                taskEXIT_CRITICAL();
-//                                digital_tube_set_num(0,10);
-//                                digital_tube_set_num(1,menu_t.device_br);
                             } break;
                         }
                     }

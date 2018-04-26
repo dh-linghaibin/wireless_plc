@@ -14,7 +14,7 @@ extern "C" {
 #endif
 
 /* 引用头文件 *****************************************************************/
-#include "stm32f0xx.h"
+#include "gd32f10x.h"
 
 typedef enum {
     I_DOWN = 0,

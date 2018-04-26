@@ -14,7 +14,7 @@ extern "C" {
 #endif
 
 /* 引用头文件 *****************************************************************/
-#include "stm32f0xx.h"
+#include "gd32f10x.h"
 
 void digital_tube_init(void);
 void digital_tube_refresh(void);

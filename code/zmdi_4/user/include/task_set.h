@@ -12,7 +12,6 @@
 extern "C" {
 #endif
 
-#include "stm32f0xx.h"
 //freertos
 #include "FreeRTOS.h"
 #include "task.h"

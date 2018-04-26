@@ -21,7 +21,7 @@ void task_can_init(void) {
 }
 
 void task_can_create(void) {
-    xTaskCreate( task_can,"task_can", 512, NULL, tskIDLE_PRIORITY+3, NULL );
+    xTaskCreate( task_can,"task_can", 512, NULL, tskIDLE_PRIORITY+2, NULL );
 }
 
 xQueueHandle task_can_get_queue(void) {

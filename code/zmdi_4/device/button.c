@@ -8,34 +8,31 @@
 #include "button.h"
 
 #define BUT_ADD_PORT GPIOA
-#define BUT_SUB_PORT GPIOB
+#define BUT_SUB_PORT GPIOC
 
-#define BUT_ADD_PIN GPIO_Pin_4
-#define BUT_SUB_PIN GPIO_Pin_3
+#define BUT_ADD_PIN GPIO_PIN_10
+#define BUT_SUB_PIN GPIO_PIN_15
 
 void button_init(void) {
-    GPIO_InitTypeDef GPIO_InitStructure;
+    rcu_periph_clock_enable(RCU_GPIOA);
+    rcu_periph_clock_enable(RCU_GPIOC);
     
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-    
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-    
-    GPIO_InitStructure.GPIO_Pin = BUT_ADD_PIN;
-    GPIO_Init(BUT_ADD_PORT, &GPIO_InitStructure);
-    
-    GPIO_InitStructure.GPIO_Pin = BUT_SUB_PIN;
-    GPIO_Init(BUT_SUB_PORT, &GPIO_InitStructure);
+    gpio_init(BUT_ADD_PORT, GPIO_MODE_IPU, GPIO_OSPEED_50MHZ,BUT_ADD_PIN);
+    gpio_init(BUT_SUB_PORT, GPIO_MODE_IPU, GPIO_OSPEED_50MHZ,BUT_SUB_PIN);
+//    while(1) {
+//        button_read();
+//    }
 }
 
 button_code button_read(void) {
-    if( (GPIO_ReadInputDataBit(BUT_ADD_PORT,BUT_ADD_PIN) == 0) &&  \
-        (GPIO_ReadInputDataBit(BUT_SUB_PORT,BUT_SUB_PIN) == 0) ) {
+    uint8_t add = gpio_input_bit_get(BUT_ADD_PORT,BUT_ADD_PIN);
+    uint8_t sub = gpio_input_bit_get(BUT_SUB_PORT,BUT_SUB_PIN);
+    
+    if( (add) && (sub) ) {
         return B_ALL;
-    } else if (GPIO_ReadInputDataBit(BUT_ADD_PORT,BUT_ADD_PIN) == 0) {
+    } else if (add == 0) {
         return B_ADD;
-    } else if (GPIO_ReadInputDataBit(BUT_SUB_PORT,BUT_SUB_PIN) == 0) {
+    } else if (sub == 0) {
         return B_SUB;
     } else {
         return B_NULL;

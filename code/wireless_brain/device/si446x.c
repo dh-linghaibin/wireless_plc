@@ -27,6 +27,8 @@ uint8_t SPI_ExchangeByte(uint8_t input) {
     return SPI3_ReadWriteByte(input);
 }
 
+
+
 void si446x_init(void) {
     GPIO_InitTypeDef  GPIO_InitStructure;
 
@@ -87,13 +89,17 @@ void si446x_init(void) {
     SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
     SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
     SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-    SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
+    SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_64;
     SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_InitStructure.SPI_CRCPolynomial = 7;
     SPI_Init(SPI3, &SPI_InitStructure);  //根据SPI_InitStruct中指定的参数初始化外设SPIx寄存器
     SPI_Cmd(SPI3, ENABLE); //使能SPI外设
     
     RF_Initial(0);
+    
+    while(1) {
+        rf_recv();
+    } 
 }
 
 /*===========================================================================

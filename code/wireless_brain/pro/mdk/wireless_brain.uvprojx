@@ -1331,6 +1331,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\software\lua-5.3.4\port\lua_api.c</FilePath>
             </File>
+            <File>
+              <FileName>ltime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\port\ltime.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

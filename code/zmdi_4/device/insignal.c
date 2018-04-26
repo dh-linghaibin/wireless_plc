@@ -7,85 +7,72 @@
  
 #include "insignal.h"
 
-#define INSI_PORT_1 GPIOB
-#define INSI_PORT_2 GPIOB
+#define INSI_PORT_1 GPIOA
+#define INSI_PORT_2 GPIOA
 #define INSI_PORT_3 GPIOA
 #define INSI_PORT_4 GPIOA
 
-#define INSI_PIN_1 GPIO_Pin_1
-#define INSI_PIN_2 GPIO_Pin_0
-#define INSI_PIN_3 GPIO_Pin_7
-#define INSI_PIN_4 GPIO_Pin_6
+#define INSI_PIN_1 GPIO_PIN_6
+#define INSI_PIN_2 GPIO_PIN_5
+#define INSI_PIN_3 GPIO_PIN_4
+#define INSI_PIN_4 GPIO_PIN_3
 
 void insignal_init(void) {
-    GPIO_InitTypeDef GPIO_InitStructure;
+    rcu_periph_clock_enable(RCU_GPIOA);
     
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-    
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-    
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
-    GPIO_Init(INSI_PORT_1, &GPIO_InitStructure);
-    
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
-    GPIO_Init(INSI_PORT_2, &GPIO_InitStructure);
-    
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-    GPIO_Init(INSI_PORT_3, &GPIO_InitStructure);
-    
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-    GPIO_Init(INSI_PORT_4, &GPIO_InitStructure);
+    gpio_init(INSI_PORT_1, GPIO_MODE_IPU, GPIO_OSPEED_50MHZ,INSI_PIN_1);
+    gpio_init(INSI_PORT_2, GPIO_MODE_IPU, GPIO_OSPEED_50MHZ,INSI_PIN_2);
+    gpio_init(INSI_PORT_3, GPIO_MODE_IPU, GPIO_OSPEED_50MHZ,INSI_PIN_3);
+    gpio_init(INSI_PORT_4, GPIO_MODE_IPU, GPIO_OSPEED_50MHZ,INSI_PIN_4);
 }
 
 uint8_t insignal_read(uint8_t ch) {
     static uint8_t val = 0;
-    GPIO_TypeDef*   port;
-    uint16_t        pin;
+    uint32_t port;
+    uint32_t pin;
     switch(ch) {
         case 0: {
             port = INSI_PORT_1;
-            pin = GPIO_Pin_1;
+            pin = INSI_PIN_1;
         } break;
         case 1: {
             port = INSI_PORT_2;
-            pin = GPIO_Pin_2;
+            pin = INSI_PIN_2;
         } break;
         case 2: {
             port = INSI_PORT_3;
-            pin = GPIO_Pin_3;
+            pin = INSI_PIN_3;
         } break;
         case 3: {
             port = INSI_PORT_4;
-            pin = GPIO_Pin_4;
+            pin = INSI_PIN_4;
         } break;
         case 8: {
             val = 0x00;
             port = INSI_PORT_1;
-            pin = GPIO_Pin_1;
-            if( GPIO_ReadInputDataBit(port,pin) ) {
+            pin = INSI_PIN_1;
+            if( gpio_input_bit_get(port,pin) ) {
                 val |= (1 << 0);
             } else {
                 val &= ~(1 << 0);
             }
             port = INSI_PORT_2;
-            pin = GPIO_Pin_2;
-            if( GPIO_ReadInputDataBit(port,pin) ) {
+            pin = INSI_PIN_2;
+            if( gpio_input_bit_get(port,pin) ) {
                 val |= (1 << 1);
             } else {
                 val &= ~(1 << 1);
             }
             port = INSI_PORT_3;
-            pin = GPIO_Pin_3;
-            if( GPIO_ReadInputDataBit(port,pin) ) {
+            pin = INSI_PIN_3;
+            if( gpio_input_bit_get(port,pin) ) {
                 val |= (1 << 2);
             } else {
                 val &= ~(1 << 2);
             }
             port = INSI_PORT_4;
-            pin = GPIO_Pin_4;
-            if( GPIO_ReadInputDataBit(port,pin) ) {
+            pin = INSI_PIN_4;
+            if( gpio_input_bit_get(port,pin) ) {
                 val |= (1 << 3);
             } else {
                 val &= ~(1 << 3);
@@ -96,7 +83,7 @@ uint8_t insignal_read(uint8_t ch) {
             return I_UP;
         } break;
     }
-    if( GPIO_ReadInputDataBit(port,pin) ) {
+    if( gpio_input_bit_get(port,pin) ) {
         val |= (1 << ch);
         return I_DOWN;
     } else {

@@ -5,48 +5,33 @@
  *
  */
 
-#include "sys.h"
-#include "task_set.h"
+#include "can.h"
+#include "flash.h"
+#include "wdog.h"
+#include "delay.h"
 #include "task_can.h"
-//freertos
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-#include "semphr.h"
-#include "timers.h"
+#include "task_set.h"
+#include "wdog.h"
+#include "digital_tube.h"
+#include "insignal.h"
+#include "button.h"
 
 int main(void) {
-    sys_init_rcc();
+    delay_init();
+    delay_ms(100);
+    digital_tube_init();
+    insignal_init();
+    button_init();
+    wdog_init();/* 看门狗初始化 */
     task_set_init();
     task_can_init();
-    task_set_create();
     task_can_create();
+    task_set_create();
     /* Start the scheduler. */
     vTaskStartScheduler();
-    for(;;);
+    while(1);
 }
 
-#ifdef  USE_FULL_ASSERT
-/** 把#ifdef DEBUG替换为#ifdef USE_FULL_ASSERT
-  * @brief  Reports the name of the source file and the source line number
-  *   where the assert_param error has occurred.
-  * @param file: pointer to the source file name
-  * @param line: assert_param error line source number
-  * @retval : None
-  */
-void assert_failed(uint8_t* file, uint32_t line)
-{
-    /* User can add his own implementation to report the file name and line number,
-       ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  //#ifdef __DEBUG_Example
-    //printf("Wrong parameters value: file %s on line %d\r\n", file, line);
-  //#else
-    /* Infinite loop */
-    while (1)
-    {
-    }
-  //#endif
-}
-#endif
+
 
 

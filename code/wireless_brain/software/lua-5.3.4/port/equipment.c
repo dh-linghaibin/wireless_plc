@@ -8,8 +8,6 @@
 #include "equipment.h"
 #include "task_can.h"
 
-extern uint16_t modbus_Holding[10];
-
 //…Ë÷√Holding
 static int equipment_holeing_set(lua_State *L){
     int address = luaL_checkinteger(L, 1);
@@ -19,7 +17,7 @@ static int equipment_holeing_set(lua_State *L){
 
 static int equipment_holeing_get(lua_State *L){
     int address = luaL_checkinteger(L, 1);
-    lua_pushinteger(L, modbus_Holding[0]);
+    //lua_pushinteger(L, modbus_Holding[0]);
     return 1;
 }
 //…Ë÷√œﬂ»¶Coils

@@ -8,17 +8,17 @@
 #ifndef __FLASH_H
 #define __FLASH_H
 
-#include "stm32f0xx.h"
+#include "gd32f10x.h"
 
 typedef enum {
-    C_FLAG = 0x08003C00,
-    C_ADDR = 0x08003C00+2,
-    C_DEVICE_VAL = 0x08003C00+4,
-    C_BR = 0x08003C00+6,
+    C_FLAG = 0,
+    C_ADDR = 1,
+    C_DEVICE_VAL = 2,
+    C_BR = 3,
 }flash_code_e;
 
-void flash_read(uint16_t* pBuffer, uint32_t ReadAddr, uint16_t nWord);
-void flash_write(uint16_t *pBuffer, uint32_t WriteAddr, uint16_t nWord);
+int flash_read(uint32_t address,uint32_t *read_data) ;
+int flash_write(uint32_t address,uint32_t data);
 
 #endif
 /***************************************************************END OF FILE****/

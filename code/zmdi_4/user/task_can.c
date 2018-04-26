@@ -7,9 +7,9 @@
  
 #include "task_can.h"
 #include "can.h"
-#include "task_set.h"
 #include "digital_tube.h"
 #include "insignal.h"
+#include "task_set.h"
 
 static void task_can(void *pvParameters);
 static xQueueHandle can_msg_queue = NULL; /*队列句柄*/
@@ -21,7 +21,7 @@ void task_can_init(void) {
 }
 
 void task_can_create(void) {
-    xTaskCreate( task_can,"task_can", 100, NULL, tskIDLE_PRIORITY+3, NULL );
+    xTaskCreate( task_can,"task_can", 512, NULL, tskIDLE_PRIORITY+2, NULL );
 }
 
 xQueueHandle task_can_get_queue(void) {
@@ -41,10 +41,10 @@ static void vtimer_callback( TimerHandle_t xTimer ) {
     igital_tube_toggle_point(1,dr);
 }
 
-static CanRxMsg rx_message;
 static void task_can(void *pvParameters) {
+    can_receive_message_struct rx_message;
     /* 建立队列 */  
-    can_msg_queue = xQueueCreate( 5 , sizeof( CanRxMsg ) );
+    can_msg_queue = xQueueCreate( 20 , sizeof( can_receive_message_struct ) );
     xtime_can = xTimerCreate("can_tic",         /* 定时器名字 */
                               200,             /* 定时器周期,单位时钟节拍 */
                               pdTRUE,           /* 周期性 */
@@ -60,40 +60,39 @@ static void task_can(void *pvParameters) {
         }
     }
     for( ;; ) {
-        //vTaskDelay(20 / portTICK_RATE_MS);
         if( xQueueReceive( can_msg_queue, &rx_message, 100/portTICK_RATE_MS ) == pdPASS) {
-            switch(rx_message.StdId) {
+            switch(rx_message.rx_sfid) {
                 case RADIO: { /* 广播 */
-                    switch(rx_message.Data[0]) {
+                    switch(rx_message.rx_data[0]) {
                         case RADIO_ASK:{
-                            CanTxMsg send_msg;
-                            send_msg.StdId = bxcan_get_id();
-                            send_msg.DLC = 3;
-                            send_msg.Data[0] = DI_4; /* 设备类型 */
-                            send_msg.Data[1] = 0xf0; /* 命令 */
-                            send_msg.Data[2] = insignal_read(8); /* 继电器状态 */
+                            can_trasnmit_message_struct send_msg;
+                            send_msg.tx_sfid = bxcan_get_id();
+                            send_msg.tx_dlen = 3;
+                            send_msg.tx_data[0] = DI_4; /* 设备类型 */
+                            send_msg.tx_data[1] = 0xf0; /* 命令 */
+                            send_msg.tx_data[2] = insignal_read(8); /* 继电器状态 */
                             bxcan_send(send_msg);
                             online = 0;/* 设置设备在线 */
                         } break;
                         case RADIO_SET_BR: { /* 我要修改波特率了 */
-                            task_set_br(rx_message.Data[1]);
+                            task_set_br(rx_message.rx_data[1]);
                         } break;
                     }
                 } break;
                 default: {
-                    if(rx_message.StdId == bxcan_get_id()) { /* 判断地址 */
-                        switch(rx_message.Data[0]) {
+                    if(rx_message.rx_sfid == bxcan_get_id()) { /* 判断地址 */
+                        switch(rx_message.rx_data[0]) {
                             case 0:{ /* 设置设备 */
-                                CanTxMsg send_msg;
-                                send_msg.StdId = bxcan_get_id();
-                                send_msg.DLC = 3;
-                                send_msg.Data[0] = DI_4; /* 设备类型 */
-                                send_msg.Data[1] = 0xf0; /* 命令 */
-                                send_msg.Data[2] = insignal_read(rx_message.Data[1]); /* 继电器状态 */
+                                can_trasnmit_message_struct send_msg;
+                                send_msg.tx_sfid = bxcan_get_id();
+                                send_msg.tx_dlen = 3;
+                                send_msg.tx_data[0] = DI_4; /* 设备类型 */
+                                send_msg.tx_data[1] = 0xf0; /* 命令 */
+                                send_msg.tx_data[2] = insignal_read(8); /* 继电器状态 */
                                 bxcan_send(send_msg);
                             } break;
                             case 1: { /* 修改设备地址 */
-                                task_set_address(rx_message.Data[1]);
+                                task_set_address(rx_message.rx_data[1]);
                             } break;
                         }
                         online = 0;/* 设置设备在线 */
@@ -103,4 +102,3 @@ static void task_can(void *pvParameters) {
         }
     }
 }
-

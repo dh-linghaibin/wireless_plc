@@ -6,87 +6,89 @@
  */
 
 #include "can.h"
-#include <cstring>
 #include "task_can.h"
+/* Scheduler includes. */
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "timers.h"
+/*!
+    \brief      initialize CAN and filter
+    \param[in]  can_parameter
+      \arg        can_parameter_struct
+    \param[in]  can_filter
+      \arg        can_filter_parameter_struct
+    \param[out] none
+    \retval     none
+*/
+static void can_config(can_parameter_struct can_parameter, can_filter_parameter_struct can_filter) {
+    /* initialize CAN register */
+    can_deinit(CAN0);
+    
+    /* initialize CAN */
+    can_init(CAN0, &can_parameter);
+    
+    can_filter_init(&can_filter);
+}
 
-#define HAL_REMAP_PA11_PA12     (SYSCFG_CFGR1_PA11_PA12_RMP) 
-#define __HAL_REMAP_PIN_ENABLE(__PIN_REMAP__) \
-    do {assert_param(IS_HAL_REMAP_PIN((__PIN_REMAP__))); \
-        SYSCFG->CFGR1 |= (__PIN_REMAP__);       \
-    }while(0)
+/*!
+    \brief      configure the nested vectored interrupt controller
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+static void nvic_config(void) {
+    /* configure CAN0 NVIC */
+    nvic_irq_enable(USBD_LP_CAN0_RX0_IRQn,0,1);
+    //nvic_irq_enable(USBD_HP_CAN0_TX_IRQn,0,2);
+}
+
+/*!
+    \brief      configure GPIO
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+static void can_gpio_config(void) {
+    /* enable CAN clock */
+    rcu_periph_clock_enable(RCU_CAN0);
+    rcu_periph_clock_enable(RCU_GPIOA);
+    
+    /* configure CAN0 GPIO */
+    gpio_init(GPIOA,GPIO_MODE_IN_FLOATING,GPIO_OSPEED_50MHZ,GPIO_PIN_11);
+    gpio_init(GPIOA,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,GPIO_PIN_12);
+}
 
 static uint8_t can_id = 0x06;
 
 void bxcan_init(uint8_t br) {
-    GPIO_InitTypeDef                    GPIO_InitStructure;
-    CAN_FilterInitTypeDef               CAN_FilterInitStructure;
-    NVIC_InitTypeDef                    NVIC_InitStructure;
+    /* configure GPIO */
+    can_gpio_config();
+    /* configure NVIC */
+    nvic_config();
     
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;	
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-    GPIO_ResetBits(GPIOA,GPIO_Pin_15);
-    
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-    __HAL_REMAP_PIN_ENABLE(HAL_REMAP_PA11_PA12);
-    
-    /* Enable GPIO clock */
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-    /* Enable CAN clock */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN, ENABLE);
-    
-    /* Connect the involved CAN pins to AF */
-    GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_4);
-    GPIO_PinAFConfig(GPIOA, GPIO_PinSource12, GPIO_AF_4);
-    
-    /* Configure CAN RX and TX pins */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-    
-     //CAN中断使能和优先级设置
-    NVIC_InitStructure.NVIC_IRQChannel = CEC_CAN_IRQn;         
-    NVIC_InitStructure.NVIC_IRQChannelPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
-        
     bxcan_set_br(br);
     
-    CAN_FilterInitStructure.CAN_FilterNumber = 0;
-    CAN_FilterInitStructure.CAN_FilterMode = CAN_FilterMode_IdMask;
-    CAN_FilterInitStructure.CAN_FilterScale = CAN_FilterScale_32bit;
-    CAN_FilterInitStructure.CAN_FilterIdHigh = 0;
-    CAN_FilterInitStructure.CAN_FilterIdLow = 0;
-    CAN_FilterInitStructure.CAN_FilterMaskIdHigh = 0;
-    CAN_FilterInitStructure.CAN_FilterMaskIdLow = 0;
-    CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
-    CAN_FilterInitStructure.CAN_FilterActivation = ENABLE;
-    CAN_FilterInit(&CAN_FilterInitStructure);
-    
-    NVIC_InitStructure.NVIC_IRQChannel = CEC_CAN_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPriority = 4;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
-    
-    //使能CAN中断
-    CAN_ClearITPendingBit(CAN, CAN_IT_FF0);
-    CAN_ITConfig(CAN, CAN_IT_TME, DISABLE);
-    CAN_ITConfig(CAN, CAN_IT_FMP0, ENABLE);
-    CAN_ITConfig(CAN, CAN_IT_FF0, ENABLE);
+    /* enable can receive FIFO0 not empty interrupt */
+    can_interrupt_enable(CAN0, CAN_INT_RFNE0);
+    can_interrupt_enable(CAN0, CAN_INT_RFO0);
 }
 
-void bxcan_send(CanTxMsg send_msg) {
-    send_msg.RTR=CAN_RTR_DATA;
-    send_msg.IDE=CAN_ID_STD;
-    uint8_t TransmitMailbox = CAN_Transmit(CAN, &send_msg);
+void bxcan_send(can_trasnmit_message_struct send_msg) {
+    send_msg.tx_ft = CAN_FT_DATA;
+    send_msg.tx_ff = CAN_FF_STANDARD;
+    can_message_transmit(CAN0, &send_msg);
     uint32_t timeout = 0xFFFF;
-    while((CAN_TransmitStatus(CAN, TransmitMailbox) != CANTXOK) && (timeout != 0xFFFFFF)) {
-        timeout++;
+    while((can_transmit_states(CAN0, CAN_MAILBOX0) != CAN_TRANSMIT_OK) && (timeout != 0)){
+        timeout--;
+    }
+    timeout = 0xFFFF;
+    while((can_transmit_states(CAN0, CAN_MAILBOX1) != CAN_TRANSMIT_OK) && (timeout != 0)){
+        timeout--;
+    }
+    timeout = 0xFFFF;
+    while((can_transmit_states(CAN0, CAN_MAILBOX2) != CAN_TRANSMIT_OK) && (timeout != 0)){
+        timeout--;
     }
 }
 
@@ -95,66 +97,88 @@ void bxcan_set_id(uint8_t id) {
 }
 
 void bxcan_set_br(uint8_t br) {
-    CAN_InitTypeDef CAN_InitStructure;
-    //CAN单元设置
-    CAN_InitStructure.CAN_TTCM = DISABLE; 
-    CAN_InitStructure.CAN_ABOM = DISABLE;  
-    CAN_InitStructure.CAN_AWUM = DISABLE; 
-    CAN_InitStructure.CAN_NART = ENABLE; 
-    CAN_InitStructure.CAN_RFLM = DISABLE;
-    CAN_InitStructure.CAN_TXFP = DISABLE;
-    CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;//CAN_Mode_Normal; 
-    //CAN波特率设置,500KHz@48MHz
-    CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;
-     switch(br) {
-        case 4:
-            CAN_InitStructure.CAN_BS1 = CAN_BS1_7tq;
-            CAN_InitStructure.CAN_BS2 = CAN_BS2_8tq;
-            CAN_InitStructure.CAN_Prescaler = 12;
-        break;
-        case 3:
-            CAN_InitStructure.CAN_BS1 = CAN_BS1_2tq;
-            CAN_InitStructure.CAN_BS2 = CAN_BS2_1tq;
-            CAN_InitStructure.CAN_Prescaler = 96;
-        break;
-        case 2:
-            CAN_InitStructure.CAN_BS1 = CAN_BS1_3tq;
-            CAN_InitStructure.CAN_BS2 = CAN_BS2_2tq;
-            CAN_InitStructure.CAN_Prescaler = 160;
-        break;
-        case 1:
-            CAN_InitStructure.CAN_BS1 = CAN_BS1_3tq;
-            CAN_InitStructure.CAN_BS2 = CAN_BS2_6tq;
-            CAN_InitStructure.CAN_Prescaler = 240;
-        break;
-        case 0:
-            CAN_InitStructure.CAN_BS1 = CAN_BS1_5tq;
-            CAN_InitStructure.CAN_BS2 = CAN_BS2_2tq;
-            CAN_InitStructure.CAN_Prescaler = 600;
-        break;
+    can_parameter_struct can_init_parameter;
+    can_filter_parameter_struct can_filter_parameter;
+    can_init_parameter.time_triggered = DISABLE;
+    can_init_parameter.auto_bus_off_recovery = DISABLE;
+    can_init_parameter.auto_wake_up = DISABLE;
+    can_init_parameter.auto_retrans = DISABLE;
+    can_init_parameter.rec_fifo_overwrite = DISABLE;
+    can_init_parameter.trans_fifo_order = DISABLE;
+    can_init_parameter.working_mode = CAN_NORMAL_MODE;
+    can_init_parameter.resync_jump_width = CAN_BT_SJW_1TQ;
+    can_init_parameter.resync_jump_width = CAN_BT_SJW_1TQ;
+    can_init_parameter.time_segment_1 = CAN_BT_BS1_13TQ;
+    can_init_parameter.time_segment_2 = CAN_BT_BS2_4TQ;
+    can_init_parameter.prescaler = BR_50K;
+    
+     /* initialize filter */ 
+    can_filter_parameter.filter_number=0;
+    can_filter_parameter.filter_mode = CAN_FILTERMODE_MASK;
+    can_filter_parameter.filter_bits = CAN_FILTERBITS_32BIT;
+    can_filter_parameter.filter_list_high = 0;
+    can_filter_parameter.filter_list_low = 0;
+    can_filter_parameter.filter_mask_high = 0;
+    can_filter_parameter.filter_mask_low = 0;
+    can_filter_parameter.filter_fifo_number = CAN_FIFO0;
+    can_filter_parameter.filter_enable = ENABLE;
+    switch(br) {
+        case 0:{
+            can_init_parameter.prescaler = BR_10K;
+        } break;
+        case 1:{
+            can_init_parameter.prescaler = BR_20K;
+        } break;
+        case 2:{
+            can_init_parameter.prescaler = BR_50K;
+        } break;
+        case 3:{
+            can_init_parameter.prescaler = BR_125K;
+        } break;
+        case 4:{
+            can_init_parameter.prescaler = BR_250K;
+        } break;
+        case 5:{
+            can_init_parameter.prescaler = BR_500K;
+        } break;
+        case 6:{
+            can_init_parameter.time_segment_2 = CAN_BT_BS2_3TQ;
+            can_init_parameter.prescaler = BR_800K;
+        } break;
+        case 7:{
+            can_init_parameter.prescaler = BR_1000K;
+        } break;
     }
-    CAN_Init(CAN, &CAN_InitStructure);
+    can_config(can_init_parameter, can_filter_parameter);
 }
 
 uint8_t bxcan_get_id(void) {
     return can_id;
 }
 
-void CEC_CAN_IRQHandler (void) {
+/*!
+    \brief      this function handles CAN0 RX0 exception
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void USBD_LP_CAN0_RX0_IRQHandler(void) {
+    /* check the receive message */
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;//中断中唤醒新任务
-    
-    if (CAN_GetITStatus(CAN,CAN_IT_FMP0)) {
-        CAN_ClearITPendingBit(CAN, CAN_IT_FMP0);
-        CanRxMsg msg_buf;
-        CAN_Receive(CAN, CAN_FIFO0, &msg_buf);
-        if(task_can_get_queue() != NULL) {
-            xQueueSendFromISR( task_can_get_queue(), &msg_buf, 0 );
-        }
+    //taskENTER_CRITICAL();//进入中断
+    can_receive_message_struct receive_message;
+    can_message_receive(CAN0, CAN_FIFO0, &receive_message);
+    if(task_can_get_queue() != NULL) {
+        xQueueSendFromISR( task_can_get_queue(), &receive_message, 0 );
     }
-    
+   // taskEXIT_CRITICAL();
     if( xHigherPriorityTaskWoken != pdFALSE ) {
         portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );//强制上下文切换
     }
+}
+
+void USBD_HP_CAN0_TX_IRQHandler(void) {
+    
 }
 
 

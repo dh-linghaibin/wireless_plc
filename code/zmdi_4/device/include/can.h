@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-#include "stm32f0xx.h"
+#include "gd32f10x.h"
 //10k 300   1_13  2_4
 //20k 150
 //50k 60
@@ -31,7 +31,7 @@ extern "C" {
 #define BR_1000K 3
     
 void bxcan_init(uint8_t br);
-void bxcan_send(CanTxMsg send_msg);
+void bxcan_send(can_trasnmit_message_struct send_msg);
 void bxcan_set_id(uint8_t id);
 void bxcan_set_br(uint8_t br);
 uint8_t bxcan_get_id(void);
