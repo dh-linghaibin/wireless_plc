@@ -6,6 +6,7 @@
  */
  
 #include "si446x.h"
+#include "delay.h"
 #include "spi.h"
 #include "radio_config_Si446x_1k_26M.h"//26m 晶振
 //#include "radio_config_Si446x_1k_30M.h"  //30m 晶振
@@ -89,7 +90,7 @@ void si446x_init(void) {
     SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
     SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
     SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-    SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_64;
+    SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
     SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
     SPI_InitStructure.SPI_CRCPolynomial = 7;
     SPI_Init(SPI3, &SPI_InitStructure);  //根据SPI_InitStruct中指定的参数初始化外设SPIx寄存器

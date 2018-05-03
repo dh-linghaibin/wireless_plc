@@ -51,6 +51,12 @@ LUAMOD_API int (luaopen_package) (lua_State *L);
 #define LUA_EQUIPMENTLIBNAME	"equipment"
 LUAMOD_API int (luaopen_equipment) (lua_State *L);
 
+#define LUA_LTIME	"ltime"
+LUAMOD_API int (luaopen_ltime) (lua_State *L);
+
+#define LUA_EVENT	"levent"
+LUAMOD_API int (luaopen_levent) (lua_State *L);
+
 /* open all previous libraries */
 LUALIB_API void (luaL_openlibs) (lua_State *L);
 

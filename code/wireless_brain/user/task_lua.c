@@ -17,12 +17,19 @@
 #include "queue.h"
 #include "semphr.h"
 
+#include "ltime.h"
+#include "levent.h"
+
 static lua_State* L;
 static xTaskHandle xhandle_lua; /* lua¾ä±ú */
+static xTaskHandle xhandle_lua_tic; /* lua¾ä±ú */
 
 static void task_lua(void *pvParameters);
+static void task_lua_tic(void *pvParameters);
 
 void task_lua_init(void) {
+    ltime_init();
+    levent_init();
     L = luaL_newstate();
     luaL_openlibs(L);
 }
@@ -37,6 +44,7 @@ void task_lua_set(bool cmd) {
 
 void task_lua_create(void) {
      xTaskCreate( task_lua,"lua", 3072, NULL, tskIDLE_PRIORITY+3, &xhandle_lua );  
+     xTaskCreate( task_lua_tic,"lua", 512, NULL, tskIDLE_PRIORITY+3, &xhandle_lua_tic );  
 }
 
 static void task_lua(void *pvParameters) {
@@ -45,5 +53,13 @@ static void task_lua(void *pvParameters) {
             printf(lua_tostring(L,-1));
         }
         vTaskDelay( 5000/portTICK_RATE_MS );  
+    }
+}
+
+static void task_lua_tic(void *pvParameters) {
+    for(;;) {
+        ltime_loop(L);
+        levent_loop(L);
+        vTaskDelay( 1/portTICK_RATE_MS );  
     }
 }

@@ -19,14 +19,16 @@ extern "C" {
 #include "lauxlib.h"
 #include "string.h"
 
-
 typedef struct _ltime {
-    int l_id; /* lua回调ID */
-    uint16_t id; /* time ID */
-    uint32_t  time_ms;/* 定时器周期 */
+    int      l_id;        /* lua回调ID */
+    uint16_t id;          /* time ID */
+    uint16_t time_ms;/* 定时器周期 */
+    uint16_t tic_ms;  /* 回范围标志 */
 } ltime;
 
-
+void ltime_init(void);
+uint16_t ltime_add(int l_id, uint32_t time_ms);
+void ltime_loop(lua_State * L);
 
 #ifdef __cplusplus
 }

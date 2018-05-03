@@ -133,12 +133,12 @@
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
-            <Capability>0</Capability>
-            <DriverSelection>-1</DriverSelection>
+            <Capability>1</Capability>
+            <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -530,6 +530,11 @@
               <FileName>si446x.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\device\si446x.c</FilePath>
+            </File>
+            <File>
+              <FileName>rs485.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\rs485.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1336,6 +1341,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\software\lua-5.3.4\port\ltime.c</FilePath>
             </File>
+            <File>
+              <FileName>levent.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lua-5.3.4\port\levent.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1715,21 +1725,6 @@
               <FileName>usbd_usr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\arch\m4\usb_port\usbd_usr.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>ini</GroupName>
-          <Files>
-            <File>
-              <FileName>ini.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\software\ini\src\ini.c</FilePath>
-            </File>
-            <File>
-              <FileName>ini.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\software\ini\src\ini.h</FilePath>
             </File>
           </Files>
         </Group>

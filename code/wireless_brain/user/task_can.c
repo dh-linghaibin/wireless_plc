@@ -65,11 +65,11 @@ static void vtimer_callback( TimerHandle_t xTimer ) {
     device_online *temp;
     for (int i = 0; i < list_len(online_head); i++){ //list_len获取链表的长度
         list_get(online_head, i, (void **)&temp); //取得位置为i的结点的数据
-        if(temp->online > 10) { /* 设备超时未响应 删除设备 */
+        if(temp->online > 4) { /* 设备超时未响应 删除设备 */
             list_pop(online_head,i);
             l_free(temp);
         } else {
-            printf("设备类型:%d  设备地址:%d 设备在线:%d\n", temp->type,temp->address,temp->online);
+            //printf("设备类型:%d  设备地址:%d 设备在线:%d\n", temp->type,temp->address,temp->online);
             temp->online ++;
         }
     }
@@ -136,6 +136,11 @@ static void task_can(void *pvParameters) {
                     up_device(online);
                 } break;
                 case DI_4: {
+                    switch(rx_message.Data[1]) {
+                         case 0xf0: { /* 读取 */
+                            task_modbus_set_input(rx_message.StdId,rx_message.Data[2]);
+                         } break;
+                    }
                     device_online online;
                     online.type = DI_4;
                     online.address = rx_message.StdId;

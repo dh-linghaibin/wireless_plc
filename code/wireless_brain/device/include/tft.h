@@ -50,6 +50,9 @@ extern "C" {
 
 //void tft_init(const char* name);
 void tft_init(void);
+void tft_set_backlight(uint8_t cmd);
+void tft_set(uint8_t cmd);
+
 void lcd_set_dir(u8 dir);
 void lcd_fill(u16 sx,u16 sy,u16 ex,u16 ey,u16 color);
 void monitor_flush(int32_t sx, int32_t sy, int32_t ex, int32_t ey, const u16 *color_p);

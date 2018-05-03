@@ -7,17 +7,19 @@
  
 #include "equipment.h"
 #include "task_can.h"
+#include "task_modbus.h"
 
 //设置Holding
 static int equipment_holeing_set(lua_State *L){
     int address = luaL_checkinteger(L, 1);
     int val = luaL_checkinteger(L, 2);
+    task_modbus_set_holding(address,val);
     return 0;
 }
 
 static int equipment_holeing_get(lua_State *L){
     int address = luaL_checkinteger(L, 1);
-    //lua_pushinteger(L, modbus_Holding[0]);
+    lua_pushinteger(L, task_modbus_get_holding(address));
     return 1;
 }
 //设置线圈Coils
@@ -42,8 +44,16 @@ static int equipment_coils_get(lua_State *L){
 }
 //读取Input
 static int equipment_input_get(lua_State *L) {
-    int i = luaL_checkinteger(L, -1);
-    return 0;
+    int address = luaL_checkinteger(L, 1);
+    uint8_t val = 0;
+    if(lua_isinteger(L, 2)) {
+        int num = luaL_checkinteger(L, 2);
+        val = task_modbus_get_input_bit(address,num);
+    } else {
+        val = task_modbus_get_input(address);
+    }
+    lua_pushinteger(L, val);
+    return 1;
 }
 //延时
 static int equipment_delay(lua_State *L) {

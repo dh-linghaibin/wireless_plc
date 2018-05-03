@@ -216,6 +216,14 @@ LCD_ILI9341_CMD(0x29); //display on
 
 }
 
+void tft_set(uint8_t cmd) {
+    if(cmd) {
+        LCD_ILI9341_CMD(0x29); //display on
+    } else {
+        LCD_ILI9341_CMD(0x28); //display on
+    }
+}
+
 void tft_init(void) {
     GPIO_InitTypeDef  GPIO_InitStructure;
     FSMC_NORSRAMInitTypeDef  FSMC_NORSRAMInitStructure;
@@ -392,6 +400,14 @@ void tft_init(void) {
         FSMC_Bank1E->BWTR[6]|=2<<8;     //数据保存时间(DATAST)为6ns*3个HCLK=18ns
         ILI9341_HSD32_Initial();
         GPIO_SetBits(GPIOF,GPIO_Pin_6);
+    }
+}
+
+void tft_set_backlight(uint8_t cmd) {
+    if(cmd == 0) {
+        GPIO_SetBits(GPIOF,GPIO_Pin_6);
+    } else {
+        GPIO_ResetBits(GPIOF,GPIO_Pin_6);
     }
 }
 

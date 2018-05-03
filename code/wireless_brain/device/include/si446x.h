@@ -63,11 +63,11 @@ extern "C" {
 //#define PORT_SI_GIO1    GPIOB
 //#define PIN_SI_GIO1     GPIO_Pin_2
 
-#define SI_CSN_LOW()   GPIO_ResetBits(PORT_SI_CSN, PIN_SI_CSN); delay_us(500)
-#define SI_CSN_HIGH()  GPIO_SetBits(PORT_SI_CSN, PIN_SI_CSN);delay_us(500)
+#define SI_CSN_LOW()   GPIO_ResetBits(PORT_SI_CSN, PIN_SI_CSN); delay_us(50)
+#define SI_CSN_HIGH()  GPIO_SetBits(PORT_SI_CSN, PIN_SI_CSN);delay_us(50)
 
-#define SI_SDN_LOW()   GPIO_ResetBits(PORT_SI_SDN, PIN_SI_SDN);delay_us(500)
-#define SI_SDN_HIGH()  GPIO_SetBits(PORT_SI_SDN, PIN_SI_SDN);delay_us(500)
+#define SI_SDN_LOW()   GPIO_ResetBits(PORT_SI_SDN, PIN_SI_SDN);delay_us(50)
+#define SI_SDN_HIGH()  GPIO_SetBits(PORT_SI_SDN, PIN_SI_SDN);delay_us(50)
 
 void RF_Initial(uint8_t mode);
 void si446x_init(void);

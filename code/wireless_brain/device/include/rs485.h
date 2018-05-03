@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef _TSAK_GUI_H_
-#define _TSAK_GUI_H_
+#ifndef _RS485_H_
+#define _RS485_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,10 +14,8 @@ extern "C" {
 
 #include "app_configure.h"
 
-void task_gui_init(void);
-void task_gui_create(void);
-void task_gui_set(uint8_t cmd) ;
-
+void rs485_init(void);
+    
 #ifdef __cplusplus
 }
 #endif

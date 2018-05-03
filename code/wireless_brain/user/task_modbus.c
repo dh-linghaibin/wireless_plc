@@ -12,12 +12,12 @@
 
 static uint8_t * modbus_coil; /* ÏßÈ¦ */
 static uint8_t * modbus_input;
-uint16_t * modbus_Holding;
+static uint16_t * modbus_holding;
 
 void task_modbus_init(void) {
     modbus_coil = l_malloc(sizeof(uint8_t)*99);
     modbus_input = l_malloc(sizeof(uint8_t)*99);
-    modbus_Holding = l_malloc(sizeof(uint16_t)*99);
+    modbus_holding = l_malloc(sizeof(uint16_t)*99);
     eMBTCPInit(502);
     eMBEnable(); 
 }
@@ -36,6 +36,57 @@ void task_modbus_set_coil_bit(uint16_t address,uint8_t num,uint8_t val) {
             modbus_coil[address] |= 1 << val;
         }
     }
+}
+
+void task_modbus_set_input(uint16_t address,uint8_t val) {
+    if(address <= 99) {
+        modbus_input[address] = val;
+    }
+}
+
+void task_modbus_set_input_bit(uint16_t address,uint8_t num,uint8_t val) {
+    if(address <= 99) {
+        if(val == 0) {
+            modbus_input[address] &= ~(1 << val);
+        } else {
+            modbus_input[address] |= 1 << val;
+        }
+    }
+}
+
+uint8_t task_modbus_get_input(uint16_t address) {
+    if(address < 99) {
+        return modbus_input[address];
+    }
+    return 0;
+}
+
+uint8_t task_modbus_get_input_bit(uint16_t address,uint8_t num) {
+    if(address < 99) {
+        if(num >= 8) {
+            return modbus_input[address];
+        } else {
+            if( (modbus_input[address] >> num) & 0x01 ) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+    return 0;
+}
+
+void task_modbus_set_holding(uint16_t adr,uint16_t dat) {
+    if(adr < 99) {
+        modbus_holding[adr] = dat;
+    }
+}
+
+uint16_t task_modbus_get_holding(uint16_t adr) {
+    if(adr < 99) {
+        return modbus_holding[adr];
+    }
+    return 0;
 }
 
 eMBErrorCode
@@ -68,16 +119,16 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
         switch ( eMode ) {
         case MB_REG_READ:            
             while( usNRegs > 0 ) {
-                *pucRegBuffer++ = ( unsigned char )( modbus_Holding[0] >> 8 );
-                *pucRegBuffer++ = ( unsigned char )( modbus_Holding[0] & 0xFF );
+                *pucRegBuffer++ = ( unsigned char )( modbus_holding[0] >> 8 );
+                *pucRegBuffer++ = ( unsigned char )( modbus_holding[0] & 0xFF );
                 iRegIndex++;
                 usNRegs--;
             }
             break;
         case MB_REG_WRITE:
             while( usNRegs > 0 ) {
-                modbus_Holding[iRegIndex] = *pucRegBuffer++ << 8;
-                modbus_Holding[iRegIndex] |= *pucRegBuffer++;
+                modbus_holding[iRegIndex] = *pucRegBuffer++ << 8;
+                modbus_holding[iRegIndex] |= *pucRegBuffer++;
                 iRegIndex++;
                 usNRegs--;
             }
@@ -151,4 +202,3 @@ eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete ) {
     return eStatus;
 }
 
- 
