@@ -20,6 +20,8 @@
 #include "ltime.h"
 #include "levent.h"
 
+#include "ui_debug.h"
+
 static lua_State* L;
 static xTaskHandle xhandle_lua; /* lua¾ä±ú */
 static xTaskHandle xhandle_lua_tic; /* lua¾ä±ú */
@@ -50,7 +52,7 @@ void task_lua_create(void) {
 static void task_lua(void *pvParameters) {
     for(;;) {
         if (luaL_dofile(L,"1:test.lua")!=0) {
-            printf(lua_tostring(L,-1));
+            ui_debug_set_show(lua_tostring(L,-1),LV_COLOR_HEX3(0x000));
         }
         vTaskDelay( 5000/portTICK_RATE_MS );  
     }

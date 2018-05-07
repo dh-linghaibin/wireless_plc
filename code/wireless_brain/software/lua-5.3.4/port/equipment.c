@@ -34,7 +34,8 @@ static int equipment_coils_set(lua_State *L){
     send_msg.data[0] = num;
     send_msg.data[1] = val;
     task_can_set(send_msg);
-    vTaskDelay(1 / portTICK_RATE_MS); /* 操作限制 不允许高速 */
+    vTaskDelay(5 / portTICK_RATE_MS); /* 操作限制 不允许高速 */
+    //printf("设置线圈 %d\n",address);
     return 0;
 }
 
@@ -64,12 +65,12 @@ static int equipment_delay(lua_State *L) {
 
 static luaL_Reg equipment[] = {
     //c接口函数都可以放在这里在lua中声明  
-    {"equ_holeing_set", equipment_holeing_set},
-    {"equ_holeing_get", equipment_holeing_get},
-    {"equ_coils_set",   equipment_coils_set  },
-    {"equ_coils_get",   equipment_coils_get  },
-    {"equ_input_get",   equipment_input_get  },
-    {"equ_delay",       equipment_delay      },
+    {"holeing_set", equipment_holeing_set},
+    {"holeing_get", equipment_holeing_get},
+    {"coils_set",   equipment_coils_set  },
+    {"coils_get",   equipment_coils_get  },
+    {"input_get",   equipment_input_get  },
+    {"delay",       equipment_delay      },
     {NULL, NULL}
 };
  

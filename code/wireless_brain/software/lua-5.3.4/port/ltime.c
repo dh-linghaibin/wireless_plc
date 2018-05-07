@@ -93,3 +93,18 @@ LUAMOD_API int luaopen_ltime (lua_State *L) {
   luaL_newlib(L, r_ltime);
   return 1;
 }
+
+  
+//int static add(lua_State* L)  
+//{  
+//    //获取第一个参数  
+//    double x=lua_tonumber(L,1);  
+//    double y=lua_tonumber(L,2);  
+//    //返回值压栈，压入两个返回值  
+//    lua_pushnumber(L,x+y);  
+//    lua_pushnumber(L,1000);  
+//  
+//    //返回值的个数，  
+//    return 2;  
+//}  
+

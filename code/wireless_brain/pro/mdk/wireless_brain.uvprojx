@@ -337,7 +337,7 @@
               <MiscControls> --gnu</MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,USE_USB_OTG_FS,USE_EMBEDDED_PHY</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\device\include;..\..\user\include;..\..\arch\m4\inc;..\..\arch\m4\core;..\..\lib\include;..\..\arch\m4\eth\inc;..\..\software\fatfs\src;..\..\software\fatfs\exfuns;..\..\software\lwip;..\..\software\lwip\lwip-1.4.1\src\include;..\..\software\lwip\lwip-1.4.1\src\include\ipv4;..\..\software\lwip\lwip-1.4.1\src\include\lwip;..\..\software\lwip\lwip-1.4.1\src\include\netif;..\..\software\lwip\lwip_app\lwip_comm;..\..\software\freertos\include;..\..\software\freertos\portable\RVDS\ARM_CM4F;..\..\software\ugui;..\..\software\lvgl\lvgl-master\lv_core;..\..\software\lua-5.3.4;..\..\software\lwip\port;..\..\software\lwip\port\include\arch\;..\..\software\lwip\port\include\;..\..\software\lwip\src\include;..\..\software\lwip\src\include\ipv4;..\..\software\lwip\src\include\lwip;..\..\software\lwip\src\netif;..\..\software\freertos\include;..\..\software\freertos\portable\ARM_CM4F;..\..\software\freemodbus\modbus\tcp;..\..\software\freemodbus\modbus\include;..\..\software\freemodbus\port;..\..\arch\m4\usb_otg\inc;..\..\software\usb_port\include;..\..\arch\m4\usb_device\Core\inc;..\..\arch\m4\usb_device\Class\msc\inc;..\..\arch\m4\usb_port;..\..\software\lua-5.3.4\port\include;..\..\software\ini\src</IncludePath>
+              <IncludePath>..\..\device\include;..\..\user\include;..\..\arch\m4\inc;..\..\arch\m4\core;..\..\lib\include;..\..\arch\m4\eth\inc;..\..\software\fatfs\src;..\..\software\fatfs\exfuns;..\..\software\lwip;..\..\software\lwip\lwip-1.4.1\src\include;..\..\software\lwip\lwip-1.4.1\src\include\ipv4;..\..\software\lwip\lwip-1.4.1\src\include\lwip;..\..\software\lwip\lwip-1.4.1\src\include\netif;..\..\software\lwip\lwip_app\lwip_comm;..\..\software\freertos\include;..\..\software\freertos\portable\RVDS\ARM_CM4F;..\..\software\ugui;..\..\software\lvgl\lvgl-master\lv_core;..\..\software\lua-5.3.4;..\..\software\lwip\port;..\..\software\lwip\port\include\arch\;..\..\software\lwip\port\include\;..\..\software\lwip\src\include;..\..\software\lwip\src\include\ipv4;..\..\software\lwip\src\include\lwip;..\..\software\lwip\src\netif;..\..\software\freertos\include;..\..\software\freertos\portable\ARM_CM4F;..\..\software\freemodbus\modbus\tcp;..\..\software\freemodbus\modbus\include;..\..\software\freemodbus\port;..\..\arch\m4\usb_otg\inc;..\..\software\usb_port\include;..\..\arch\m4\usb_device\Core\inc;..\..\arch\m4\usb_device\Class\msc\inc;..\..\arch\m4\usb_port;..\..\software\lua-5.3.4\port\include;..\..\software\ini\src;..\..\ui\include;..\..\software\tool\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -410,6 +410,71 @@
               <FileName>task_lua.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\user\task_lua.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>ui</GroupName>
+          <Files>
+            <File>
+              <FileName>time_set.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\time_set.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_menu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\ui_menu.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_alarm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\img_alarm.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_cpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\img_cpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\ui_debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_rss.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\img_rss.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_net_set.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\ui_net_set.c</FilePath>
+            </File>
+            <File>
+              <FileName>benchmark_bg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\benchmark_bg.c</FilePath>
+            </File>
+            <File>
+              <FileName>sy_china.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\sy_china.c</FilePath>
+            </File>
+            <File>
+              <FileName>l_back.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\l_back.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>tool</GroupName>
+          <Files>
+            <File>
+              <FileName>persistence.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\tool\persistence.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1075,6 +1140,11 @@
               <FileName>lv_font_symbol_40.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\lv_font_symbol_40.c</FilePath>
+            </File>
+            <File>
+              <FileName>arial_ascii_20.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\software\lvgl\lvgl-master\lv_misc\lv_fonts\arial_ascii_20.c</FilePath>
             </File>
           </Files>
         </Group>

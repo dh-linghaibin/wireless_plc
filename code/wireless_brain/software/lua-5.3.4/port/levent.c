@@ -27,6 +27,7 @@ uint16_t levent_add(int l_id, device_type type, uint16_t address, uint8_t num, u
     event->flag = 0;
     event->id = list_len(event_head);
     list_append(event_head, event); //追加结点
+    printf("add event \n");
     return event->id;
 }
 
@@ -108,7 +109,7 @@ void register_enum_device(lua_State* L)
     LUA_ENUM(L, DO_4);
     LUA_ENUM(L, DI_4);
     //把enumTable存在在_G 全局环境(线程环境)中,以枚举名称作为键  
-    lua_setglobal(L,"device_type");
+    lua_setglobal(L,"device");
 }  
 
 LUAMOD_API int luaopen_levent (lua_State *L) {

@@ -53,8 +53,6 @@
 #include "task_gui.h"
 #include "task_lua.h"
 
-#include "ini.h"
-
 const char logo[] = "\
 /*\n\
  * This file is part of the \n\
@@ -66,29 +64,59 @@ const char logo[] = "\
 
 USB_OTG_CORE_HANDLE USB_OTG_dev;
 
+static lv_res_t btn_click_action(lv_obj_t * btn) {
+    __set_FAULTMASK(1);//å…³é—­æ€»ä¸­æ–­
+    NVIC_SystemReset();//è¯·æ±‚å•ç‰‡æœºé‡å¯
+    return LV_RES_OK; /*Return OK if the button is not deleted*/
+}
+
 int main(void) {
-    delay_init(168); /* ÑÓÊ±³õÊ¼»¯ */
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); /*  ¹Ù·½ÍÆ¼ö */
-    l_malloc_init();    /*ÄÚ´æ³õÊ¼»¯*/
-    buzzer_init(); /* ·äÃùÆ÷³õÊ¼»¯ */
+    delay_init(168); /* å»¶æ—¶åˆå§‹åŒ– */
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); /*  å®˜æ–¹æ¨è */
+    l_malloc_init();    /*å†…å­˜åˆå§‹åŒ–*/
+    buzzer_init(); /* èœ‚é¸£å™¨åˆå§‹åŒ– */
     delay_ms(100);
-    uart_init(115200); /* ´®¿Ú³õÊ¼»¯ */
+    uart_init(115200); /* ä¸²å£åˆå§‹åŒ– */
     printf("%s",logo); 
-    rtc_init();         /* Ê±ÖÓ³õÊ¼»¯ */
-    task_can_init();    /* can³õÊ¼»¯ */
-    task_gui_init();    /* gui³õÊ¼»¯ */
-    task_file_init();   /* ÎÄ¼şÏµÍ³³õÊ¼»¯ */
+    rtc_init();         /* æ—¶é’Ÿåˆå§‹åŒ– */
+    task_can_init();    /* canåˆå§‹åŒ– */
+    task_gui_init();    /* guiåˆå§‹åŒ– */
+    task_file_init();   /* æ–‡ä»¶ç³»ç»Ÿåˆå§‹åŒ– */
+
+    {
+        uint8_t buf2[1];
+        W25QXX_Read(buf2,25100,1);
+        if(buf2[0] == 0x55) {
+            uint8_t buf[1];
+            buf[0] = 0x00;
+            W25QXX_Write(buf,25100,1);
+            
+            {
+                lv_obj_t * btn1 = lv_btn_create(lv_scr_act(), NULL);
+                lv_btn_set_action(btn1, LV_BTN_ACTION_CLICK, btn_click_action);
+                lv_obj_t * but_name = lv_label_create(btn1, NULL);
+                lv_label_set_text(but_name, "OK");
+            }
+            
+            USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
+            delay_ms(1000);
+            while(1) {
+                delay_ms(5);
+                lv_tick_inc(5);
+                xpt2046_loop();
+                lv_task_handler();
+            }
+        }
+        printf("%s \n",buf2);
+    }
+
     rs485_init();
-    //si446x_init();
-    USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
-    delay_ms(1800);
-    
-    task_lua_init();    /* lua»·¾³³õÊ¼»¯ */
-    eth_init();         /* ÍøÂç³õÊ¼»¯ */
-    task_modbus_init(); /* modbus ³õÊ¼»¯ */
+    task_lua_init();    /* luaç¯å¢ƒåˆå§‹åŒ– */
+    eth_init();         /* ç½‘ç»œåˆå§‹åŒ– */
+    task_modbus_init(); /* modbus åˆå§‹åŒ– */
     task_can_create();
-    task_gui_create();/* guiÈÎÎñ */
-    task_lua_create();/* luaÈÎÎñ */
+    task_gui_create();/* guiä»»åŠ¡ */
+    task_lua_create();/* luaä»»åŠ¡ */
     vTaskStartScheduler();
     while(1);
 }

@@ -11,6 +11,7 @@
 #include "insignal.h"
 #include "task_set.h"
 
+static void task_can_val(void *pvParameters);
 static void task_can(void *pvParameters);
 static xQueueHandle can_msg_queue = NULL; /*队列句柄*/
 static TimerHandle_t xtime_can; /* 定义句柄 */
@@ -22,6 +23,7 @@ void task_can_init(void) {
 
 void task_can_create(void) {
     xTaskCreate( task_can,"task_can", 512, NULL, tskIDLE_PRIORITY+2, NULL );
+    xTaskCreate( task_can_val,"task_can_val", 512, NULL, tskIDLE_PRIORITY+2, NULL );
 }
 
 xQueueHandle task_can_get_queue(void) {
@@ -99,6 +101,32 @@ static void task_can(void *pvParameters) {
                     }
                 }
             }
+        }
+    }
+}
+
+static void task_can_val(void *pvParameters) {
+    uint8_t l_val = 0x0f;
+    uint8_t change_count = 0;
+    for( ;; ) {
+        vTaskDelay(20 / portTICK_RATE_MS);
+        uint8_t val = insignal_read(8);
+        if(val != l_val) {
+            if(change_count < 5) {
+                change_count++;
+            } else if(change_count == 5) {
+                change_count = 0;
+                l_val = val;
+                can_trasnmit_message_struct send_msg;
+                send_msg.tx_sfid = bxcan_get_id();
+                send_msg.tx_dlen = 3;
+                send_msg.tx_data[0] = DI_4; /* 设备类型 */
+                send_msg.tx_data[1] = 0xf0; /* 命令 */
+                send_msg.tx_data[2] = val; /* 继电器状态 */
+                bxcan_send(send_msg);
+            }
+        } else {
+            change_count = 0;
         }
     }
 }

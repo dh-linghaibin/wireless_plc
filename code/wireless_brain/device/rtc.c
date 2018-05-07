@@ -69,7 +69,7 @@ u8 rtc_init(void) {
 
         RTC_WriteBackupRegister(RTC_BKP_DR0,0x5050);   //标记已经初始化过了
     }
-    rtc_set_wakeup(RTC_WakeUpClock_CK_SPRE_16bits,0);
+    //rtc_set_wakeup(RTC_WakeUpClock_CK_SPRE_16bits,0);
     return 0;
 }
 
@@ -157,8 +157,8 @@ void RTC_Alarm_IRQHandler(void) {
     EXTI_ClearITPendingBit(EXTI_Line17);   //清除中断线17的中断标志
 }
 
-RTC_TimeTypeDef RTC_TimeStruct;
-RTC_DateTypeDef RTC_DateStruct;
+//RTC_TimeTypeDef RTC_TimeStruct;
+//RTC_DateTypeDef RTC_DateStruct;
 
 //RTC WAKE UP中断服务函数
 void RTC_WKUP_IRQHandler(void) {

@@ -38,7 +38,7 @@ void USB_OTG_BSP_EnableInterrupt(USB_OTG_CORE_HANDLE *pdev)
 {
     NVIC_InitTypeDef   NVIC_InitStructure;
     NVIC_InitStructure.NVIC_IRQChannel = OTG_FS_IRQn; 
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;//抢占优先级0
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x04;//抢占优先级0
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03;//子优先级3
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能通道
     NVIC_Init(&NVIC_InitStructure);//配置  

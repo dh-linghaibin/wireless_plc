@@ -30,16 +30,14 @@
 #include "task_lua.h"
 #include "task_can.h"
 
+#include "ui_menu.h"
+
 static xTaskHandle xhandle_gui; /* lua句柄 */
 
 static void vtask_gui_tic(void *pvParameters);
 static void demo_init(void);
 static void vtask_show_device(void *pvParameters);
-
-/*Create a button descriptor string array*/
-static const char * btnm_map[] = {"1", "2", "3", "4", "5", "\n",
-                           "6", "7", "8", "9", "0", "\n",
-                           "\202del", "enter", ""};
+extern USB_OTG_CORE_HANDLE USB_OTG_dev;
 
 void task_gui_init(void) {
     SPI3_Init();
@@ -50,52 +48,22 @@ void task_gui_init(void) {
     lv_disp_drv_t disp_drv;  
     lv_disp_drv_init(&disp_drv);  
     disp_drv.disp_flush = monitor_flush; /* 显示屏接口 */
-
+    lv_disp_drv_register(&disp_drv);
+    
     lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv); 
     indev_drv.type = LV_INDEV_TYPE_POINTER;
     indev_drv.read = mouse_read;     /* 触摸接口 */
     lv_indev_drv_register(&indev_drv);
 
-    lv_disp_drv_register(&disp_drv);
-    /*Create a simple base object*/
-    
-    static lv_style_t style_bg;
-    lv_style_copy(&style_bg, &lv_style_plain);
-    style_bg.body.main_color = LV_COLOR_SILVER;
-    style_bg.body.grad_color = LV_COLOR_SILVER;
-    style_bg.body.padding.hor = 0;
-    style_bg.body.padding.ver = 0;
-    style_bg.body.padding.inner = 0;
-
-    /*Create 2 button styles*/
-    static lv_style_t style_btn_rel;
-    static lv_style_t style_btn_pr;
-    lv_style_copy(&style_btn_rel, &lv_style_btn_rel);
-    style_btn_rel.body.main_color = LV_COLOR_MAKE(0x30, 0x30, 0x30);
-    style_btn_rel.body.grad_color = LV_COLOR_BLACK;
-    style_btn_rel.body.border.color = LV_COLOR_SILVER;
-    style_btn_rel.body.border.width = 1;
-    style_btn_rel.body.border.opa = LV_OPA_50;
-    style_btn_rel.body.radius = 0;
-
-    lv_style_copy(&style_btn_pr, &style_btn_rel);
-    style_btn_pr.body.main_color = LV_COLOR_MAKE(0x55, 0x96, 0xd8);
-    style_btn_pr.body.grad_color = LV_COLOR_MAKE(0x37, 0x62, 0x90);
-    style_btn_pr.text.color = LV_COLOR_MAKE(0xbb, 0xd5, 0xf1);
-
-    /*Create a second button matrix with the new styles*/
-    lv_obj_t * btnm2 = lv_btnm_create(lv_scr_act(), NULL);
-    lv_btnm_set_map(btnm2, btnm_map);
-    lv_btnm_set_style(btnm2, LV_BTNM_STYLE_BG, &style_bg);
-    lv_btnm_set_style(btnm2, LV_BTNM_STYLE_BTN_REL, &style_btn_rel);
-    lv_btnm_set_style(btnm2, LV_BTNM_STYLE_BTN_PR, &style_btn_pr);
-    //lv_obj_align(btnm2, btnm1, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    lv_theme_t *th = lv_theme_material_init(200, NULL);
+    lv_theme_set_current(th);
 }
 
 void task_gui_create(void) {
+    ui_menu_create();
     xTaskCreate(vtask_gui_tic, "ui", 512, NULL, 3, &xhandle_gui);
-    task_gui_set(0);
+    //task_gui_set(0);
    // xTaskCreate(vtask_show_device, "device", 512, NULL, 3, NULL);
 }
 
@@ -116,6 +84,7 @@ static void vtask_gui_tic(void *pvParameters) {
     for( ;; ) {
         vTaskDelay(5 / portTICK_RATE_MS);
         lv_tick_inc(5);
+        xpt2046_loop();
         lv_task_handler();
     }
 }

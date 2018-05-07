@@ -54,8 +54,12 @@ void tft_set_backlight(uint8_t cmd);
 void tft_set(uint8_t cmd);
 
 void lcd_set_dir(u8 dir);
+void LCD_SetCursor(u16 Xpos, u16 Ypos);
 void lcd_fill(u16 sx,u16 sy,u16 ex,u16 ey,u16 color);
 void monitor_flush(int32_t sx, int32_t sy, int32_t ex, int32_t ey, const u16 *color_p);
+
+void fold_line_draw(uint16_t s_x,uint16_t x_y,uint16_t line_length,uint16_t date,uint32_t line_color,uint32_t back_color);
+void boxing_com(u32 start_x,u32 start_y,u32 end_x,u32 date,u32 setting_color);
 
 #ifdef __cplusplus
 }

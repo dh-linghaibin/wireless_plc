@@ -53,7 +53,8 @@ extern  int     mos_feof      (FIL * fp);
 #define         mos_free      madMemFree
 #define         mos_realloc   madMemRealloc
 
-extern  size_t  lua_writestring       (const void * s, size_t l);
+size_t  l_writestring (const void * s, size_t l);
+//#define lua_writestring lua_writestring
 #define         lua_writeline()       printf("\n")
 #define         lua_writestringerror  printf
     

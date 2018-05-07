@@ -97,10 +97,10 @@ assembly files that include this header file. */
 #define configUSE_TICK_HOOK                0
 #define configCPU_CLOCK_HZ                ( SystemCoreClock )
 #define configTICK_RATE_HZ                ( ( TickType_t ) 1000 )
-#define configMAX_PRIORITIES            ( 5 )
-#define configMINIMAL_STACK_SIZE        ( ( unsigned short ) 90 )
+#define configMAX_PRIORITIES            ( 7 )
+#define configMINIMAL_STACK_SIZE        ( ( unsigned short ) 128 )
 #define configTOTAL_HEAP_SIZE            ( ( size_t ) ( 60 * 1024 ) )
-#define configMAX_TASK_NAME_LEN            ( 10 )
+#define configMAX_TASK_NAME_LEN            ( 16 )
 #define configUSE_TRACE_FACILITY        1
 #define configUSE_16_BIT_TICKS            0
 #define configIDLE_SHOULD_YIELD            1

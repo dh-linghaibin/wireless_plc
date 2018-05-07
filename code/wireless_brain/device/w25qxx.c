@@ -53,7 +53,7 @@ void w25qxx_Init(void) {
 //BUSY:忙标记位(1,忙;0,空闲)
 //默认:0x00
 u8 W25QXX_ReadSR(void)   
-{  
+{
    u8 byte=0;   
    W25QXX_CS=0;                            //使能器件   
    SPI1_ReadWriteByte(W25X_ReadStatusReg);    //发送读取状态寄存器命令    

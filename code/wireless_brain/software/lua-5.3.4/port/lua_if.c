@@ -320,13 +320,15 @@ void madMemCopy(void* dst, const void* src, uint32_t len)
     }
 }
 
+#include "ui_debug.h"
+
 /* lua_ -----------------------------------------------*/
-size_t lua_writestring(const void * s, size_t l)
+size_t l_writestring(const void * s, size_t l)
 {
-    uint8_t *buf;
+    char *buf;
     uint32_t len = strlen(s);
     if(len <= l) {
-        buf = (uint8_t*)s;
+        buf = (char*)s;
     } else {
         buf = l_malloc(l + 1);
         if(buf) {
@@ -336,6 +338,7 @@ size_t lua_writestring(const void * s, size_t l)
             return 0;
         }
     }
-    return printf("%s", buf);
+    ui_debug_set_show(buf,LV_COLOR_HEX3(0x000));
+    return len;
 }
 

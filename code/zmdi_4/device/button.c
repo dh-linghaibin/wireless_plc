@@ -7,11 +7,11 @@
  
 #include "button.h"
 
-#define BUT_ADD_PORT GPIOA
-#define BUT_SUB_PORT GPIOC
+#define BUT_ADD_PORT GPIOC
+#define BUT_SUB_PORT GPIOA
 
-#define BUT_ADD_PIN GPIO_PIN_10
-#define BUT_SUB_PIN GPIO_PIN_15
+#define BUT_ADD_PIN GPIO_PIN_15
+#define BUT_SUB_PIN GPIO_PIN_10
 
 void button_init(void) {
     rcu_periph_clock_enable(RCU_GPIOA);

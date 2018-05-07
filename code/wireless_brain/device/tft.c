@@ -401,7 +401,128 @@ void tft_init(void) {
         ILI9341_HSD32_Initial();
         GPIO_SetBits(GPIOF,GPIO_Pin_6);
     }
+//    while(1) {
+//        static uint8_t val = 1;
+//        static uint8_t dr = 1;
+//        if(dr < 20) {
+//            dr++;
+//            if(val == 1) {
+//                val = 10;
+//            } else {
+//                val = 1;
+//            }
+//        } else {
+//            if(val == 6) {
+//                val = 20;
+//            } else {
+//                val = 6;
+//            }
+//        }
+//        //boxing_com(30,80,80,5,WHITE);
+//        fold_line_draw(30,80,180,val,WHITE,RED);
+//        delay_ms(100);
+//    }
 }
+
+//画点
+//x,y:坐标
+//POINT_COLOR:此点的颜色
+void LCD_DrawPoint(u16 x,u16 y,uint32_t color)
+{
+	LCD_SetCursor(x,y);		//设置光标位置 
+	LCD_WriteRAM_Prepare();	//开始写入GRAM
+	LCD->LCD_RAM=color; 
+}
+
+void LCD_DrawLine(u16 x1, u16 y1, u16 x2, u16 y2,uint32_t color)
+{
+	u16 t; 
+	int xerr=0,yerr=0,delta_x,delta_y,distance; 
+	int incx,incy,uRow,uCol; 
+	delta_x=x2-x1; //计算坐标增量 
+	delta_y=y2-y1; 
+	uRow=x1; 
+	uCol=y1; 
+	if(delta_x>0)incx=1; //设置单步方向 
+	else if(delta_x==0)incx=0;//垂直线 
+	else {incx=-1;delta_x=-delta_x;} 
+	if(delta_y>0)incy=1; 
+	else if(delta_y==0)incy=0;//水平线 
+	else{incy=-1;delta_y=-delta_y;} 
+	if( delta_x>delta_y)distance=delta_x; //选取基本增量坐标轴 
+	else distance=delta_y; 
+	for(t=0;t<=distance+1;t++ )//画线输出 
+	{  
+		LCD_DrawPoint(uRow,uCol,color);//画点 
+		xerr+=delta_x ; 
+		yerr+=delta_y ; 
+		if(xerr>distance) 
+		{ 
+			xerr-=distance; 
+			uRow+=incx; 
+		} 
+		if(yerr>distance) 
+		{ 
+			yerr-=distance; 
+			uCol+=incy; 
+		} 
+	}  
+}
+
+/**
+ * fold_line_draw
+ * @param s_x         折线开始的第一个坐标点
+ * @param x_y         折线开始的第一个坐标点
+ * @param line_length 折线长度
+ * @param date        折线值 
+ * @param line_color  直线颜色
+ * @param back_color  背景颜色
+ * @return null
+ */
+#define LINE_INTERVAL 5 /* 每次话折线直接的间隔 值越小 数据波形越密 */
+void fold_line_draw(uint16_t s_x,uint16_t x_y,uint16_t line_length,uint16_t date,uint32_t line_color,uint32_t back_color) {
+    static uint16_t last_x = 0; /* 上一次坐标X 静态变量 相当于全局变量*/
+    static uint16_t last_y = 0; /* 上一次坐标y */
+    if(last_x == 0) {           /* 判断是不是第一次进入 */
+        last_x = s_x;
+        last_y = x_y;
+    }
+    /* 擦除部分 先擦除然后再画线*/
+    lcd_fill(last_x,x_y,last_x+LINE_INTERVAL,x_y+50,back_color); /* 擦除波形前面的旧波形 50是数据最大的情况 */
+    /* 画折线部分 */
+    LCD_DrawLine(last_x,last_y,last_x+LINE_INTERVAL,x_y+date,line_color); /* 画折线 上一次坐标 加上现在的坐标*/
+    last_x += LINE_INTERVAL; /* 更新上一次坐标值 */
+    last_y = x_y+date;
+    if(last_x >= s_x+line_length) { /* 判断折线的长度是否到了 */
+        last_x = 0;
+    }
+}
+
+
+void boxing_com(u32 start_x,u32 start_y,u32 end_x,u32 date,u32 setting_color)
+{
+    static u16 a = 30;
+    static u16 b = 0;
+    static u32 c = 10;
+    static u16 e = 10;
+    static u16 d = 0;
+    static u16 cloos = 0;
+    if(a >= end_x+start_x) { 
+        a = start_x;d = start_x;
+    }
+    for(e = (a-1);e < a+6;e++) {
+        for(b = 0;b < cloos+2;b++) {
+            LCD_DrawPoint(e,(start_y-2)+b,setting_color);
+        }
+    }
+    LCD_DrawLine(d,c,a,start_y+date,RED);
+    a = a+5;
+    c = start_y+date;
+    d = a-5;
+    if(date > cloos) {
+        cloos = date+2;
+    }
+} 
 
 void tft_set_backlight(uint8_t cmd) {
     if(cmd == 0) {

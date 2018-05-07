@@ -25,26 +25,26 @@ void xpt2046_init(void) {
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;//上拉
     GPIO_Init(GPIOD, &GPIO_InitStructure);//初始化
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;//复用功能输出
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//复用功能
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
-    GPIO_Init(GPIOD, &GPIO_InitStructure);//初始化
+//    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;//复用功能输出
+//    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//复用功能
+//    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
+//    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
+//    GPIO_Init(GPIOD, &GPIO_InitStructure);//初始化
 
-    NVIC_InitTypeDef   NVIC_InitStructure;
-    EXTI_InitTypeDef   EXTI_InitStructure;
-    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOD, EXTI_PinSource3);
-    EXTI_InitStructure.EXTI_Line = EXTI_Line3;//LINE0
-    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;//中断事件
-    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling; //上升沿触发 
-    EXTI_InitStructure.EXTI_LineCmd = ENABLE;//使能LINE0
-    EXTI_Init(&EXTI_InitStructure);//配置
-    
-    NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;//外部中断0
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;//抢占优先级0
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//子优先级2
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
-    NVIC_Init(&NVIC_InitStructure);//配置
+//    NVIC_InitTypeDef   NVIC_InitStructure;
+//    EXTI_InitTypeDef   EXTI_InitStructure;
+//    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOD, EXTI_PinSource3);
+//    EXTI_InitStructure.EXTI_Line = EXTI_Line3;//LINE0
+//    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;//中断事件
+//    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling; //上升沿触发 
+//    EXTI_InitStructure.EXTI_LineCmd = ENABLE;//使能LINE0
+//    EXTI_Init(&EXTI_InitStructure);//配置
+//    
+//    NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;//外部中断0
+//    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;//抢占优先级0
+//    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//子优先级2
+//    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
+//    NVIC_Init(&NVIC_InitStructure);//配置
 
     SPI3_SetSpeed(SPI_BaudRatePrescaler_64);
     XPT_CS_RESET;
@@ -97,7 +97,7 @@ static lv_indev_data_t poin;
 
 void EXTI3_IRQHandler(void) {
     if(EXTI_GetITStatus(EXTI_Line3)!=RESET) {
-        printf("up\n");
+        //printf("up\n");
         XPT_CS_RESET;
         poin.point.x = xpt2046_get_y();
         poin.point.y = 240-xpt2046_get_x();
@@ -130,8 +130,7 @@ void xpt2046_loop(void) {
     }
 }
 
-bool mouse_read(lv_indev_data_t * data)
-{
+bool mouse_read(lv_indev_data_t * data) {
     /*Store the collected data*/
     data->point.x = poin.point.x;
     data->point.y = poin.point.y;

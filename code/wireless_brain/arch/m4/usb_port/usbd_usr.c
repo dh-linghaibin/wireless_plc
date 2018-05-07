@@ -32,7 +32,7 @@ USBD_Usr_cb_TypeDef USR_cb =
 //USB Device 用户自定义初始化函数
 void USBD_USR_Init(void)
 {
-	//printf("USBD_USR_Init\r\n");
+	printf("USBD_USR_Init\r\n");
 } 
 //USB Device 复位
 //speed:USB速度,0,高速;1,全速;其他,错误.
