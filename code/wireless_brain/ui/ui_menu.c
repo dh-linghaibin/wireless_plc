@@ -11,23 +11,145 @@
 #include "ui_debug.h"
 #include "ui_net_set.h"
 
+#include "persistence.h"
+#include <string.h>
+#include <stdlib.h>
+#include "buzzer.h"
+
 extern const lv_img_t benchmark_bg;
 extern const lv_img_t l_back;
 extern const lv_img_t img_alarm;
 extern const lv_img_t img_cpu;
 extern const lv_img_t img_rss;
+extern const lv_img_t lock_open;
+extern const lv_img_t lock_un;
+
+static uint8_t lock_flag = 0; /* 操作锁 */
 
 static lv_res_t btn_alarm_action(lv_obj_t *obj) {
-    time_set_create();
+    if( 0 == lock_flag ) {
+        time_set_create();
+    }
 }
 
 static lv_res_t btn_set_action(lv_obj_t *obj) {
-    ui_debug_create();
+    if( 0 == lock_flag ) {
+        ui_debug_create();
+    }
 }
 
 static lv_res_t btn_set_net(lv_obj_t *obj) {
-    ui_net_set_create();
+    if( 0 == lock_flag ) {
+        ui_net_set_create();
+    }
 }
+
+
+/* 密码 */
+extern const char * btnm_map[];
+
+static lv_res_t paw_close(lv_obj_t * btn) {
+    lv_obj_t * win = lv_win_get_from_btn(btn);
+    lv_obj_del(win);
+    return LV_RES_INV;
+}
+
+static lv_obj_t * pas_win;
+static lv_obj_t * img_lock;
+static lv_obj_t * pas;
+/*Called when a button is released ot long pressed*/
+static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
+    if(strcmp(txt,"删除")==0) {
+        lv_ta_del_char(pas);
+    } else if(strcmp(txt,"确定")==0) {
+        char pas_code[6];
+        uint8_t pas_s[6];
+        persistence_get_password(pas_s);
+        strcpy(pas_code, lv_ta_get_text(pas));
+        for( uint8_t pi = 0; pi < 6;pi++ ) {
+            if(pas_code[pi] == pas_s[pi]) {
+                if(pi == 5) {
+                    lock_flag = 0;
+                    lv_img_set_src(img_lock, &lock_open);
+                    persistence_set_lock(&lock_flag);
+                    lv_obj_del(pas_win);
+                }
+            } else {
+                break;
+            }
+        }
+    } else {
+        if( 6 > lv_ta_get_cursor_pos(pas) ) {
+            lv_ta_add_char(pas,txt[0]);
+        }
+    }
+    return LV_RES_OK; /*Return OK because the button matrix is not deleted*/
+}
+
+static lv_style_t style_bg;
+/*Create 2 button styles*/
+static lv_style_t style_btn_rel;
+static lv_style_t style_btn_pr;
+
+void ui_pas_create(void) {
+    pas_win = lv_win_create(lv_scr_act(),NULL);
+    lv_win_add_btn(pas_win,SYMBOL_CLOSE,paw_close);
+    lv_win_set_title(pas_win,"请输入密码");
+    lv_win_set_btn_size(pas_win,30);
+    
+    lv_style_copy(&style_bg, &lv_style_plain);
+    style_bg.body.main_color = LV_COLOR_SILVER;
+    style_bg.body.grad_color = LV_COLOR_SILVER;
+    style_bg.body.padding.hor = 0;
+    style_bg.body.padding.ver = 0;
+    style_bg.body.padding.inner = 0;
+
+    lv_style_copy(&style_btn_rel, &lv_style_btn_rel);
+    style_btn_rel.body.main_color = LV_COLOR_MAKE(0x30, 0x30, 0x30);
+    style_btn_rel.body.grad_color = LV_COLOR_BLACK;
+    style_btn_rel.body.border.color = LV_COLOR_SILVER;
+    style_btn_rel.body.border.width = 1;
+    style_btn_rel.body.border.opa = LV_OPA_50;
+    style_btn_rel.body.radius = 0;
+
+    lv_style_copy(&style_btn_pr, &style_btn_rel);
+    style_btn_pr.body.main_color = LV_COLOR_MAKE(0x55, 0x96, 0xd8);
+    style_btn_pr.body.grad_color = LV_COLOR_MAKE(0x37, 0x62, 0x90);
+    style_btn_pr.text.color = LV_COLOR_MAKE(0xbb, 0xd5, 0xf1);
+    
+    /*Create a one lined test are with password mode*/
+    pas = lv_ta_create(pas_win, NULL);
+     lv_ta_set_style(pas,LV_TA_STYLE_BG, &style_bg);           /*Apply the background style*/
+    lv_obj_set_pos (pas,50, 0);
+    lv_ta_set_one_line(pas, true);
+    lv_ta_set_cursor_type(pas, LV_CURSOR_LINE);
+    lv_ta_set_pwd_mode(pas, true);
+    lv_ta_set_text(pas,"");
+    
+    /*Create a second button matrix with the new styles*/
+    lv_obj_t * key_board = lv_btnm_create(pas_win, NULL);
+    lv_btnm_set_map(key_board, btnm_map);
+    lv_btnm_set_action(key_board, btnm_action);
+    lv_btnm_set_style(key_board, LV_BTNM_STYLE_BG, &style_bg);
+    lv_btnm_set_style(key_board, LV_BTNM_STYLE_BTN_REL, &style_btn_rel);
+    lv_btnm_set_style(key_board, LV_BTNM_STYLE_BTN_PR, &style_btn_pr);
+    lv_obj_set_size(key_board,300,120);
+    lv_obj_align(key_board,pas, LV_ALIGN_OUT_BOTTOM_MID ,0,5);
+}
+
+static lv_res_t btn_set_lock(lv_obj_t *obj) {
+    if( 0 == lock_flag ) {
+        lock_flag = 1;
+        lv_img_set_src(img_lock, &lock_un);
+        persistence_set_lock(&lock_flag);
+    } else {
+        //buzzer_set(100,1);
+        ui_pas_create();
+//        lock_flag = 0;
+//        lv_img_set_src(img_lock, &lock_open);
+    }
+}
+
 
 static lv_style_t btn_style_rel,btn_style_pr;
 static lv_obj_t * wp;
@@ -40,27 +162,25 @@ void ui_menu_create(void) {
     //SCREEN
     lv_obj_t * scr = lv_scr_act();
 
-    lv_obj_t * btn[9];
-    lv_obj_t * img[9] ;
+    lv_obj_t * btn[4];
+    lv_obj_t * img[4] ;
    
     lv_style_copy(&btn_style_rel,&lv_style_transp);
     lv_style_copy(&btn_style_pr,&lv_style_plain_color);
     btn_style_pr.body.opa = 50;
     
-     lv_style_copy(&style_wp, &lv_style_plain);
+    lv_style_copy(&style_wp, &lv_style_plain);
     style_wp.image.color = LV_COLOR_RED;
     
     /*Create a wallpaper on the page*/
-    wp = lv_img_create(lv_scr_act(), NULL);
-    lv_obj_set_protect(wp, LV_PROTECT_PARENT);          /*Don't let to move the wallpaper by the layout */
-    //  	lv_obj_set_parent(wp, holder_page);
-    //  	lv_obj_set_parent(lv_page_get_scrl(holder_page), holder_page);
-    lv_img_set_src(wp, &benchmark_bg);
-    lv_obj_set_size(wp, LV_HOR_RES, LV_VER_RES);
-    lv_obj_set_pos(wp, 0, 0);
-    lv_obj_set_hidden(wp, false);
-    lv_img_set_style(wp, &style_wp);
-    lv_img_set_auto_size(wp, false);
+//    wp = lv_img_create(lv_scr_act(), NULL);
+//    lv_obj_set_protect(wp, LV_PROTECT_PARENT);          /*Don't let to move the wallpaper by the layout */
+//    lv_img_set_src(wp, &benchmark_bg);
+//    lv_obj_set_size(wp, LV_HOR_RES, LV_VER_RES);
+//    lv_obj_set_pos(wp, 0, 0);
+//    lv_obj_set_hidden(wp, false);
+//    lv_img_set_style(wp, &style_wp);
+//    lv_img_set_auto_size(wp, false);
 
     for(uint8_t j=0;j<1;j++)
     {
@@ -90,6 +210,50 @@ void ui_menu_create(void) {
     lv_btn_set_action(btn[0],LV_BTN_ACTION_CLICK,btn_alarm_action);
     lv_btn_set_action(btn[1],LV_BTN_ACTION_CLICK,btn_set_action);
     lv_btn_set_action(btn[2],LV_BTN_ACTION_CLICK,btn_set_net);
+    
+    
+    uint8_t g_ip[4];
+    persistence_get_ip(g_ip);
+    char buf[20];
+    sprintf(buf, "ip:%d.%d.%d.%d:502",g_ip[0],g_ip[1],g_ip[2],g_ip[3]);
+    lv_obj_t * ip_show = lv_label_create(lv_scr_act(),NULL);
+    lv_label_set_text(ip_show,buf);
+    lv_obj_align(ip_show,NULL,LV_ALIGN_IN_LEFT_MID,30,0);
+    
+    
+    lv_obj_t * mask_show = lv_label_create(lv_scr_act(),ip_show);
+    persistence_get_mask(g_ip);
+    sprintf(buf, "mask:%d.%d.%d.%d",g_ip[0],g_ip[1],g_ip[2],g_ip[3]);
+    lv_label_set_text(mask_show,buf);
+    lv_obj_align(mask_show,ip_show,LV_ALIGN_OUT_BOTTOM_LEFT,0,5);
+    
+    
+    lv_obj_t * time_show = lv_label_create(lv_scr_act(),ip_show);
+    RTC_TimeTypeDef RTC_TimeStruct;
+    RTC_DateTypeDef RTC_DateStruct;
+    RTC_GetTime(RTC_Format_BIN,&RTC_TimeStruct);
+    RTC_GetDate(RTC_Format_BIN, &RTC_DateStruct);
+    sprintf(buf, "时间:%d-%d-%d-%d-%d",RTC_DateStruct.RTC_Year,RTC_DateStruct.RTC_Month,RTC_DateStruct.RTC_Date,RTC_TimeStruct.RTC_Hours,RTC_TimeStruct.RTC_Minutes);
+    lv_label_set_text(time_show,buf);
+    lv_obj_align(time_show,mask_show,LV_ALIGN_OUT_BOTTOM_LEFT,0,5);
+    
+    lv_obj_t * btn_lock;
+    img_lock = lv_img_create(scr, NULL);
+    lv_obj_set_size(img_lock,48,48);
+    lv_obj_set_pos(img_lock, 260,180);
+
+    btn_lock = lv_btn_create(scr, NULL);
+    lv_obj_set_size(btn_lock,64+5,64+5);
+    lv_obj_align(btn_lock,img_lock,LV_ALIGN_CENTER,0,0);
+    lv_btn_set_style(btn_lock,LV_BTN_STYLE_REL,&btn_style_rel);
+    lv_btn_set_style(btn_lock,LV_BTN_STYLE_PR,&btn_style_pr);
+    persistence_get_lock(&lock_flag);
+    if( 0 == lock_flag ) {
+        lv_img_set_src(img_lock, &lock_open);
+    } else {
+        lv_img_set_src(img_lock, &lock_un);
+    }
+    lv_btn_set_action(btn_lock,LV_BTN_ACTION_CLICK,btn_set_lock);
 }
 
 

@@ -15,7 +15,7 @@ extern "C" {
 #include "../lvgl.h"
 
 void ui_debug_create(void);
-void ui_debug_set_show(const char * text,lv_color_t color);
+void ui_debug_set_show(const char * text);
 
 #ifdef __cplusplus
 }

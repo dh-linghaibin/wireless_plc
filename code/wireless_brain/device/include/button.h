@@ -16,7 +16,7 @@ extern "C" {
 #include "sdkconfig.h"
 
 void button_init(void);
-
+uint8_t button_read(void);
 
 #ifdef __cplusplus
 }

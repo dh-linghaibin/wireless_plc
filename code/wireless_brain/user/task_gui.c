@@ -32,6 +32,8 @@
 
 #include "ui_menu.h"
 
+#include "button.h"
+
 static xTaskHandle xhandle_gui; /* lua句柄 */
 
 static void vtask_gui_tic(void *pvParameters);
@@ -40,6 +42,7 @@ static void vtask_show_device(void *pvParameters);
 extern USB_OTG_CORE_HANDLE USB_OTG_dev;
 
 void task_gui_init(void) {
+    button_init();
     SPI3_Init();
     xpt2046_init();
     tft_init();
@@ -63,8 +66,7 @@ void task_gui_init(void) {
 void task_gui_create(void) {
     ui_menu_create();
     xTaskCreate(vtask_gui_tic, "ui", 512, NULL, 3, &xhandle_gui);
-    //task_gui_set(0);
-   // xTaskCreate(vtask_show_device, "device", 512, NULL, 3, NULL);
+    xTaskCreate(vtask_show_device, "device", 512, NULL, 3, NULL);
 }
 
 
@@ -72,11 +74,11 @@ void task_gui_set(uint8_t cmd) {
     if(cmd) {
         tft_set(1);
         tft_set_backlight(0);
-        vTaskResume( xhandle_gui ); /* 恢复lua任务 */
+        vTaskResume( xhandle_gui );
     } else {
         tft_set(0);
         tft_set_backlight(1);
-        vTaskSuspend( xhandle_gui ); /* 挂起lua任务 */
+        vTaskSuspend( xhandle_gui );
     }
 }
 
@@ -89,49 +91,52 @@ static void vtask_gui_tic(void *pvParameters) {
     }
 }
 
-//USB_OTG_CORE_HANDLE USB_OTG_dev;
 
-static lv_res_t change_action(lv_obj_t * sw) {
-    if(lv_sw_get_state(sw) == true) {
-        task_lua_set(false);
-        //taskENTER_CRITICAL();   /* 进入临界区 */
-        //USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
-        //delay_ms(2800);
-        //taskEXIT_CRITICAL();    /* 退出临界区 */
-    } else {
-        task_lua_set(true);
-        //DCD_DevDisconnect(&USB_OTG_dev);
-    }
-    buzzer_set(50,1);
-    return LV_RES_OK;
+static TimerHandle_t xtime_buzz;
+static uint8_t sleep_flag = 0;
+
+uint8_t task_gui_get_sleep_flag(void) {
+    return sleep_flag;
 }
 
-lv_obj_t * list1;
-lv_obj_t* label3;
+static void buzzer_callback( TimerHandle_t xTimer ) {
+    configASSERT(xTimer);
+    xTimerDelete( xTimer ,0 );
+    task_gui_set(0);
+    sleep_flag = 1;
+}
 
 static void vtask_show_device(void *pvParameters) {
+    if( xTimerIsTimerActive( xtime_buzz ) != pdFALSE ) {
+        xtime_buzz = xTimerCreate("can_tic",      
+                                  20000,        
+                                  pdTRUE,     
+                                  (void *) 0,    
+                                  buzzer_callback); 
+
+        if(xtime_buzz == NULL) {
+         
+        } else {
+            if(xTimerStart(xtime_buzz, 0) == pdPASS) {
+                
+            }
+        }
+    }
     for( ;; ) {
-//        vTaskDelay(1000 / portTICK_RATE_MS);
-//        lv_obj_del(list1);
-//        list1 = lv_list_create(lv_scr_act(), NULL);
-//        lv_obj_set_size(list1, 130, 170);
-//        device_online *temp;
-//        for (int i = 0; i < list_len(task_can_get_device()); i++){ //list_len获取链表的长度
-//            list_get(task_can_get_device(), i, (void **)&temp); //取得位置为i的结点的数据
-//            char *buf = l_malloc(sizeof(char)*10);
-//            switch(temp->type) {
-//                case DO_8: {
-//                    sprintf(buf, "DI_8  %d", temp->address);
-//                } break;
-//                case DO_4: {
-//                    sprintf(buf, "DO_4  %d", temp->address);
-//                } break;
-//                case DI_4: {
-//                    sprintf(buf, "DI_4  %d", temp->address);
-//                } break;
-//            }
-//            lv_list_add(list1, SYMBOL_FILE, buf, list_release_action);
-//            l_free(buf);
-//        }
+        vTaskDelay(5 / portTICK_RATE_MS);
+        switch(button_read()) {
+            case 0x00: {
+            
+            } break;
+            case 0x01: {
+                if(sleep_flag == 1) {
+                    sleep_flag = 0;
+                    task_gui_set(1);
+                    if(xTimerStart(xtime_buzz, 0) == pdPASS) {
+                
+                    }
+                }
+            } break;
+        }
     }
 }

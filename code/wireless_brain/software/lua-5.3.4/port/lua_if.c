@@ -338,7 +338,7 @@ size_t l_writestring(const void * s, size_t l)
             return 0;
         }
     }
-    ui_debug_set_show(buf,LV_COLOR_HEX3(0x000));
+    ui_debug_set_show(buf);
     return len;
 }
 

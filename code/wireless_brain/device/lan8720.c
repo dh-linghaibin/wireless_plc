@@ -27,6 +27,7 @@ static void ETH_NVIC_Config(void);
 #include "tcpip.h"
 #include "netif.h"
 #include <stdio.h>
+#include "persistence.h"
 
 static struct netif xnetif; /* network interface structure */
 
@@ -50,10 +51,14 @@ void lwip_comm_default_ip_set(__lwip_dev *lwipx) {
 	lwipx->mac[4]=(sn0>>8)&0XFFF;;
 	lwipx->mac[5]=sn0&0XFF; 
 	//默认本地IP为:192.168.1.30
-	lwipx->ip[0]=192;	
-	lwipx->ip[1]=168;
-	lwipx->ip[2]=1;
-	lwipx->ip[3]=195;
+    
+    uint8_t g_ip[4];
+    persistence_get_ip(g_ip);
+
+	lwipx->ip[0]=g_ip[0];	
+	lwipx->ip[1]=g_ip[1];;
+	lwipx->ip[2]=g_ip[2];;
+	lwipx->ip[3]=g_ip[3];;
 	//默认子网掩码:255.255.255.0
 	lwipx->netmask[0]=255;	
 	lwipx->netmask[1]=255;

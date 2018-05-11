@@ -27,7 +27,7 @@ uint16_t levent_add(int l_id, device_type type, uint16_t address, uint8_t num, u
     event->flag = 0;
     event->id = list_len(event_head);
     list_append(event_head, event); //追加结点
-    printf("add event \n");
+    //printf("add event \n");
     return event->id;
 }
 
@@ -43,6 +43,17 @@ void levent_loop(lua_State * L) {
     for (int i = 0; i < list_len(event_head); i++){ 
         list_get(event_head, i, (void **)&event);
         switch(event->type) {
+            case HOLD: {
+                if(task_modbus_get_holding(event->address) == event->val) {
+                    if(event->flag == 0) {
+                        event->flag = 1;
+                        lua_rawgeti(L, LUA_REGISTRYINDEX, event->l_id);
+                        lua_pcall(L, 0, 0, 0);
+                    }
+                } else {
+                    event->flag = 0;
+                }
+            } break;
             case DO_8: {
                 
             } break;
@@ -53,8 +64,8 @@ void levent_loop(lua_State * L) {
                 if(task_modbus_get_input_bit(event->address,event->num) == event->val) {
                     if(event->flag == 0) {
                         event->flag = 1;
-                        lua_rawgeti(L, LUA_REGISTRYINDEX, event->l_id); //压栈
-                        lua_pcall(L, 0, 0, 0);//访问栈
+                        lua_rawgeti(L, LUA_REGISTRYINDEX, event->l_id);
+                        lua_pcall(L, 0, 0, 0);
                     }
                 } else {
                     event->flag = 0;
@@ -108,6 +119,7 @@ void register_enum_device(lua_State* L)
     LUA_ENUM(L, DO_8);
     LUA_ENUM(L, DO_4);
     LUA_ENUM(L, DI_4);
+    LUA_ENUM(L, HOLD);
     //把enumTable存在在_G 全局环境(线程环境)中,以枚举名称作为键  
     lua_setglobal(L,"device");
 }  

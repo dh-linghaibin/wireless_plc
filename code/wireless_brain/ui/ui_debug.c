@@ -8,32 +8,25 @@
 #include "ui_debug.h"
 #include "time_set.h"
 #include "app_configure.h"
+#include "persistence.h"
 
 LV_FONT_DECLARE(arial_ascii_20);/*Full ASCII range*/
 
 static lv_obj_t * label = NULL;
 
-//πÿ±’¥∞ø⁄∂Øª≠µƒªÿµ˜∫Ø ˝
-static lv_res_t lv_win_close_action_animation_cb(lv_obj_t * win)
-{
+static lv_res_t lv_win_close_action_animation(lv_obj_t * btn) {
+    lv_obj_t * win = lv_win_get_from_btn(btn);
     lv_obj_del(win);
     label = NULL;
     return LV_RES_INV;
 }
-
-static lv_res_t lv_win_close_action_animation(lv_obj_t * btn) {
-    lv_obj_t * win = lv_win_get_from_btn(btn);
-    /* Float in the button using a built-in function
-     * Delay the animation with 50 ms and float in 800 ms. NULL means no end callback*/
-    lv_obj_animate(win, LV_ANIM_FLOAT_TOP | LV_ANIM_OUT, 300, 50, lv_win_close_action_animation_cb);
-}
 static lv_obj_t * mbox1;
 /*Called when a button is clicked*/
 static lv_res_t mbox_apply_action(lv_obj_t * mbox, const char * txt) {
-     if(strcmp(txt,"Apply")==0) {
+     if(strcmp(txt,"Êõ¥Êñ∞")==0) {
         uint8_t buf[1];
         buf[0] = 0x55;
-        W25QXX_Write(buf,25100,1);
+        persistence_set_pro_flag(buf);
         __set_FAULTMASK(1);//πÿ±’◊‹÷–∂œ
         NVIC_SystemReset();//«Î«Ûµ•∆¨ª˙÷ÿ∆Ù
      } else {
@@ -45,9 +38,9 @@ static lv_res_t mbox_apply_action(lv_obj_t * mbox, const char * txt) {
 static lv_res_t lv_win_download(lv_obj_t * btn) {
      /*Copy the message box (The buttons will be copied too)*/
     mbox1 = lv_mbox_create(lv_scr_act(), NULL);
-    lv_mbox_set_text(mbox1, "enter download\n");/*Set the text*/
+    lv_mbox_set_text(mbox1, "Êõ¥Êñ∞Á®ãÂ∫è\n");/*Set the text*/
     /*Add two buttons*/
-    static const char * btns[] ={"\221Apply", "\221Close", ""}; /*Button description. '\221' lv_btnm like control char*/
+    static const char * btns[] ={"\221Êõ¥Êñ∞", "\221ÈÄÄÂá∫", ""}; /*Button description. '\221' lv_btnm like control char*/
     lv_mbox_add_btns(mbox1, btns, NULL);
     lv_obj_set_width(mbox1, 250);
     lv_obj_align(mbox1, NULL, LV_ALIGN_CENTER, 0, 0); /*Align to the corner*/
@@ -72,7 +65,7 @@ void ui_debug_create(void) {
     lv_obj_t * win = lv_win_create(lv_scr_act(),NULL);
     lv_win_add_btn(win,SYMBOL_CLOSE,lv_win_close_action_animation);
     lv_win_add_btn(win,SYMBOL_DOWNLOAD,lv_win_download);
-    lv_win_set_title(win,"debug");
+    lv_win_set_title(win,"Ë∞ÉËØï");
     lv_win_set_btn_size(win,WIN_BTN_HEIGHT);
     
     /*Create a scroll bar style*/
@@ -104,7 +97,7 @@ void ui_debug_create(void) {
     bebug_tes_sty.text.font = &arial_ascii_20;
     
     label = lv_ta_create(win, NULL);
-    lv_obj_set_size(label, lv_page_get_scrl_width(win), lv_obj_get_height(win)/1.4);
+    lv_obj_set_size(label, lv_page_get_scrl_width(win), lv_obj_get_height(win)/1.5);
     lv_ta_set_style(label, LV_TA_STYLE_BG, &bebug_tes_sty);
     lv_ta_set_text(label, "");
     
@@ -115,10 +108,12 @@ void ui_debug_create(void) {
 //    lv_label_set_text(but_name, "stop");
 }
 
-void ui_debug_set_show(const char * text,lv_color_t color) {
+#include "task_gui.h"
+
+void ui_debug_set_show(const char * text) {
     if(label != NULL) {
-//        bebug_tes_sty.text.color = color;
-//        lv_ta_set_style(label, LV_TA_STYLE_BG, &bebug_tes_sty);
-        lv_ta_add_text(label,text);
+        if(task_gui_get_sleep_flag() == 0) {
+            lv_ta_add_text(label,text);
+        }
     }
 }

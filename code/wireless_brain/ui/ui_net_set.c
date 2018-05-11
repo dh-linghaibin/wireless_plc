@@ -11,27 +11,30 @@
 #include "string.h"
 #include "stdio.h"
 #include "persistence.h"
+#include <string.h>
+#include <stdlib.h>
 
 /*Create a button descriptor string array*/
-static const char * btnm_map[] = {"1", "2", "3", "4", "5", "\n",
+const char * btnm_map[] = {"1", "2", "3", "4", "5", "\n",
                            "6", "7", "8", "9", "0", "\n",
-                           "\202.","del", "enter", ""};
+                           ".","删除", "\202确定", ""};
 
-//�رմ��ڶ����Ļص�����
-static lv_res_t lv_win_close_action_animation_cb(lv_obj_t * win) {
+
+static lv_res_t lv_win_close_action_animation(lv_obj_t * btn) {
+    lv_obj_t * win = lv_win_get_from_btn(btn);
     lv_obj_del(win);
     return LV_RES_INV;
 }
 
-static lv_res_t lv_win_close_action_animation(lv_obj_t * btn) {
-    lv_obj_t * win = lv_win_get_from_btn(btn);
-    lv_obj_animate(win, LV_ANIM_FLOAT_TOP | LV_ANIM_OUT, 300, 50, lv_win_close_action_animation_cb);
-}
-
+static lv_obj_t * mbox1;
 /*Called when a button is clicked*/
 static lv_res_t mbox_apply_action(lv_obj_t * mbox, const char * txt) {
-    printf("Mbox button: %s\n", txt);
-    lv_obj_del(mbox);
+    if(strcmp(txt,"重启")==0) {
+         __set_FAULTMASK(1);
+        NVIC_SystemReset();
+    } else {
+        lv_obj_del(mbox1);
+    }
     return LV_RES_OK; /*Return OK if the message box is not deleted*/
 }
 
@@ -43,34 +46,42 @@ static lv_style_t style_btn_pr;
 
 /*Called when a button is released ot long pressed*/
 static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
-    printf("%d \n",lv_ta_get_cursor_pos(ip[0]));
-    if(strcmp(txt,"del")==0) {
+    if(strcmp(txt,"删除")==0) {
         lv_ta_del_char (ip[0]);
-    } else if(strcmp(txt,"enter")==0) {
-//            /*Copy the message box (The buttons will be copied too)*/
-//            lv_obj_t * mbox1 = lv_mbox_create(lv_scr_act(), NULL);
-//            lv_mbox_set_text(mbox1, "Default message box\n"
-//                                    "with buttons");/*Set the text*/
-//            /*Add two buttons*/
-//            static const char * btns[] ={"\221Apply", "\221Close", ""}; /*Button description. '\221' lv_btnm like control char*/
-//            lv_mbox_add_btns(mbox1, btns, NULL);
-//            lv_obj_set_width(mbox1, 250);
-//            lv_obj_align(mbox1, NULL, LV_ALIGN_CENTER, 0, 0); /*Align to the corner*/
-            //lv_mbox_set_action(mbox1,mbox_apply_action);
-            //char g_ip[30];
-            char * g_ip = lv_ta_get_text(ip[0]);
+    } else if(strcmp(txt,"确定")==0) {
+            char g_ip[30];
+            strcpy(g_ip, lv_ta_get_text(ip[0]));
             char num[20];
-            uint8_t num_count;
-            while (*(g_ip++)) {
-                if(*g_ip == '.') {
-                    printf("xiao\n");
-                    printf("%d",atoi(num));
+            uint8_t num_count = 0;
+            uint8_t g_ip_count = 0;
+            uint8_t save_ip[4];
+            uint8_t save_ip_count = 0;
+            while(strlen(g_ip)+1 > g_ip_count) {
+                if( (g_ip[g_ip_count] == '.') || (strlen(g_ip) == g_ip_count) ){
+                    save_ip[save_ip_count] = atoi(num);
+                    save_ip_count++;
+                    if(save_ip_count == 4) {
+                        persistence_set_ip(save_ip);
+                        
+                        /*Copy the message box (The buttons will be copied too)*/
+                        mbox1 = lv_mbox_create(lv_scr_act(), NULL);
+                        lv_mbox_set_text(mbox1, "设置成功,是否重启\n");/*Set the text*/
+                        /*Add two buttons*/
+                        static const char * btns[] ={"\221重启", "\221退出", ""}; /*Button description. '\221' lv_btnm like control char*/
+                        lv_mbox_add_btns(mbox1, btns, NULL);
+                        lv_obj_set_width(mbox1, 250);
+                        lv_obj_align(mbox1, NULL, LV_ALIGN_CENTER, 0, 0); /*Align to the corner*/
+                        lv_mbox_set_action(mbox1,mbox_apply_action);
+                        break;
+                    }
+                    memset(num, 0, 20);
                     num_count = 0;
+                } else {
+                    num[num_count] = g_ip[g_ip_count];
+                    num_count++;
                 }
-                num[num_count] = *g_ip;
-                num_count++;
+                g_ip_count++;
             }
-            printf("%s\n",g_ip);
     } else {
         lv_ta_add_char(ip[0],txt[0]);
     }
@@ -80,7 +91,7 @@ static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
 void ui_net_set_create(void) {
     lv_obj_t * win = lv_win_create(lv_scr_act(),NULL);
     lv_win_add_btn(win,SYMBOL_CLOSE,lv_win_close_action_animation);
-    lv_win_set_title(win,"wl");
+    lv_win_set_title(win,"网络设置");
     lv_win_set_btn_size(win,WIN_BTN_HEIGHT);
     
     lv_style_copy(&style_bg, &lv_style_plain);

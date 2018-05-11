@@ -8,12 +8,12 @@
 #include "ltime.h"
 #include "l_list.h"
 
-static l_list_t * time_head; /* ����ͷ */
+static l_list_t * time_head; 
 static uint16_t l_tic = 0;
 
 void ltime_init(void) {
-    time_head = (l_list_t *)l_malloc(sizeof(l_list_t)); /* ����ͷ�ڵ� */
-    list_init(time_head); //��ʼ������
+    time_head = (l_list_t *)l_malloc(sizeof(l_list_t)); 
+    list_init(time_head); 
 }
 
 uint16_t ltime_add(int l_id, uint32_t time_ms) {
@@ -27,7 +27,7 @@ uint16_t ltime_add(int l_id, uint32_t time_ms) {
         time->tic_ms = l_tic+time->time_ms;
     }
     time->id = list_len(time_head);
-    list_append(time_head, time); //׷�ӽ��
+    list_append(time_head, time);
     return time->id;
 }
 
@@ -47,17 +47,17 @@ void ltime_loop(lua_State * L) {
     }
     for (int i = 0; i < list_len(time_head); i++){ 
         list_get(time_head, i, (void **)&time);
-        if(time->tic_ms == l_tic) { /* ʱ�䵽�� */
+        if(time->tic_ms == l_tic) {
             if( (l_tic+time->time_ms) > 0xffff ) {
                 time->tic_ms = 0xffff-l_tic+time->time_ms;
             } else {
                 time->tic_ms = l_tic+time->time_ms;
             }
             /*do something*/
-            lua_rawgeti(L, LUA_REGISTRYINDEX, time->l_id); //ѹջ
+            lua_rawgeti(L, LUA_REGISTRYINDEX, time->l_id);
 //            lua_pushstring(L, pack);
 //            lua_pushnumber(L, on_create);
-            lua_pcall(L, 0, 0, 0);//����ջ
+            lua_pcall(L, 0, 0, 0);
         }
     }
 }
@@ -82,10 +82,38 @@ static int ltime_l_remove(lua_State *L) {
     return 0;
 }
 
+static int ltime_time(lua_State *L) {
+    RTC_TimeTypeDef RTC_TimeStruct;
+    RTC_DateTypeDef RTC_DateStruct;
+    RTC_GetTime(RTC_Format_BIN,&RTC_TimeStruct);
+    RTC_GetDate(RTC_Format_BIN, &RTC_DateStruct);
+    
+    lua_newtable(L);//创建一个表格，放在栈顶  
+    lua_pushstring(L, "year"); 
+    lua_pushinteger(L,RTC_DateStruct.RTC_Year);
+    lua_settable(L,-3);  
+    lua_pushstring(L, "month"); 
+    lua_pushinteger(L,RTC_DateStruct.RTC_Month);
+    lua_settable(L,-3);  
+    lua_pushstring(L, "date"); 
+    lua_pushinteger(L,RTC_DateStruct.RTC_Date);
+    lua_settable(L,-3);  
+    lua_pushstring(L, "hour"); 
+    lua_pushinteger(L,RTC_TimeStruct.RTC_Hours);
+    lua_settable(L,-3);  
+    lua_pushstring(L, "min"); 
+    lua_pushinteger(L,RTC_TimeStruct.RTC_Minutes);
+    lua_settable(L,-3);  
+    lua_pushstring(L, "sec"); 
+    lua_pushinteger(L,RTC_TimeStruct.RTC_Seconds);
+    lua_settable(L,-3);  
+    return 1;
+}
+
 static luaL_Reg r_ltime[] = {
-    //c�ӿں��������Է���������lua������  
     {"add", ltime_l_add},
     {"remove", ltime_l_remove},
+    {"time", ltime_time},
     {NULL, NULL}
 };
 
@@ -108,3 +136,30 @@ LUAMOD_API int luaopen_ltime (lua_State *L) {
 //    return 2;  
 //}  
 
+
+//int func_return_table(lua_State *L)  
+//{  
+// lua_newtable(L);//创建一个表格，放在栈顶  
+// lua_pushstring(L, "mydata");//压入key  
+// lua_pushnumber(L,66);//压入value  
+// lua_settable(L,-3);//弹出key,value，并设置到table里面去  
+// lua_pushstring(L, "subdata");//压入key  
+// lua_newtable(L);//压入value,也是一个table  
+// lua_pushstring(L, "mydata");//压入subtable的key  
+// lua_pushnumber(L,53);//value  
+// lua_settable(L,-3);//弹出key,value,并设置到subtable  
+// lua_settable(L,-3);//这时候父table的位置还是-3,弹出key,value(subtable),并设置到table里去  
+// lua_pushstring(L, "mydata2");//同上  
+// lua_pushnumber(L,77);  
+// lua_settable(L,-3);  
+// return 1;//堆栈里现在就一个table.其他都被弹掉了。  
+//}  
+//返回的表结构是:
+//{
+// "mydata" = 66,
+// "mydate2" = 77,
+// "subdata" = 
+// {
+//  "mydata" = 53
+// }
+//}

@@ -16,7 +16,8 @@ extern "C" {
 
 void task_gui_init(void);
 void task_gui_create(void);
-void task_gui_set(uint8_t cmd) ;
+void task_gui_set(uint8_t cmd);
+uint8_t task_gui_get_sleep_flag(void);
 
 #ifdef __cplusplus
 }

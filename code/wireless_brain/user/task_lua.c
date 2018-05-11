@@ -52,7 +52,7 @@ void task_lua_create(void) {
 static void task_lua(void *pvParameters) {
     for(;;) {
         if (luaL_dofile(L,"1:test.lua")!=0) {
-            ui_debug_set_show(lua_tostring(L,-1),LV_COLOR_HEX3(0x000));
+            ui_debug_set_show(lua_tostring(L,-1));
         }
         vTaskDelay( 5000/portTICK_RATE_MS );  
     }

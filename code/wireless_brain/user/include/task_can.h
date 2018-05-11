@@ -26,6 +26,7 @@ typedef enum {
     DO_8 = 0,
     DO_4 = 1,
     DI_4 = 2,
+    HOLD = 3,
 } device_type;
 
 /* ÏûÏ¢ÆµµÀ */

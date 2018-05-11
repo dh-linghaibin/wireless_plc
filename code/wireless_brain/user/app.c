@@ -53,6 +53,8 @@
 #include "task_gui.h"
 #include "task_lua.h"
 
+#include "persistence.h"
+
 const char logo[] = "\
 /*\n\
  * This file is part of the \n\
@@ -82,24 +84,25 @@ int main(void) {
     task_can_init();    /* can初始化 */
     task_gui_init();    /* gui初始化 */
     task_file_init();   /* 文件系统初始化 */
-
+    persistence_init(); /* 数据初始化 */
     {
         uint8_t buf2[1];
-        W25QXX_Read(buf2,25100,1);
+        persistence_get_pro_flag(buf2);
         if(buf2[0] == 0x55) {
             uint8_t buf[1];
             buf[0] = 0x00;
-            W25QXX_Write(buf,25100,1);
-            
+            persistence_set_pro_flag(buf);
             {
                 lv_obj_t * btn1 = lv_btn_create(lv_scr_act(), NULL);
                 lv_btn_set_action(btn1, LV_BTN_ACTION_CLICK, btn_click_action);
                 lv_obj_t * but_name = lv_label_create(btn1, NULL);
-                lv_label_set_text(but_name, "OK");
+                lv_label_set_text(but_name, "更新完成");
+                lv_obj_set_size(btn1, LV_HOR_RES/2, LV_VER_RES/2);
+                lv_obj_align(btn1,NULL ,LV_ALIGN_CENTER,0,0);
             }
             
             USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
-            delay_ms(1000);
+            delay_ms(800);
             while(1) {
                 delay_ms(5);
                 lv_tick_inc(5);
@@ -107,7 +110,6 @@ int main(void) {
                 lv_task_handler();
             }
         }
-        printf("%s \n",buf2);
     }
 
     rs485_init();

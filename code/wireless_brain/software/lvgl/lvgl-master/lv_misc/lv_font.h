@@ -146,6 +146,9 @@ const int16_t lv_font_get_width_sparse(const lv_font_t * font, uint32_t unicode_
  *****************************/
 
 /*10 px */
+LV_FONT_DECLARE(sy_china);
+LV_FONT_DECLARE(arial_ascii_20);
+
 #if USE_LV_FONT_DEJAVU_10
 LV_FONT_DECLARE(lv_font_dejavu_10);
 #endif

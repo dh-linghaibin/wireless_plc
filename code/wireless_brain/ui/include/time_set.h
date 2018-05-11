@@ -12,8 +12,8 @@
 extern "C" {
 #endif
 
-#define WIN_BTN_HEIGHT		(50)
-#define WIN_INNER_HEIGHT	(LV_VER_RES-WIN_BTN_HEIGHT-20)
+#define WIN_BTN_HEIGHT      (40)
+#define WIN_INNER_HEIGHT    (LV_VER_RES-WIN_BTN_HEIGHT-20)
 
 void time_set_create(void);
 

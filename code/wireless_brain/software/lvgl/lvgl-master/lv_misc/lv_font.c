@@ -49,6 +49,8 @@ typedef struct {
  */
 void lv_font_init(void)
 {
+    lv_font_add(&sy_china, &lv_font_symbol_20);
+    lv_font_add(&lv_font_symbol_20, &lv_font_dejavu_20);
     /*DEJAVU 10*/
 #if USE_LV_FONT_DEJAVU_10 != 0
     lv_font_add(&lv_font_dejavu_10, NULL);
@@ -82,7 +84,7 @@ void lv_font_init(void)
 
     /*DEJAVU 20*/
 #if USE_LV_FONT_DEJAVU_20 != 0
-    lv_font_add(&lv_font_dejavu_20, NULL);
+    //lv_font_add(&lv_font_dejavu_20, NULL);
 #endif
 
 #if USE_LV_FONT_DEJAVU_20_LATIN_SUP != 0
@@ -104,7 +106,7 @@ void lv_font_init(void)
     /*SYMBOL 20*/
 #if USE_LV_FONT_SYMBOL_20 != 0
 #if USE_LV_FONT_DEJAVU_20 != 0
-    lv_font_add(&lv_font_symbol_20, &lv_font_dejavu_20);
+    //lv_font_add(&lv_font_symbol_20, &lv_font_dejavu_20);
 #else
     lv_font_add(&lv_font_symbol_20, NULL);
 #endif
