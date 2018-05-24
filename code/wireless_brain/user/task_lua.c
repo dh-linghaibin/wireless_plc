@@ -46,7 +46,7 @@ void task_lua_set(bool cmd) {
 
 void task_lua_create(void) {
      xTaskCreate( task_lua,"lua", 3072, NULL, tskIDLE_PRIORITY+3, &xhandle_lua );  
-     xTaskCreate( task_lua_tic,"lua", 512, NULL, tskIDLE_PRIORITY+3, &xhandle_lua_tic );  
+     xTaskCreate( task_lua_tic,"lua", 1024, NULL, tskIDLE_PRIORITY+3, &xhandle_lua_tic );  
 }
 
 static void task_lua(void *pvParameters) {
@@ -61,7 +61,7 @@ static void task_lua(void *pvParameters) {
 static void task_lua_tic(void *pvParameters) {
     for(;;) {
         ltime_loop(L);
-        levent_loop(L);
+        //levent_loop(L);
         vTaskDelay( 1/portTICK_RATE_MS );  
     }
 }

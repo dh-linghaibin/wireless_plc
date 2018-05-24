@@ -6,6 +6,8 @@ ii = 0;
 ltime.add(2000,function () --的速度得到
     print("\f21time.."..ii)
     ii = ii+1
+    time = ltime.time() --获取系统时间 time 是一个table表
+    print("年"..time.year.."月"..time.month.."日"..time.date.."时"..time.hour.."分"..time.min.."秒"..time.sec)
 end)
 
 levent.add(device.DI_4,20,0,0,function ()
@@ -30,6 +32,8 @@ end)
 
 while true do
     equipment.delay(1000)
+    time = ltime.time() --获取系统时间 time 是一个table表
+    print("年"..time.year.."月"..time.month.."日"..time.date.."时"..time.hour.."分"..time.min.."秒"..time.sec)
 end
 
 

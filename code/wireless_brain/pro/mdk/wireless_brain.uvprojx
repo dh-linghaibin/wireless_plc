@@ -476,6 +476,21 @@
               <FileType>1</FileType>
               <FilePath>..\..\ui\lock_un.c</FilePath>
             </File>
+            <File>
+              <FileName>ui_password.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\ui_password.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_home.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\img_home.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_can_set.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\ui\ui_can_set.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -610,6 +625,11 @@
               <FileName>rs485.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\device\rs485.c</FilePath>
+            </File>
+            <File>
+              <FileName>iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\iwdg.c</FilePath>
             </File>
           </Files>
         </Group>

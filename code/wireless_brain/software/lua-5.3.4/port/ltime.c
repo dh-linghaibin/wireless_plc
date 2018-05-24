@@ -7,6 +7,12 @@
 
 #include "ltime.h"
 #include "l_list.h"
+#include "ui_debug.h"
+//freertos
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
 
 static l_list_t * time_head; 
 static uint16_t l_tic = 0;
@@ -54,10 +60,19 @@ void ltime_loop(lua_State * L) {
                 time->tic_ms = l_tic+time->time_ms;
             }
             /*do something*/
+            //portENTER_CRITICAL();
+           // taskENTER_CRITICAL();
+            printf("id %d\n",time->l_id);
             lua_rawgeti(L, LUA_REGISTRYINDEX, time->l_id);
-//            lua_pushstring(L, pack);
-//            lua_pushnumber(L, on_create);
             lua_pcall(L, 0, 0, 0);
+            //int ret = lua_call(L, 0, 0);
+//            if ( ret != 0 ) {
+//                int t = lua_type(L, -1);
+//                ui_debug_set_show(lua_tostring(L,-1));
+//                lua_pop(L, 1);  
+//            }
+           // taskEXIT_CRITICAL();
+            //portEXIT_CRITICAL();
         }
     }
 }
@@ -82,9 +97,10 @@ static int ltime_l_remove(lua_State *L) {
     return 0;
 }
 
+static RTC_TimeTypeDef RTC_TimeStruct;
+static RTC_DateTypeDef RTC_DateStruct;
+
 static int ltime_time(lua_State *L) {
-    RTC_TimeTypeDef RTC_TimeStruct;
-    RTC_DateTypeDef RTC_DateStruct;
     RTC_GetTime(RTC_Format_BIN,&RTC_TimeStruct);
     RTC_GetDate(RTC_Format_BIN, &RTC_DateStruct);
     

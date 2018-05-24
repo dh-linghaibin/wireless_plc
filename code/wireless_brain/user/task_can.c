@@ -9,6 +9,8 @@
 #include "task_modbus.h"
 #include "can.h"
 #include "stdio.h"
+#include "iwdg.h"
+#include "persistence.h"
 
 static void task_can(void *pvParameters);
 static void task_can_send(void *pvParameters);
@@ -41,12 +43,14 @@ void task_can_init(void) {
     static device_online * online;
     list_init(online_head); //初始化链表
     //can1_init(CAN_SJW_1tq,CAN_BS2_6tq,CAN_BS1_7tq,6,CAN_Mode_Normal); /* 初始化can 500k */
-    can1_init(BAUD_RATE_50K,CAN_Mode_Normal); /* 初始化can 50k */
+    uint8_t but = 0;
+    persistence_get_can_adr(&but);
+    can1_init(but,CAN_Mode_Normal); /* 初始化can 50k */
 }
 
 void task_can_create(void) {
     xTaskCreate( task_can,"task_can", 1024, NULL, tskIDLE_PRIORITY+3, NULL );
-    xTaskCreate( task_can_send,"task_send", 1024, NULL, tskIDLE_PRIORITY+3, NULL );
+    xTaskCreate( task_can_send,"task_send", 512, NULL, tskIDLE_PRIORITY+3, NULL );
 }
 
 xQueueHandle task_can_get_queue(void) {
@@ -82,6 +86,8 @@ static void vtimer_callback( TimerHandle_t xTimer ) {
     tx_msg.Data[0] = RADIO_ASK;
     tx_msg.DLC = 1;
     can1_send_msg(tx_msg);
+    
+    iwdg_feed();
 }
 
 static void task_can(void *pvParameters) {

@@ -55,6 +55,8 @@
 
 #include "persistence.h"
 
+#include "iwdg.h"
+
 const char logo[] = "\
 /*\n\
  * This file is part of the \n\
@@ -81,10 +83,12 @@ int main(void) {
     uart_init(115200); /* 串口初始化 */
     printf("%s",logo); 
     rtc_init();         /* 时钟初始化 */
-    task_can_init();    /* can初始化 */
-    task_gui_init();    /* gui初始化 */
     task_file_init();   /* 文件系统初始化 */
     persistence_init(); /* 数据初始化 */
+    task_can_init();    /* can初始化 */
+    task_gui_init();    /* gui初始化 */
+    
+    iwdg_init(4,2000);
     {
         uint8_t buf2[1];
         persistence_get_pro_flag(buf2);
@@ -102,8 +106,9 @@ int main(void) {
             }
             
             USBD_Init(&USB_OTG_dev,USB_OTG_FS_CORE_ID,&USR_desc,&USBD_MSC_cb,&USR_cb);
-            delay_ms(800);
+            delay_ms(1800);
             while(1) {
+                iwdg_feed();
                 delay_ms(5);
                 lv_tick_inc(5);
                 xpt2046_loop();

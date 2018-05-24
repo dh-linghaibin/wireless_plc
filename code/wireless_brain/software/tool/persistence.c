@@ -7,12 +7,17 @@
  
 #include "persistence.h"
 #include "w25qxx.h"
+#include "can.h"
  
 void persistence_init(void) {
     uint8_t dat[6];
     persistence_get_res(dat);
     if( 0x51 != dat[0] ) {
         dat[0] = 0x51;
+        
+        dat[0] = BAUD_RATE_50K;
+        persistence_set_can_adr(dat);
+        
         persistence_set_res(dat);
         dat[0] = 192;
         dat[1] = 168;
@@ -42,6 +47,14 @@ void persistence_set_res(uint8_t * flag) {
 
 void persistence_get_res(uint8_t * flag) {
     W25QXX_Read(flag,PA_RES,1);
+}
+
+void persistence_set_can_adr(uint8_t * can_adr) {
+    W25QXX_Write(can_adr,PA_CAN_ADR,1);
+}
+
+void persistence_get_can_adr(uint8_t * can_adr) {
+    W25QXX_Read(can_adr,PA_CAN_ADR,1);
 }
 
 void persistence_set_pro_flag(uint8_t * flag) {

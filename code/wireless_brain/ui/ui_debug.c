@@ -115,5 +115,6 @@ void ui_debug_set_show(const char * text) {
         if(task_gui_get_sleep_flag() == 0) {
             lv_ta_add_text(label,text);
         }
+        //printf("%s",text);
     }
 }

@@ -9,7 +9,7 @@
 #include "task_can.h"
 #include "task_modbus.h"
 
-//设置Holding
+
 static int equipment_holeing_set(lua_State *L){
     int address = luaL_checkinteger(L, 1);
     int val = luaL_checkinteger(L, 2);
@@ -22,7 +22,7 @@ static int equipment_holeing_get(lua_State *L){
     lua_pushinteger(L, task_modbus_get_holding(address));
     return 1;
 }
-//设置线圈Coils
+
 static int equipment_coils_set(lua_State *L){
     int address = luaL_checkinteger(L, 1);
     int num = luaL_checkinteger(L, 2);
@@ -34,8 +34,7 @@ static int equipment_coils_set(lua_State *L){
     send_msg.data[0] = num;
     send_msg.data[1] = val;
     task_can_set(send_msg);
-    vTaskDelay(5 / portTICK_RATE_MS); /* 操作限制 不允许高速 */
-    //printf("设置线圈 %d\n",address);
+    vTaskDelay(5 / portTICK_RATE_MS); 
     return 0;
 }
 
@@ -43,7 +42,7 @@ static int equipment_coils_get(lua_State *L){
     int i = luaL_checkinteger(L, -1);
     return 0;
 }
-//读取Input
+
 static int equipment_input_get(lua_State *L) {
     int address = luaL_checkinteger(L, 1);
     uint8_t val = 0;
@@ -56,7 +55,7 @@ static int equipment_input_get(lua_State *L) {
     lua_pushinteger(L, val);
     return 1;
 }
-//延时
+
 static int equipment_delay(lua_State *L) {
     int ms = luaL_checkinteger(L, -1);
     vTaskDelay(ms / portTICK_RATE_MS);
@@ -64,7 +63,6 @@ static int equipment_delay(lua_State *L) {
 }
 
 static luaL_Reg equipment[] = {
-    //c接口函数都可以放在这里在lua中声明  
     {"holeing_set", equipment_holeing_set},
     {"holeing_get", equipment_holeing_get},
     {"coils_set",   equipment_coils_set  },

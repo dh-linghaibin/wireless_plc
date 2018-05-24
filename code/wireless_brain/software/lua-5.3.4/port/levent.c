@@ -8,12 +8,18 @@
 #include "levent.h"
 #include "l_list.h"
 #include "task_modbus.h"
+#include "ui_debug.h"
+//freertos
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
 
-static l_list_t * event_head; /* 链表头 */
+static l_list_t * event_head;
  
 void levent_init(void) {
-    event_head = (l_list_t *)l_malloc(sizeof(l_list_t)); /* 创建头节点 */
-    list_init(event_head); //初始化链表
+    event_head = (l_list_t *)l_malloc(sizeof(l_list_t)); 
+    list_init(event_head); 
 }
 
 uint16_t levent_add(int l_id, device_type type, uint16_t address, uint8_t num, uint16_t val) {
@@ -26,7 +32,7 @@ uint16_t levent_add(int l_id, device_type type, uint16_t address, uint8_t num, u
     event->l_id = l_id;
     event->flag = 0;
     event->id = list_len(event_head);
-    list_append(event_head, event); //追加结点
+    list_append(event_head, event); 
     //printf("add event \n");
     return event->id;
 }
@@ -47,8 +53,16 @@ void levent_loop(lua_State * L) {
                 if(task_modbus_get_holding(event->address) == event->val) {
                     if(event->flag == 0) {
                         event->flag = 1;
+                     //   taskENTER_CRITICAL();
                         lua_rawgeti(L, LUA_REGISTRYINDEX, event->l_id);
-                        lua_pcall(L, 0, 0, 0);
+                        lua_call(L, 0, 0);
+//                        int ret = lua_pcall(L, 0, 0, 0);
+//                        if ( ret != 0 ) {
+//                            int t = lua_type(L, -1);
+//                            ui_debug_set_show(lua_tostring(L,-1));
+//                            lua_pop(L, 1);  
+//                        }
+                      //  taskEXIT_CRITICAL();
                     }
                 } else {
                     event->flag = 0;
@@ -64,8 +78,16 @@ void levent_loop(lua_State * L) {
                 if(task_modbus_get_input_bit(event->address,event->num) == event->val) {
                     if(event->flag == 0) {
                         event->flag = 1;
+                       // taskENTER_CRITICAL();
                         lua_rawgeti(L, LUA_REGISTRYINDEX, event->l_id);
-                        lua_pcall(L, 0, 0, 0);
+                        lua_call(L, 0, 0);
+//                        int ret = lua_pcall(L, 0, 0, 0);
+//                        if ( ret != 0 ) {
+//                            int t = lua_type(L, -1);
+//                            ui_debug_set_show(lua_tostring(L,-1));
+//                            lua_pop(L, 1);  
+//                        }
+                       // taskEXIT_CRITICAL();
                     }
                 } else {
                     event->flag = 0;
@@ -99,13 +121,11 @@ static int levent_l_remove(lua_State *L) {
 }
 
 static luaL_Reg r_levent[] = {
-    //c接口函数都可以放在这里在lua中声明  
     {"add", levent_l_add},
     {"remove", levent_l_remove},
     {NULL, NULL}
 };
 
-//定义宏用来方便使用设置键值  
 #define LUA_ENUM(L, val) \
   lua_pushliteral(L, #val); \
   lua_pushnumber(L, val); \
@@ -113,14 +133,12 @@ static luaL_Reg r_levent[] = {
   
   
 void register_enum_device(lua_State* L)  
-{   //创建一个enumTable,用于存储Enum的所有枚举。通过枚举名称=枚举值  
+{
     lua_newtable(L);  
-    //设置 enumTable["Monday"]=Monday  
     LUA_ENUM(L, DO_8);
     LUA_ENUM(L, DO_4);
     LUA_ENUM(L, DI_4);
     LUA_ENUM(L, HOLD);
-    //把enumTable存在在_G 全局环境(线程环境)中,以枚举名称作为键  
     lua_setglobal(L,"device");
 }  
 

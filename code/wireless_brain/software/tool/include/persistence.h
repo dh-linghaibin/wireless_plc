@@ -17,17 +17,22 @@ extern "C" {
 #define BASED_ADDRESS 26100
 
 typedef enum {
-    PA_RES = BASED_ADDRESS+1, //1
+    PA_RES      = BASED_ADDRESS+1, //1
+    PA_CAN_ADR  = BASED_ADDRESS+2,//1
     PA_PRO_FLAG = BASED_ADDRESS+19, //1
-    PA_IP = BASED_ADDRESS+20,  //4
-    PA_MASK = BASED_ADDRESS+24, //4
-    PA_LOCK = BASED_ADDRESS+28, //1
-    PA_PAS = BASED_ADDRESS+29, //6
+    PA_IP       = BASED_ADDRESS+20,  //4
+    PA_MASK     = BASED_ADDRESS+24, //4
+    PA_LOCK     = BASED_ADDRESS+28, //1
+    PA_PAS      = BASED_ADDRESS+29, //6
 } per_adr;
 
 void persistence_init(void);
 void persistence_set_res(uint8_t * flag);
 void persistence_get_res(uint8_t * flag);
+
+void persistence_set_can_adr(uint8_t * can_adr);
+void persistence_get_can_adr(uint8_t * can_adr);
+
 void persistence_set_pro_flag(uint8_t * flag);
 void persistence_get_pro_flag(uint8_t * flag);
 void persistence_set_ip(uint8_t * ip);

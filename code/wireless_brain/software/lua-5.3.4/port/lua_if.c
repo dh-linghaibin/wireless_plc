@@ -269,8 +269,7 @@ int mos_fseek(FIL *fp, long o, int w)
         return EOF;
     }
     
-    switch (w)
-    {
+    switch (w) {
         case SEEK_SET:
             res = f_lseek(fp, o);
             break;
@@ -292,16 +291,14 @@ int mos_fseek(FIL *fp, long o, int w)
     }
 }
 
-long mos_ftell(FIL * fp)
-{
+long mos_ftell(FIL * fp) {
     IS_STD_STREAM(fp) {
         return 0;
     }
     return f_tell(fp);
 }
 
-int mos_feof(FIL * fp)
-{
+int mos_feof(FIL * fp) {
     IS_STD_STREAM(fp) {
         return 0;
     }

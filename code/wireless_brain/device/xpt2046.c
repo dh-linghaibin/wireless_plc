@@ -98,19 +98,20 @@ static lv_indev_data_t poin;
 void EXTI3_IRQHandler(void) {
     if(EXTI_GetITStatus(EXTI_Line3)!=RESET) {
         //printf("up\n");
-        XPT_CS_RESET;
-        poin.point.x = xpt2046_get_y();
-        poin.point.y = 240-xpt2046_get_x();
-        XPT_CS_SET;
-        if( poin.point.x < 4000) {
-            poin.state = LV_INDEV_STATE_PR;
-        } else {
-            poin.state = LV_INDEV_STATE_REL;
-        }
+//        XPT_CS_RESET;
+//        poin.point.x = xpt2046_get_y();
+//        poin.point.y = 240-xpt2046_get_x();
+//        XPT_CS_SET;
+//        if( poin.point.x < 4000) {
+//            poin.state = LV_INDEV_STATE_PR;
+//        } else {
+//            poin.state = LV_INDEV_STATE_REL;
+//        }
         EXTI_ClearITPendingBit(EXTI_Line3);
     }
 }
 
+extern uint32_t sleep_flag_count;
 
 void xpt2046_loop(void) {
     static uint16_t test = 0;
@@ -123,6 +124,9 @@ void xpt2046_loop(void) {
         poin.point.y = 240-xpt2046_get_x();
         XPT_CS_SET;
         if( poin.point.x < 4000) {
+            if(sleep_flag_count < 8000) {
+                sleep_flag_count = 0;
+            }
             poin.state = LV_INDEV_STATE_PR;
         } else {
             poin.state = LV_INDEV_STATE_REL;

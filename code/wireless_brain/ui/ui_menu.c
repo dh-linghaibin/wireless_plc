@@ -10,11 +10,14 @@
 #include "time_set.h"
 #include "ui_debug.h"
 #include "ui_net_set.h"
+#include "ui_can_set.h"
 
 #include "persistence.h"
+#include "ui_password.h"
 #include <string.h>
 #include <stdlib.h>
 #include "buzzer.h"
+#include "can.h"
 
 extern const lv_img_t benchmark_bg;
 extern const lv_img_t l_back;
@@ -23,6 +26,7 @@ extern const lv_img_t img_cpu;
 extern const lv_img_t img_rss;
 extern const lv_img_t lock_open;
 extern const lv_img_t lock_un;
+extern const lv_img_t img_home;
 
 static uint8_t lock_flag = 0; /* 操作锁 */
 
@@ -41,6 +45,12 @@ static lv_res_t btn_set_action(lv_obj_t *obj) {
 static lv_res_t btn_set_net(lv_obj_t *obj) {
     if( 0 == lock_flag ) {
         ui_net_set_create();
+    }
+}
+
+static lv_res_t btn_set_can(lv_obj_t *obj) {
+    if( 0 == lock_flag ) {
+        ui_can_set_create();
     }
 }
 
@@ -86,40 +96,19 @@ static lv_res_t btnm_action(lv_obj_t * btnm, const char *txt) {
     return LV_RES_OK; /*Return OK because the button matrix is not deleted*/
 }
 
-static lv_style_t style_bg;
-/*Create 2 button styles*/
-static lv_style_t style_btn_rel;
-static lv_style_t style_btn_pr;
+static lv_res_t btn_click_change(lv_obj_t * btn) {
+    ui_password_change();
+    return LV_RES_OK; /*Return OK if the button is not deleted*/
+}
 
 void ui_pas_create(void) {
     pas_win = lv_win_create(lv_scr_act(),NULL);
     lv_win_add_btn(pas_win,SYMBOL_CLOSE,paw_close);
-    lv_win_set_title(pas_win,"请输入密码");
+    lv_win_set_title(pas_win,"输入密码");
     lv_win_set_btn_size(pas_win,30);
-    
-    lv_style_copy(&style_bg, &lv_style_plain);
-    style_bg.body.main_color = LV_COLOR_SILVER;
-    style_bg.body.grad_color = LV_COLOR_SILVER;
-    style_bg.body.padding.hor = 0;
-    style_bg.body.padding.ver = 0;
-    style_bg.body.padding.inner = 0;
-
-    lv_style_copy(&style_btn_rel, &lv_style_btn_rel);
-    style_btn_rel.body.main_color = LV_COLOR_MAKE(0x30, 0x30, 0x30);
-    style_btn_rel.body.grad_color = LV_COLOR_BLACK;
-    style_btn_rel.body.border.color = LV_COLOR_SILVER;
-    style_btn_rel.body.border.width = 1;
-    style_btn_rel.body.border.opa = LV_OPA_50;
-    style_btn_rel.body.radius = 0;
-
-    lv_style_copy(&style_btn_pr, &style_btn_rel);
-    style_btn_pr.body.main_color = LV_COLOR_MAKE(0x55, 0x96, 0xd8);
-    style_btn_pr.body.grad_color = LV_COLOR_MAKE(0x37, 0x62, 0x90);
-    style_btn_pr.text.color = LV_COLOR_MAKE(0xbb, 0xd5, 0xf1);
     
     /*Create a one lined test are with password mode*/
     pas = lv_ta_create(pas_win, NULL);
-     lv_ta_set_style(pas,LV_TA_STYLE_BG, &style_bg);           /*Apply the background style*/
     lv_obj_set_pos (pas,50, 0);
     lv_ta_set_one_line(pas, true);
     lv_ta_set_cursor_type(pas, LV_CURSOR_LINE);
@@ -130,11 +119,20 @@ void ui_pas_create(void) {
     lv_obj_t * key_board = lv_btnm_create(pas_win, NULL);
     lv_btnm_set_map(key_board, btnm_map);
     lv_btnm_set_action(key_board, btnm_action);
-    lv_btnm_set_style(key_board, LV_BTNM_STYLE_BG, &style_bg);
-    lv_btnm_set_style(key_board, LV_BTNM_STYLE_BTN_REL, &style_btn_rel);
-    lv_btnm_set_style(key_board, LV_BTNM_STYLE_BTN_PR, &style_btn_pr);
-    lv_obj_set_size(key_board,300,120);
+    lv_obj_set_size(key_board,200,100);
     lv_obj_align(key_board,pas, LV_ALIGN_OUT_BOTTOM_MID ,0,5);
+    
+    lv_obj_t* btn1 = lv_btn_create(pas_win, NULL);
+    lv_obj_set_size(btn1, 100, 40);
+    lv_obj_align(btn1, NULL, LV_ALIGN_IN_BOTTOM_MID, 40, 30);
+    lv_btn_set_action(btn1, LV_BTN_ACTION_CLICK, btn_click_change);
+    
+    lv_obj_t* label = lv_label_create(btn1, NULL);
+    lv_label_set_text(label, "#ffff00 修改密码#");
+    lv_label_set_anim_speed(label, 30);
+    lv_label_set_long_mode(label, LV_LABEL_LONG_DOT);
+    lv_label_set_align(label, LV_LABEL_ALIGN_CENTER);
+    lv_label_set_recolor(label, true);
 }
 
 static lv_res_t btn_set_lock(lv_obj_t *obj) {
@@ -184,7 +182,7 @@ void ui_menu_create(void) {
 
     for(uint8_t j=0;j<1;j++)
     {
-        for(uint8_t i=0;i<3;i++)
+        for(uint8_t i=0;i<4;i++)
         {
             img[i+j*3] = lv_img_create(scr, NULL);
 //            lv_img_set_src(img[i+j*3], &img_camera);
@@ -201,16 +199,17 @@ void ui_menu_create(void) {
     lv_img_set_src(img[0], &img_alarm);
     lv_img_set_src(img[1], &img_cpu);
     lv_img_set_src(img[2], &img_rss);
+    lv_img_set_src(img[3], &img_home);
 //    lv_img_set_src(img[3], &img_rss);
 //    lv_img_set_src(img[4], &img_music);
 //    lv_img_set_src(img[5], &img_home);
 //    lv_img_set_src(img[0], &img_alarm);
-//    lv_img_set_src(img[7], &img_sd);
-//    lv_img_set_src(img[8], &img_cpu);
+    
+//    lv_img_set_src(img[8], &img_set);
     lv_btn_set_action(btn[0],LV_BTN_ACTION_CLICK,btn_alarm_action);
     lv_btn_set_action(btn[1],LV_BTN_ACTION_CLICK,btn_set_action);
     lv_btn_set_action(btn[2],LV_BTN_ACTION_CLICK,btn_set_net);
-    
+    lv_btn_set_action(btn[3],LV_BTN_ACTION_CLICK,btn_set_can);
     
     uint8_t g_ip[4];
     persistence_get_ip(g_ip);
@@ -236,6 +235,40 @@ void ui_menu_create(void) {
     sprintf(buf, "时间:%d-%d-%d-%d-%d",RTC_DateStruct.RTC_Year,RTC_DateStruct.RTC_Month,RTC_DateStruct.RTC_Date,RTC_TimeStruct.RTC_Hours,RTC_TimeStruct.RTC_Minutes);
     lv_label_set_text(time_show,buf);
     lv_obj_align(time_show,mask_show,LV_ALIGN_OUT_BOTTOM_LEFT,0,5);
+    
+    lv_obj_t * can_show = lv_label_create(lv_scr_act(),ip_show);
+    persistence_get_can_adr(g_ip);
+    switch(g_ip[0]) {
+        case BAUD_RATE_10K: {
+            sprintf(buf, "CAN:10K");
+        } break;
+        case BAUD_RATE_20K: {
+            sprintf(buf, "CAN:20K");
+        } break;
+        case BAUD_RATE_50K: {
+            sprintf(buf, "CAN:50K");
+        } break;
+        case BAUD_RATE_100K: {
+            sprintf(buf, "CAN:100K");
+        } break;
+        case BAUD_RATE_125K: {
+            sprintf(buf, "CAN:125K");
+        } break;
+        case BAUD_RATE_250K: {
+            sprintf(buf, "CAN:250K");
+        } break;
+        case BAUD_RATE_500K: {
+            sprintf(buf, "CAN:500K");
+        } break;
+        case BAUD_RATE_1000K: {
+            sprintf(buf, "CAN:1000K");
+        } break;
+        default: {
+            sprintf(buf, "CAN:50K");
+        } break;
+    }
+    lv_label_set_text(can_show,buf);
+    lv_obj_align(can_show,time_show,LV_ALIGN_OUT_BOTTOM_LEFT,0,5);
     
     lv_obj_t * btn_lock;
     img_lock = lv_img_create(scr, NULL);
