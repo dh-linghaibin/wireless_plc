@@ -10,12 +10,12 @@ typedef struct {
 } Stdlcan_pin_TypeDef;
 
 typedef enum {
-	B_250K = 5,
-    B_125K = 4,
-    B_50K = 3,
-    B_20K = 2,
-    B_10K = 1,
-    B_5K = 0,
+	B_250K = 4,
+    B_125K = 3,
+    B_50K = 2,
+    B_20K = 1,
+    B_10K = 0,
+    B_5K = 6,
 } btl_e;
 
 

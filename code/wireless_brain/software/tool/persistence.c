@@ -14,11 +14,11 @@ void persistence_init(void) {
     persistence_get_res(dat);
     if( 0x51 != dat[0] ) {
         dat[0] = 0x51;
+        persistence_set_res(dat);
         
         dat[0] = BAUD_RATE_50K;
         persistence_set_can_adr(dat);
         
-        persistence_set_res(dat);
         dat[0] = 192;
         dat[1] = 168;
         dat[2] = 1;

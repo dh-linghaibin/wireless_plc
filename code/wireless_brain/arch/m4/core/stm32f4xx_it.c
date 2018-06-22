@@ -64,6 +64,7 @@ void HardFault_Handler(void)
 {
     /* Go to infinite loop when Hard Fault exception occurs */
     printf("HardFault_Handler \n");
+    buzzer_set(1000);
     while (1)
     {
     }

@@ -14,8 +14,6 @@
 #include "semphr.h"
 #include "timers.h"
 
-static TimerHandle_t xtime_buzz; /* 定义句柄 */
-
 void buzzer_init(void) {
     GPIO_InitTypeDef GPIO_InitStructure;
     TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -57,33 +55,11 @@ void buzzer_init(void) {
     TIM_SetCompare2(TIM9,0);
 }
 
-// 定时器回调函数格式
-static void buzzer_callback( TimerHandle_t xTimer ) {
-    uint32_t ulTimerID;
-    configASSERT(xTimer);
-    TIM_SetCompare2(TIM9,0);
-    xTimerDelete( xTimer ,0 );
-    xtime_buzz = NULL;
-}
-
 /* 时间 次数 */
 void buzzer_set(uint16_t time,uint8_t fre) {
     // 判断定时器是否处于运行状态
-    if( xTimerIsTimerActive( xtime_buzz ) != pdFALSE ) {
-        xtime_buzz = xTimerCreate("can_tic",         /* 定时器名字 */
-                                  time,             /* 定时器周期,单位时钟节拍 */
-                                  pdTRUE,           /* 周期性 */
-                                  (void *) 0,       /* 定时器ID */
-                                  buzzer_callback); /* 定时器回调函数 */
-
-        if(xtime_buzz == NULL) {
-            /* 没有创建成功，用户可以在这里加入创建失败的处理机制 */
-        } else {
-            /* 启动定时器，系统启动后才开始工作  0 表示不阻塞*/
-            if(xTimerStart(xtime_buzz, 0) == pdPASS) {
-                 TIM_SetCompare2(TIM9,41);
-            }
-        }
-    }
+    TIM_SetCompare2(TIM9,41);
+    delay_ms(time);
+    TIM_SetCompare2(TIM9,0);
 }
 

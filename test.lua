@@ -1,39 +1,18 @@
+log = require "log"
 
-print("123")
+file = io.open("test.lua", "r")
+x = 300
 
-ii = 0;
+log.trace("linghibin"..x)
+log.debug("12")
+log.info(...)
+log.warn(...)
+log.error(...)
+log.fatal(...)
 
-ltime.add(2000,function () --的速度得到
-    print("\f21time.."..ii)
-    ii = ii+1
-    time = ltime.time() --获取系统时间 time 是一个table表
-    print("年"..time.year.."月"..time.month.."日"..time.date.."时"..time.hour.."分"..time.min.."秒"..time.sec)
-end)
+a={"Hello","World";a=1,b=2,z=3,x=10,y=20;"Good","Bye"}  
 
-levent.add(device.DI_4,20,0,0,function ()
-    print("event..1")
-    equipment.coils_set(7,8,0)
-end)
-
-levent.add(device.DI_4,20,0,1,function ()
-    print("event..2")
-    equipment.coils_set(7,8,255)
-end)
-
-levent.add(device.DI_4,20,1,0,function ()
-    print("event..3")
-    equipment.coils_set(7,0,0)
-end)
-
-levent.add(device.DI_4,20,1,1,function ()
-    print("event..4")
-    equipment.coils_set(7,0,1)
-end)
-
-while true do
-    equipment.delay(1000)
-    time = ltime.time() --获取系统时间 time 是一个table表
-    print("年"..time.year.."月"..time.month.."日"..time.date.."时"..time.hour.."分"..time.min.."秒"..time.sec)
-end
-
+for i, v in ipairs(a) do  
+    log.error(v..i.."---linghaibin")  
+end   
 

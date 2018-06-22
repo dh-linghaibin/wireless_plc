@@ -81,21 +81,19 @@ int main(void) {
     buzzer_init(); /* 蜂鸣器初始化 */
     delay_ms(100);
     uart_init(115200); /* 串口初始化 */
-    printf("%s",logo); 
+    //printf("%s",logo); 
     rtc_init();         /* 时钟初始化 */
+    task_gui_init();    /* gui初始化 */
     task_file_init();   /* 文件系统初始化 */
     persistence_init(); /* 数据初始化 */
-    task_can_init();    /* can初始化 */
-    task_gui_init();    /* gui初始化 */
     
-    iwdg_init(4,2000);
+   // iwdg_init(4,4000);
     {
-        uint8_t buf2[1];
-        persistence_get_pro_flag(buf2);
-        if(buf2[0] == 0x55) {
-            uint8_t buf[1];
-            buf[0] = 0x00;
-            persistence_set_pro_flag(buf);
+        uint8_t buf2;
+        persistence_get_pro_flag(&buf2);
+        if(buf2 == 0x55) {
+            uint8_t buf = 0x00;
+            persistence_set_pro_flag(&buf);
             {
                 lv_obj_t * btn1 = lv_btn_create(lv_scr_act(), NULL);
                 lv_btn_set_action(btn1, LV_BTN_ACTION_CLICK, btn_click_action);
@@ -116,13 +114,15 @@ int main(void) {
             }
         }
     }
-
+    delay_ms(1000);
+    task_can_init();    /* can初始化 */
     rs485_init();
     task_lua_init();    /* lua环境初始化 */
     eth_init();         /* 网络初始化 */
     task_modbus_init(); /* modbus 初始化 */
     task_can_create();
     task_gui_create();/* gui任务 */
+    delay_ms(100);
     task_lua_create();/* lua任务 */
     vTaskStartScheduler();
     while(1);

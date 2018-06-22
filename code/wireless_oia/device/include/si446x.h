@@ -14,6 +14,7 @@ extern "C" {
 
 #include "gd32f10x.h"
 #include "SI446X_defs.h"
+#include "delay.h"
 
 #define GLOBAL_XO_TUNE(x)                 SI446X_SET_PROPERTY_1(0x0000, x)
 #define GLOBAL_CLK_CFG(x)                 SI446X_SET_PROPERTY_1(0x0001, x)

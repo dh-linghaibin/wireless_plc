@@ -47,7 +47,7 @@ void ltime_remove(uint16_t time_id) {
 void ltime_loop(lua_State * L) {
     ltime * time;
     if(l_tic < 0xffff) {
-        l_tic++;
+        l_tic+=10;
     } else {
         l_tic = 0;
     }
@@ -60,19 +60,9 @@ void ltime_loop(lua_State * L) {
                 time->tic_ms = l_tic+time->time_ms;
             }
             /*do something*/
-            //portENTER_CRITICAL();
-           // taskENTER_CRITICAL();
             printf("id %d\n",time->l_id);
             lua_rawgeti(L, LUA_REGISTRYINDEX, time->l_id);
             lua_pcall(L, 0, 0, 0);
-            //int ret = lua_call(L, 0, 0);
-//            if ( ret != 0 ) {
-//                int t = lua_type(L, -1);
-//                ui_debug_set_show(lua_tostring(L,-1));
-//                lua_pop(L, 1);  
-//            }
-           // taskEXIT_CRITICAL();
-            //portEXIT_CRITICAL();
         }
     }
 }

@@ -15,11 +15,11 @@
 */
 static void rcu_config(void) {
     rcu_periph_clock_enable(RCU_GPIOA);
-	rcu_periph_clock_enable(RCU_GPIOB);
+    rcu_periph_clock_enable(RCU_GPIOB);
     rcu_periph_clock_enable(RCU_AF);
-	gpio_pin_remap_config(GPIO_SWJ_SWDPENABLE_REMAP,ENABLE);
-	rcu_periph_clock_enable(RCU_TIMER1);
-	rcu_periph_clock_enable(RCU_TIMER2);
+    gpio_pin_remap_config(GPIO_SWJ_SWDPENABLE_REMAP,ENABLE);
+    rcu_periph_clock_enable(RCU_TIMER1);
+    rcu_periph_clock_enable(RCU_TIMER2);
 }
 /**
     \brief      configure the GPIO ports
@@ -29,14 +29,14 @@ static void rcu_config(void) {
   */
 static void gpio_config(void)
 {
-	gpio_pin_remap_config(GPIO_TIMER2_PARTIAL_REMAP,ENABLE);
+    gpio_pin_remap_config(GPIO_TIMER2_PARTIAL_REMAP,ENABLE);
     /*Configure PB4 PB5 PA2 PA1 PA3 PA0 pwm  TM3_CH1 TM3_CH2 TM2_CH3 TM2_CH2 TM2_CH4 TM2_CH1*/
     gpio_init(GPIOB, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_4);
     gpio_init(GPIOB, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_5);
     gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_2);
-	gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_1);
-	gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_3);
-	gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_0);
+    gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_1);
+    gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_3);
+    gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_0);
 }
 
 /**
@@ -61,7 +61,7 @@ static void timer_config(void)
     timer_deinit(TIMER1);
 
     /* TIMER1 configuration */
-    timer_initpara.prescaler         = 107;
+    timer_initpara.prescaler         = 49;
     timer_initpara.alignedmode       = TIMER_COUNTER_EDGE;
     timer_initpara.counterdirection  = TIMER_COUNTER_UP;
     timer_initpara.period            = 4095;
@@ -80,26 +80,26 @@ static void timer_config(void)
     timer_channel_output_config(TIMER1,TIMER_CH_0,&timer_ocintpara);
     timer_channel_output_config(TIMER1,TIMER_CH_1,&timer_ocintpara);
     timer_channel_output_config(TIMER1,TIMER_CH_2,&timer_ocintpara);
-	timer_channel_output_config(TIMER1,TIMER_CH_3,&timer_ocintpara);
+    timer_channel_output_config(TIMER1,TIMER_CH_3,&timer_ocintpara);
 
     /* CH1 configuration in PWM mode1,duty cycle 25% */
-    timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_0,4096);
-    timer_channel_output_mode_config(TIMER1,TIMER_CH_0,TIMER_OC_MODE_PWM0);
+    timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_0,0);
+    timer_channel_output_mode_config(TIMER1,TIMER_CH_0,TIMER_OC_MODE_PWM1);
     timer_channel_output_shadow_config(TIMER1,TIMER_CH_0,TIMER_OC_SHADOW_DISABLE);
 
     /* CH2 configuration in PWM mode1,duty cycle 50% */
-    timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_1,4096);
-    timer_channel_output_mode_config(TIMER1,TIMER_CH_1,TIMER_OC_MODE_PWM0);
+    timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_1,0);
+    timer_channel_output_mode_config(TIMER1,TIMER_CH_1,TIMER_OC_MODE_PWM1);
     timer_channel_output_shadow_config(TIMER1,TIMER_CH_1,TIMER_OC_SHADOW_DISABLE);
 
     /* CH3 configuration in PWM mode1,duty cycle 75% */
-    timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_2,4096);
-    timer_channel_output_mode_config(TIMER1,TIMER_CH_2,TIMER_OC_MODE_PWM0);
+    timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_2,0);
+    timer_channel_output_mode_config(TIMER1,TIMER_CH_2,TIMER_OC_MODE_PWM1);
     timer_channel_output_shadow_config(TIMER1,TIMER_CH_2,TIMER_OC_SHADOW_DISABLE);
 
-	/* CH3 configuration in PWM mode1,duty cycle 75% */
-    timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_3,4096);
-    timer_channel_output_mode_config(TIMER1,TIMER_CH_3,TIMER_OC_MODE_PWM0);
+    /* CH3 configuration in PWM mode1,duty cycle 75% */
+    timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_3,0);
+    timer_channel_output_mode_config(TIMER1,TIMER_CH_3,TIMER_OC_MODE_PWM1);
     timer_channel_output_shadow_config(TIMER1,TIMER_CH_3,TIMER_OC_SHADOW_DISABLE);
 
     /* auto-reload preload enable */
@@ -107,21 +107,21 @@ static void timer_config(void)
     /* auto-reload preload enable */
     timer_enable(TIMER1);
 
-	/*----------------------------------------------------*/
-	timer_deinit(TIMER2);
-	timer_init(TIMER2,&timer_initpara);
+    /*----------------------------------------------------*/
+    timer_deinit(TIMER2);
+    timer_init(TIMER2,&timer_initpara);
 
-	timer_channel_output_config(TIMER2,TIMER_CH_0,&timer_ocintpara);
+    timer_channel_output_config(TIMER2,TIMER_CH_0,&timer_ocintpara);
     timer_channel_output_config(TIMER2,TIMER_CH_1,&timer_ocintpara);
 
     /* CH1 configuration in PWM mode1,duty cycle 25% */
-    timer_channel_output_pulse_value_config(TIMER2,TIMER_CH_0,4096);
-    timer_channel_output_mode_config(TIMER2,TIMER_CH_0,TIMER_OC_MODE_PWM0);
+    timer_channel_output_pulse_value_config(TIMER2,TIMER_CH_0,0);
+    timer_channel_output_mode_config(TIMER2,TIMER_CH_0,TIMER_OC_MODE_PWM1);
     timer_channel_output_shadow_config(TIMER2,TIMER_CH_0,TIMER_OC_SHADOW_DISABLE);
 
     /* CH2 configuration in PWM mode1,duty cycle 50% */
-    timer_channel_output_pulse_value_config(TIMER2,TIMER_CH_1,4096);
-    timer_channel_output_mode_config(TIMER2,TIMER_CH_1,TIMER_OC_MODE_PWM0);
+    timer_channel_output_pulse_value_config(TIMER2,TIMER_CH_1,0);
+    timer_channel_output_mode_config(TIMER2,TIMER_CH_1,TIMER_OC_MODE_PWM1);
     timer_channel_output_shadow_config(TIMER2,TIMER_CH_1,TIMER_OC_SHADOW_DISABLE);
 
     /* auto-reload preload enable */
@@ -132,36 +132,36 @@ static void timer_config(void)
 
 void 
 sign_led(void) {
-	rcu_config();
-	gpio_config();
-	timer_config();
+    rcu_config();
+    gpio_config();
+    timer_config();
 }
 
 /*Configure PB4 PB5 PA2 PA1 PA3 PA0 pwm  TM3_CH1 TM3_CH2 TM2_CH3 TM2_CH2 TM2_CH4 TM2_CH1*/
 void
 sign_write(led_name name,uint16_t val) {
-	switch(name) {
-		case L_AI1: {
-			timer_channel_output_pulse_value_config(TIMER2,TIMER_CH_0,val);
-		} break;
-		case L_AI2: {
-			timer_channel_output_pulse_value_config(TIMER2,TIMER_CH_1,val);
-		} break;
-		case L_AI3: {
-			timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_2,val);
-		} break;
-		case L_AI4: {
-			timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_1,val);
-		} break;
-		case L_AO1: {
-			timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_3,val);
-		} break;
-		case L_AO2: {
-			timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_0,val);
-		} break;
-		default : {
+    switch(name) {
+        case L_AI1: {
+            timer_channel_output_pulse_value_config(TIMER2,TIMER_CH_0,val);
+        } break;
+        case L_AI2: {
+            timer_channel_output_pulse_value_config(TIMER2,TIMER_CH_1,val);
+        } break;
+        case L_AI3: {
+            timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_2,val);
+        } break;
+        case L_AI4: {
+            timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_1,val);
+        } break;
+        case L_AO1: {
+            timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_3,val);
+        } break;
+        case L_AO2: {
+            timer_channel_output_pulse_value_config(TIMER1,TIMER_CH_0,val);
+        } break;
+        default : {
 
-		} break;
-	}
+        } break;
+    }
 }
 

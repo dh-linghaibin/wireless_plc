@@ -270,6 +270,10 @@ void ui_menu_create(void) {
     lv_label_set_text(can_show,buf);
     lv_obj_align(can_show,time_show,LV_ALIGN_OUT_BOTTOM_LEFT,0,5);
     
+    lv_obj_t * edition = lv_label_create(lv_scr_act(),can_show);
+    lv_label_set_text(edition,"V1.2-NO WDG");
+    lv_obj_align(edition,can_show,LV_ALIGN_OUT_BOTTOM_LEFT,0,5);
+    
     lv_obj_t * btn_lock;
     img_lock = lv_img_create(scr, NULL);
     lv_obj_set_size(img_lock,48,48);

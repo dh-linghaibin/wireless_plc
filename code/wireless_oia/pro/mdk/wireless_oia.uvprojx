@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\device\include;..\..\frame\include;..\..\kernel\FreeRTOS\include;..\..\kernel\FreeRTOS\portable\RVDS\ARM_CM3;..\..\device\wireless</IncludePath>
+              <IncludePath>..\..\device\include;..\..\device\wireless;..\..\user\include;..\..\kernel\software\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -389,62 +389,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>frame</GroupName>
-          <Files>
-            <File>
-              <FileName>s_delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\frame\s_delay.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>freertos</GroupName>
-          <Files>
-            <File>
-              <FileName>croutine.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\kernel\FreeRTOS\croutine.c</FilePath>
-            </File>
-            <File>
-              <FileName>event_groups.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\kernel\FreeRTOS\event_groups.c</FilePath>
-            </File>
-            <File>
-              <FileName>list.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\kernel\FreeRTOS\list.c</FilePath>
-            </File>
-            <File>
-              <FileName>queue.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\kernel\FreeRTOS\queue.c</FilePath>
-            </File>
-            <File>
-              <FileName>tasks.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\kernel\FreeRTOS\tasks.c</FilePath>
-            </File>
-            <File>
-              <FileName>timers.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\kernel\FreeRTOS\timers.c</FilePath>
-            </File>
-            <File>
-              <FileName>heap_4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\kernel\FreeRTOS\portable\MemMang\heap_4.c</FilePath>
-            </File>
-            <File>
-              <FileName>port.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\kernel\FreeRTOS\portable\RVDS\ARM_CM3\port.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>device</GroupName>
+          <GroupName>devices</GroupName>
           <Files>
             <File>
               <FileName>tm1650.c</FileName>
@@ -467,11 +412,6 @@
               <FilePath>..\..\device\sign_configure.c</FilePath>
             </File>
             <File>
-              <FileName>sm16703p.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\device\sm16703p.c</FilePath>
-            </File>
-            <File>
               <FileName>delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\device\delay.c</FilePath>
@@ -480,6 +420,36 @@
               <FileName>si446x.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\device\si446x.c</FilePath>
+            </File>
+            <File>
+              <FileName>can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\can.c</FilePath>
+            </File>
+            <File>
+              <FileName>wdog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\wdog.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\device\timer.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>software</GroupName>
+          <Files>
+            <File>
+              <FileName>multi_button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\kernel\software\multiButton\multi_button.c</FilePath>
+            </File>
+            <File>
+              <FileName>multi_timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\kernel\software\multiTimer\multi_timer.c</FilePath>
             </File>
           </Files>
         </Group>

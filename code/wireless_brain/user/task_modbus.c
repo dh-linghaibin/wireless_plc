@@ -119,8 +119,8 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs,
         switch ( eMode ) {
         case MB_REG_READ:            
             while( usNRegs > 0 ) {
-                *pucRegBuffer++ = ( unsigned char )( modbus_holding[0] >> 8 );
-                *pucRegBuffer++ = ( unsigned char )( modbus_holding[0] & 0xFF );
+                *pucRegBuffer++ = ( unsigned char )( modbus_holding[iRegIndex] >> 8 );
+                *pucRegBuffer++ = ( unsigned char )( modbus_holding[iRegIndex] & 0xFF );
                 iRegIndex++;
                 usNRegs--;
             }

@@ -24,9 +24,8 @@ static lv_obj_t * mbox1;
 /*Called when a button is clicked*/
 static lv_res_t mbox_apply_action(lv_obj_t * mbox, const char * txt) {
      if(strcmp(txt,"鏇存柊")==0) {
-        uint8_t buf[1];
-        buf[0] = 0x55;
-        persistence_set_pro_flag(buf);
+        uint8_t buf = 0x55;
+        persistence_set_pro_flag(&buf);
         __set_FAULTMASK(1);//关闭总中断
         NVIC_SystemReset();//请求单片机重启
      } else {

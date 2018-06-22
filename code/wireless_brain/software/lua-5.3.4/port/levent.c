@@ -52,17 +52,8 @@ void levent_loop(lua_State * L) {
             case HOLD: {
                 if(task_modbus_get_holding(event->address) == event->val) {
                     if(event->flag == 0) {
-                        event->flag = 1;
-                     //   taskENTER_CRITICAL();
                         lua_rawgeti(L, LUA_REGISTRYINDEX, event->l_id);
-                        lua_call(L, 0, 0);
-//                        int ret = lua_pcall(L, 0, 0, 0);
-//                        if ( ret != 0 ) {
-//                            int t = lua_type(L, -1);
-//                            ui_debug_set_show(lua_tostring(L,-1));
-//                            lua_pop(L, 1);  
-//                        }
-                      //  taskEXIT_CRITICAL();
+                        lua_pcall(L, 0, 0, 0);
                     }
                 } else {
                     event->flag = 0;
@@ -78,16 +69,8 @@ void levent_loop(lua_State * L) {
                 if(task_modbus_get_input_bit(event->address,event->num) == event->val) {
                     if(event->flag == 0) {
                         event->flag = 1;
-                       // taskENTER_CRITICAL();
                         lua_rawgeti(L, LUA_REGISTRYINDEX, event->l_id);
-                        lua_call(L, 0, 0);
-//                        int ret = lua_pcall(L, 0, 0, 0);
-//                        if ( ret != 0 ) {
-//                            int t = lua_type(L, -1);
-//                            ui_debug_set_show(lua_tostring(L,-1));
-//                            lua_pop(L, 1);  
-//                        }
-                       // taskEXIT_CRITICAL();
+                        lua_pcall(L, 0, 0, 0);
                     }
                 } else {
                     event->flag = 0;
