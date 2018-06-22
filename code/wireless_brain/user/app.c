@@ -87,6 +87,14 @@ int main(void) {
     task_file_init();   /* 文件系统初始化 */
     persistence_init(); /* 数据初始化 */
     
+    
+    while(1) {
+        tft_set_backlight(0);
+        delay_ms(1000);
+        tft_set_backlight(1);
+        delay_ms(1000);
+    }
+    
    // iwdg_init(4,4000);
     {
         uint8_t buf2;
