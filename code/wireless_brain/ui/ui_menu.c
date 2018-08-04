@@ -271,7 +271,7 @@ void ui_menu_create(void) {
     lv_obj_align(can_show,time_show,LV_ALIGN_OUT_BOTTOM_LEFT,0,5);
     
     lv_obj_t * edition = lv_label_create(lv_scr_act(),can_show);
-    lv_label_set_text(edition,"V1.2-NO WDG");
+    lv_label_set_text(edition,"T-V2.1-NET");
     lv_obj_align(edition,can_show,LV_ALIGN_OUT_BOTTOM_LEFT,0,5);
     
     lv_obj_t * btn_lock;

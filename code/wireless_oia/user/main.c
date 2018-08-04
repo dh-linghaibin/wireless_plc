@@ -40,8 +40,8 @@ int main(void) {
     sign_led();
     sign_configure();
     timer_init_l();
-//    wireless_init();
-//    si446x_init();
+    wireless_init();
+    si446x_init();
     bxcan_init(2);
     
     {

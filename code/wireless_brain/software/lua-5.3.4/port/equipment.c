@@ -13,12 +13,14 @@
 static int equipment_holeing_set(lua_State *L){
     int address = luaL_checkinteger(L, 1);
     int val = luaL_checkinteger(L, 2);
+    vTaskDelay(15 / portTICK_RATE_MS); 
     task_modbus_set_holding(address,val);
     return 0;
 }
 
 static int equipment_holeing_get(lua_State *L){
     int address = luaL_checkinteger(L, 1);
+    vTaskDelay(15 / portTICK_RATE_MS); 
     lua_pushinteger(L, task_modbus_get_holding(address));
     return 1;
 }
@@ -34,11 +36,12 @@ static int equipment_coils_set(lua_State *L){
     send_msg.data[0] = num;
     send_msg.data[1] = val;
     task_can_set(send_msg);
-    vTaskDelay(5 / portTICK_RATE_MS); 
+    vTaskDelay(15 / portTICK_RATE_MS); 
     return 0;
 }
 
 static int equipment_coils_get(lua_State *L){
+    vTaskDelay(15 / portTICK_RATE_MS); 
     int i = luaL_checkinteger(L, -1);
     return 0;
 }
@@ -46,6 +49,7 @@ static int equipment_coils_get(lua_State *L){
 static int equipment_input_get(lua_State *L) {
     int address = luaL_checkinteger(L, 1);
     uint8_t val = 0;
+    vTaskDelay(15 / portTICK_RATE_MS); 
     if(lua_isinteger(L, 2)) {
         int num = luaL_checkinteger(L, 2);
         val = task_modbus_get_input_bit(address,num);

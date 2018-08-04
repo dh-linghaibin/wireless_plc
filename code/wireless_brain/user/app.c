@@ -81,21 +81,13 @@ int main(void) {
     buzzer_init(); /* 蜂鸣器初始化 */
     delay_ms(100);
     uart_init(115200); /* 串口初始化 */
-    //printf("%s",logo); 
+   // printf("%s",logo); 
     rtc_init();         /* 时钟初始化 */
     task_gui_init();    /* gui初始化 */
     task_file_init();   /* 文件系统初始化 */
     persistence_init(); /* 数据初始化 */
     
-    
-    while(1) {
-        tft_set_backlight(0);
-        delay_ms(1000);
-        tft_set_backlight(1);
-        delay_ms(1000);
-    }
-    
-   // iwdg_init(4,4000);
+    iwdg_init(4,4000);
     {
         uint8_t buf2;
         persistence_get_pro_flag(&buf2);

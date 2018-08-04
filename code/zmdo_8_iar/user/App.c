@@ -118,7 +118,7 @@ int main(void) {
     /* --定时器初始化-- */
     TIMER.init();
     TIMER.Timer_n.timer[0] = TIMER.getclock() + 200;//系统脉搏
-    TIMER.Timer_n.timer[1] = TIMER.getclock() + 1;//按钮
+    TIMER.Timer_n.timer[1] = TIMER.getclock() + 50;//按钮
     TIMER.Timer_n.timer[2] = TIMER.getclock() + 2000;//通讯上报
     TIMER.Timer_n.timer[3] = TIMER.getclock() + 8000;//通讯上报-电量
     TIMER.Timer_n.timer[4] = TIMER.getclock() + 2;//急停检测
@@ -214,40 +214,40 @@ int main(void) {
         if(OUTSIGNAL.outsignal_n.stop_flag == 0) {
             /** -- 按键检测 -- by lhb_steven -- 2017/6/21**/
             if(TIMER.Timer_n.timer[1] <= TIMER.getclock()) {
-                TIMER.Timer_n.timer[1] = TIMER.getclock() + 1;
+                TIMER.Timer_n.timer[1] = TIMER.getclock() + 10;
                 /** -- 检测按钮 -- by lhb_steven -- 2017/7/14**/
                 switch(TM1650.readkey(&TM1650.tm1650_n)) {
-                    case 0xe6:
+                    case 0x67:
                     TM1650.tm1650_n.key_down_num = 0;
                     break;
-                    case 0xfa:
+                    case 0x5f:
                     TM1650.tm1650_n.key_down_num = 1;
                     break;
-                    case 0xea:
+                    case 0x57:
                     TM1650.tm1650_n.key_down_num = 2;
                     break;
-                    case 0xf6:
+                    case 0x6f:
                     TM1650.tm1650_n.key_down_num = 3;
                     break;
-                    case 0xe2:
+                    case 0x47:
                     TM1650.tm1650_n.key_down_num = 4;
                     break;
-                    case 0xf2:
+                    case 0x4f:
                     TM1650.tm1650_n.key_down_num = 5;
                     break;
-                    case 0xee:
+                    case 0x77:
                     TM1650.tm1650_n.key_down_num = 6;
                     break;
-                    case 0x6e:
+                    case 0x76:
                     TM1650.tm1650_n.key_down_num = 7;
                     break;
                     case 0x66:
                     TM1650.tm1650_n.key_down_num = 9;
                     break;
-                    case 0x7a:
+                    case 0x5e:
                     TM1650.tm1650_n.key_down_num = 10;
                     break;
-                    case 0x6a:
+                    case 0x56:
                     TM1650.tm1650_n.key_down_num = 8;
                     break;
                     default:

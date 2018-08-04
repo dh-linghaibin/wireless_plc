@@ -311,6 +311,8 @@ void ETH_NVIC_Config(void)
 /* lwip includes */
 #include "lwip/sys.h"
 
+uint16_t net_count = 0;
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -320,25 +322,26 @@ extern SemaphoreHandle_t s_xSemaphore;
 extern void xPortSysTickHandler(void); 
 void ETH_IRQHandler(void)
 {
-  portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+    portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
-  /* Frame received */
-  if ( ETH_GetDMAFlagStatus(ETH_DMA_FLAG_R) == SET) 
-  {
-    /* Give the semaphore to wakeup LwIP task */
-    xSemaphoreGiveFromISR( s_xSemaphore, &xHigherPriorityTaskWoken );   
-  }
-	
-  /* Clear the interrupt flags. */
-  /* Clear the Eth DMA Rx IT pending bits */
-  ETH_DMAClearITPendingBit(ETH_DMA_IT_R);
-  ETH_DMAClearITPendingBit(ETH_DMA_IT_NIS);
-	
-  /* Switch tasks if necessary. */	
-  if( xHigherPriorityTaskWoken != pdFALSE )
-  {
-    portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );
-  }
+    /* Frame received */
+    if ( ETH_GetDMAFlagStatus(ETH_DMA_FLAG_R) == SET) 
+    {
+        net_count++;
+        /* Give the semaphore to wakeup LwIP task */
+        xSemaphoreGiveFromISR( s_xSemaphore, &xHigherPriorityTaskWoken );
+    }
+
+    /* Clear the interrupt flags. */
+    /* Clear the Eth DMA Rx IT pending bits */
+    ETH_DMAClearITPendingBit(ETH_DMA_IT_R);
+    ETH_DMAClearITPendingBit(ETH_DMA_IT_NIS);
+
+    /* Switch tasks if necessary. */	
+    if( xHigherPriorityTaskWoken != pdFALSE )
+    {
+        portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );
+    }
 }
 
 /*********** Portions COPYRIGHT 2012 Embest Tech. Co., Ltd.*****END OF FILE****/

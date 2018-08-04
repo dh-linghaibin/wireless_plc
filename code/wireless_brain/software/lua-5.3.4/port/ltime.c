@@ -93,7 +93,7 @@ static RTC_DateTypeDef RTC_DateStruct;
 static int ltime_time(lua_State *L) {
     RTC_GetTime(RTC_Format_BIN,&RTC_TimeStruct);
     RTC_GetDate(RTC_Format_BIN, &RTC_DateStruct);
-    
+    vTaskDelay(15 / portTICK_RATE_MS); 
     lua_newtable(L);//创建一个表格，放在栈顶  
     lua_pushstring(L, "year"); 
     lua_pushinteger(L,RTC_DateStruct.RTC_Year);

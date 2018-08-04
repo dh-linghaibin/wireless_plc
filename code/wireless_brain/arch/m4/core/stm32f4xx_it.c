@@ -55,6 +55,11 @@ void NMI_Handler(void)
 {
 }
 
+__asm void wait()
+{
+      BX lr
+}
+
 /**
   * @brief  This function handles Hard Fault exception.
   * @param  None
@@ -68,6 +73,7 @@ void HardFault_Handler(void)
     while (1)
     {
     }
+    wait();
 }
 
 /**

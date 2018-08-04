@@ -41,6 +41,7 @@ extern "C" {
 #if MEM_LIBC_MALLOC
 
 #include <stddef.h> /* for size_t */
+#include "malloc.h"
 
 typedef size_t mem_size_t;
 #define MEM_SIZE_F SZT_F
@@ -51,13 +52,13 @@ typedef size_t mem_size_t;
  * allow these defines to be overridden.
  */
 #ifndef mem_free
-#define mem_free free
+#define mem_free lf_free
 #endif
 #ifndef mem_malloc
-#define mem_malloc malloc
+#define mem_malloc lf_malloc
 #endif
 #ifndef mem_calloc
-#define mem_calloc calloc
+#define mem_calloc lf_calloc
 #endif
 /* Since there is no C library allocation function to shrink memory without
    moving it, define this to nothing. */

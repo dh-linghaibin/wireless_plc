@@ -18,6 +18,7 @@ static xQueueHandle can_msg_queue = NULL; /*队列句柄*/
 static xQueueHandle can_send_queue = NULL; /*队列句柄*/
 static TimerHandle_t xtime_can; /* 定义句柄 */
 static l_list_t * online_head; /* 链表头 */
+static void vtimer_callback( TimerHandle_t xTimer );
 
 static void up_device(device_online online) {
     device_online *temp;

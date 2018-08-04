@@ -151,7 +151,7 @@
  *      memp_malloc() or memp_free() is called (useful but slow!)
  */
 #ifndef MEMP_OVERFLOW_CHECK
-#define MEMP_OVERFLOW_CHECK             0
+#define MEMP_OVERFLOW_CHECK             2
 #endif
 
 /**
@@ -1809,7 +1809,7 @@
  * CHECKSUM_GEN_ICMP==1: Generate checksums in software for outgoing ICMP packets.
  */
 #ifndef CHECKSUM_GEN_ICMP
-#define CHECKSUM_GEN_ICMP               1
+#define CHECKSUM_GEN_ICMP               0
 #endif
  
 /**

@@ -87,6 +87,7 @@ tcpip_thread(void *arg)
     /* wait for a message, timeouts are processed while waiting */
     sys_timeouts_mbox_fetch(&mbox, (void **)&msg);
     LOCK_TCPIP_CORE();
+      
     switch (msg->type) {
 #if LWIP_NETCONN
     case TCPIP_MSG_API:

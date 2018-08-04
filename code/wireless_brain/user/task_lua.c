@@ -54,7 +54,10 @@ static void task_lua(void *pvParameters) {
         if (luaL_dofile(L,"1:main.lua")!=0) {
             ui_debug_set_show(lua_tostring(L,-1));
         }
-        vTaskDelay( 5000/portTICK_RATE_MS );  
+        while(1) {
+            vTaskDelay( 5000/portTICK_RATE_MS );  
+            ui_debug_set_show("Not find main.lua");
+        }
     }
 }
 

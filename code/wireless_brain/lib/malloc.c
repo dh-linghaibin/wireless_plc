@@ -185,3 +185,7 @@ void *lf_malloc(u32 size) {
 void lf_free(void *ptr) {
     return myfree(SRAMIN,ptr);
 }
+
+void *lf_calloc(void *ptr,u32 size) {
+    return myrealloc(SRAMIN,ptr,size);
+}
