@@ -264,7 +264,7 @@ void Tm1650Init(Stdtm1650_n * tm1650n) {
     Tm1650DelayMs(30);
     TM1650Send(tm1650n,DEFAULT_SETTING, 0x81);
     Tm1650DelayMs(1);
-    //TM1650Send(tm1650n,0x48, 0x21);
+    TM1650Send(tm1650n,0x48, 0x21);
     
     Tm1650ShowNex(tm1650n,0,0);
 }

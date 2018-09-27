@@ -27,6 +27,7 @@ typedef enum {
     DO_4 = 1,
     DI_4 = 2,
     HOLD = 3,
+    CAN_485 = 4,
 } device_type;
 
 /* 消息频道 */
@@ -47,7 +48,7 @@ typedef struct {
     device_type type; /* 设备类型 */
     uint16_t address; /* 设备地址 */
     uint8_t cmd;      /* 命令 */
-    uint8_t data[2];  /* 设备命令 */
+    uint8_t data[6];  /* 设备命令 */
 } device_send;
 
 void task_can_init(void);
@@ -55,6 +56,7 @@ void task_can_create(void);
 xQueueHandle task_can_get_queue(void);
 void task_can_set(device_send send_msg);
 l_list_t * task_can_get_device(void);
+void tack_can_modbus_read_to_hold_set(uint8_t num);
 
 #ifdef __cplusplus
 }

@@ -19,6 +19,7 @@ static xQueueHandle can_send_queue = NULL; /*队列句柄*/
 static TimerHandle_t xtime_can; /* 定义句柄 */
 static l_list_t * online_head; /* 链表头 */
 static void vtimer_callback( TimerHandle_t xTimer );
+static uint8_t modbus_read_to_hold = 0; /* modbus读出来的值的存放位置 */
 
 static void up_device(device_online online) {
     device_online *temp;
@@ -153,8 +154,19 @@ static void task_can(void *pvParameters) {
                     online.address = rx_message.StdId;
                     up_device(online);
                 } break;
+                case CAN_485: {
+                     switch(rx_message.Data[1]) {
+                         case 0xf1: { /* 读取 */
+                            task_modbus_set_holding(modbus_read_to_hold,rx_message.Data[2] | rx_message.Data[3] << 8);
+                         } break;
+                    }
+                    device_online online;
+                    online.type = CAN_485;
+                    online.address = rx_message.StdId;
+                    up_device(online);
+                } break;
                 default:{
-                
+                    
                 } break;
             }
         }
@@ -165,6 +177,10 @@ void task_can_set(device_send send_msg) {
     if(can_send_queue != NULL) {
         xQueueSendFromISR( can_send_queue, &send_msg, 0 ); /* 0的意思是立即进入队列 */
     }
+}
+
+void tack_can_modbus_read_to_hold_set(uint8_t num) {
+    modbus_read_to_hold = num;
 }
 
 static void task_can_send(void *pvParameters) {
@@ -190,6 +206,25 @@ static void task_can_send(void *pvParameters) {
                 
                 } break;
                 case DI_4: {
+                
+                } break;
+                case CAN_485: {
+                    CanTxMsg tx_msg;
+                    tx_msg.StdId = send_msg.address;
+                    tx_msg.ExtId = send_msg.address;
+                    tx_msg.RTR=CAN_RTR_DATA;
+                    tx_msg.IDE=CAN_ID_STD;
+                    tx_msg.Data[0] = CAN_485;
+                    tx_msg.Data[1] = send_msg.data[0];
+                    tx_msg.Data[2] = send_msg.data[1];
+                    tx_msg.Data[3] = send_msg.data[2];
+                    tx_msg.Data[4] = send_msg.data[3];
+                    tx_msg.Data[5] = send_msg.data[4];
+                    tx_msg.Data[6] = send_msg.data[5];
+                    tx_msg.DLC = 7;
+                    can1_send_msg(tx_msg);
+                } break;
+                case HOLD: {
                 
                 } break;
             }

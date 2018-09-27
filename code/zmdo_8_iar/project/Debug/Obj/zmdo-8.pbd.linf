@@ -1,11 +1,4 @@
 ﻿D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\zmdo-8.pbd
-D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\App.pbi
-D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\can.pbi
-D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\externalcount.pbi
-D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\flash.pbi
-D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\menu.pbi
-D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\outsignal.pbi
-D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\ringbuf.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_adc.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_can.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_cec.pbi
@@ -19,7 +12,6 @@ D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_exti.p
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_flash.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_gpio.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_i2c.pbi
-D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_it.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_iwdg.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_misc.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_pwr.pbi
@@ -30,8 +22,16 @@ D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_syscfg
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_tim.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_usart.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_wwdg.pbi
-D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\sys.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\system_stm32f0xx.pbi
+D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\App.pbi
+D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\can.pbi
+D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\externalcount.pbi
+D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\flash.pbi
+D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\menu.pbi
+D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\outsignal.pbi
+D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\ringbuf.pbi
+D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\stm32f0xx_it.pbi
+D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\sys.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\timer.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\tm1650.pbi
 D:\03-project\60-wireless_plc\code\zmdo_8_iar\project\Debug\Obj\wdog.pbi

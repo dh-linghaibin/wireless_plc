@@ -60,6 +60,47 @@ static int equipment_input_get(lua_State *L) {
     return 1;
 }
 
+static int equipment_modbus_get(lua_State *L) {
+    int address = luaL_checkinteger(L, 1); //设备地址
+    int modbus_address = luaL_checkinteger(L, 2); //从机地址
+    int num = luaL_checkinteger(L, 3); //寄存器地址
+    int val = luaL_checkinteger(L, 4); //类型
+    int hold_num = luaL_checkinteger(L, 5); //读出来的值存放位置
+    tack_can_modbus_read_to_hold_set(hold_num);
+    device_send send_msg;
+    send_msg.type = CAN_485;
+    send_msg.address = address;
+    send_msg.cmd = 0x00;
+    send_msg.data[0] = 0x10;
+    send_msg.data[1] = modbus_address;
+    send_msg.data[2] = num;
+    send_msg.data[3] = val;
+    task_can_set(send_msg);
+    vTaskDelay(50 / portTICK_RATE_MS); 
+    return 1;
+}
+
+static int equipment_modbus_set(lua_State *L) {
+    int address = luaL_checkinteger(L, 1); //设备地址
+    int modbus_address = luaL_checkinteger(L, 2); //从机地址
+    int num = luaL_checkinteger(L, 3); //寄存器地址
+    int val = luaL_checkinteger(L, 4); //类型
+    int hold_num = luaL_checkinteger(L, 5); //读出来的值存放位置
+    device_send send_msg;
+    send_msg.type = CAN_485;
+    send_msg.address = address;
+    send_msg.cmd = 0x00;
+    send_msg.data[0] = 0x11;
+    send_msg.data[1] = modbus_address;
+    send_msg.data[2] = num;
+    send_msg.data[3] = val;
+    send_msg.data[4] = hold_num;
+    send_msg.data[5] = hold_num >> 8;
+    task_can_set(send_msg);
+    vTaskDelay(50 / portTICK_RATE_MS); 
+    return 1;
+}
+
 static int equipment_delay(lua_State *L) {
     int ms = luaL_checkinteger(L, -1);
     vTaskDelay(ms / portTICK_RATE_MS);
@@ -72,6 +113,8 @@ static luaL_Reg equipment[] = {
     {"coils_set",   equipment_coils_set  },
     {"coils_get",   equipment_coils_get  },
     {"input_get",   equipment_input_get  },
+    {"modbus_get",  equipment_modbus_get },
+    {"modbus_set",  equipment_modbus_set },
     {"delay",       equipment_delay      },
     {NULL, NULL}
 };

@@ -60,7 +60,7 @@ void ltime_loop(lua_State * L) {
                 time->tic_ms = l_tic+time->time_ms;
             }
             /*do something*/
-            printf("id %d\n",time->l_id);
+            //printf("id %d\n",time->l_id);
             lua_rawgeti(L, LUA_REGISTRYINDEX, time->l_id);
             lua_pcall(L, 0, 0, 0);
         }

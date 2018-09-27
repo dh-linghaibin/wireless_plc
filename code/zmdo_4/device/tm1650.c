@@ -204,7 +204,8 @@ void tm1650_init(void) {
     i2c_ack_config(I2C1, I2C_ACK_ENABLE);    
 
     delay_ms(30);
-    tm1650_send(DEFAULT_SETTING, NORMAL_DISPLAY);
+    //tm1650_send(DEFAULT_SETTING, NORMAL_DISPLAY);
+    tm1650_send(0x48, 0x21);
     tm1650_set_nex(0,0);
     tm1650_set_nex(1,0);
     tm1650_set_led((tm1650_led)8,0x00);
