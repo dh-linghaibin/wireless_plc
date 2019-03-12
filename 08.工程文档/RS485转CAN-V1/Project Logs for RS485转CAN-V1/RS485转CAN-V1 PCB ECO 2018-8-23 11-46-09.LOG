@@ -1,0 +1,5 @@
+Change Component DesignItemId : Designator=S1 Old DesignItemId=SB-6*6*9 New DesignItemId=SB-6*6*3.1_1
+Change Component DesignItemId : Designator=S2 Old DesignItemId=SB-6*6*9 New DesignItemId=SB-6*6*3.1_1
+Change Component Description : Designator=S1 Old Description=SB-6*6*10 New Description=SB-6*6*3.1
+Change Component Description : Designator=S2 Old Description=SB-6*6*10 New Description=SB-6*6*3.1
+Added Room: Name=RS485תCAN-V1

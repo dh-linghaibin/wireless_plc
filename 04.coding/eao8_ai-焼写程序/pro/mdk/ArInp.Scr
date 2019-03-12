@@ -1,0 +1,6 @@
+--create .\eao8_ai.lib
+.\main.o
+.\delay.o
+.\read_config.o
+.\analog_quantity.o
+.\sign_led.o

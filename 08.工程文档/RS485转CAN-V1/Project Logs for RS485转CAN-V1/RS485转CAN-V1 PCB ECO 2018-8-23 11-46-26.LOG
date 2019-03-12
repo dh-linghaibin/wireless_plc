@@ -1,0 +1,12 @@
+Added Component: Designator=S1(SB-3*6*3.5)
+Added Component: Designator=S2(SB-3*6*3.5)
+Added Pin To Net: NetName=GND Pin=S1-1
+Added Pin To Net: NetName=地址+ Pin=S1-2
+Added Pin To Net: NetName=GND Pin=S1-3
+Added Pin To Net: NetName=GND Pin=S1-3
+Added Pin To Net: NetName=GND Pin=S2-1
+Added Pin To Net: NetName=地址- Pin=S2-2
+Added Pin To Net: NetName=GND Pin=S2-3
+Added Pin To Net: NetName=GND Pin=S2-3
+Added Member To Class: ClassName=RS485转CAN-V1 Member=Component S1 地址+/连续+
+Added Member To Class: ClassName=RS485转CAN-V1 Member=Component S2 地址-/设置/确定

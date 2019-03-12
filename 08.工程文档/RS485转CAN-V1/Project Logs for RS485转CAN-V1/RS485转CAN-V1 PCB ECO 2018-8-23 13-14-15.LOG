@@ -1,0 +1,7 @@
+Removed Pin From Net: NetName=485-TXD Pin=U3-12
+Removed Pin From Net: NetName=485-RXD Pin=U3-13
+Removed Pin From Net: NetName=485-RE/DE Pin=U3-14
+Removed Pin From Net: NetName=D Pin=U3-30
+Removed Pin From Net: NetName=µÿ÷∑+ Pin=U3-31
+Added Pin To Net: NetName=485-TXD Pin=U3-30
+Added Pin To Net: NetName=485-RXD Pin=U3-31

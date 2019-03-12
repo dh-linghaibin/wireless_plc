@@ -1,0 +1,12 @@
+Removed Pin From Net: NetName=GND Pin=P1-2
+Removed Pin From Net: NetName=485-A Pin=P1-3
+Removed Pin From Net: NetName=485-B Pin=P1-4
+Removed Pin From Net: NetName=CAN-H Pin=P1-5
+Removed Pin From Net: NetName=CAN-L Pin=P1-6
+Added Pin To Net: NetName=CAN-H Pin=P1-2
+Added Pin To Net: NetName=CAN-L Pin=P1-3
+Added Pin To Net: NetName=GND Pin=P1-4
+Added Pin To Net: NetName=485-B Pin=P1-5
+Added Pin To Net: NetName=485-A Pin=P1-6
+Change Net Name : Old Net Name=24V New Net Name=NetC2_1
+Change Net Name : Old Net Name=NetF1_1 New Net Name=24V

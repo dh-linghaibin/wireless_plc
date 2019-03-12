@@ -1,0 +1,16 @@
+Removed Pin From Net: NetName=485-A Pin=P1-5
+Removed Pin From Net: NetName=485-B Pin=P1-6
+Removed Pin From Net: NetName=485-A Pin=R15-1
+Removed Pin From Net: NetName=485-B Pin=R17-1
+Added Pin To Net: NetName=485-A Pin=R15-2
+Added Pin To Net: NetName=485-B Pin=R17-2
+Added Pin To Net: NetName=485-A Pin=U4-6
+Added Pin To Net: NetName=485-B Pin=U4-7
+Change Net Name : Old Net Name=485-A New Net Name=NetD7_2
+Change Net Name : Old Net Name=485-B New Net Name=NetD6_2
+Added Pin To Net: NetName=485-A Pin=P1-5
+Added Pin To Net: NetName=485-A Pin=R15-1
+Added Net: Name=485-A
+Added Pin To Net: NetName=485-B Pin=P1-6
+Added Pin To Net: NetName=485-B Pin=R17-1
+Added Net: Name=485-B
